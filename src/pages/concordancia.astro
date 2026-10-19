@@ -1,0 +1,64 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+
+const siteUrl = 'https://onlinebiblia.com';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Início',
+      item: `${siteUrl}/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Concordância Bíblica',
+      item: `${siteUrl}/concordancia/`,
+    },
+  ],
+};
+
+const webpageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: 'Concordância Bíblica — Temas e Referências das Escrituras',
+  description: 'Explore assuntos, temas e referências da Bíblia Sagrada organizados por categoria para estudo bíblico e meditação.',
+  url: `${siteUrl}/concordancia/`,
+  inLanguage: 'pt-BR',
+};
+---
+<BaseLayout
+  title="Concordância Bíblica — Temas e Referências | Online Bíblia"
+  description="Explore assuntos e encontre referências bíblicas organizadas por tema para estudo, pesquisa e reflexão nas Escrituras."
+  page="concordancia"
+  schema={[breadcrumbSchema, webpageSchema]}
+>
+  <SiteHeader active="concordancia" />
+  <main class="concordance-page shell">
+    <section class="concordance-hero">
+      <p class="eyebrow"><span class="eyebrow-dot"></span> Encontre por assunto</p>
+      <h1>Uma palavra pode<br /><em>abrir um caminho.</em></h1>
+      <p>Explore temas da Bíblia e encontre referências relacionadas ao que você procura, estuda ou deseja compreender melhor.</p>
+      <a class="back-reader-link" href="/">← Voltar para a leitura</a>
+    </section>
+
+    <section class="concordance-explorer" aria-labelledby="topics-heading">
+      <div class="explorer-heading">
+        <div><p class="reading-kicker">GUIA TEMÁTICO</p><h2 id="topics-heading">Explore os assuntos</h2><p>Escolha um tema ou digite uma palavra para filtrar.</p></div>
+        <div class="topic-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg><input type="search" id="topic-search" placeholder="Buscar tema…" aria-label="Buscar tema" /></div>
+      </div>
+      <div id="category-filters" class="category-filters" aria-label="Filtrar temas por categoria"></div>
+      <div id="topics-grid" class="topics-grid" aria-live="polite"><div class="loading-card">Carregando temas…</div></div>
+      <p id="topics-status" class="topics-status" role="status"></p>
+    </section>
+    <section class="concordance-bottom-note"><span aria-hidden="true">✦</span><div><strong>Como usar a concordância</strong><p>Os temas são pontos de partida para estudo. Leia o contexto do capítulo e compare as referências antes de tirar conclusões.</p></div></section>
+  </main>
+  <script>
+    import '../scripts/concordance.js';
+  </script>
+</BaseLayout>

@@ -1,0 +1,1315 @@
+[
+  {
+    "order": 1,
+    "id": "genesis",
+    "slug": "genesis",
+    "name": "Gênesis",
+    "fullName": "Gênesis",
+    "nameEn": "Genesis",
+    "abbrev": "gn",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Pentateuco",
+    "chaptersCount": 50,
+    "aliases": [
+      "genesis",
+      "gn",
+      "1"
+    ],
+    "slugEn": "genesis"
+  },
+  {
+    "order": 2,
+    "id": "exodo",
+    "slug": "exodo",
+    "name": "Êxodo",
+    "fullName": "Êxodo",
+    "nameEn": "Exodus",
+    "abbrev": "ex",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Pentateuco",
+    "chaptersCount": 40,
+    "aliases": [
+      "exodo",
+      "exodus",
+      "ex",
+      "2"
+    ],
+    "slugEn": "exodus"
+  },
+  {
+    "order": 3,
+    "id": "levitico",
+    "slug": "levitico",
+    "name": "Levítico",
+    "fullName": "Levítico",
+    "nameEn": "Leviticus",
+    "abbrev": "lv",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Pentateuco",
+    "chaptersCount": 27,
+    "aliases": [
+      "levitico",
+      "leviticus",
+      "lv",
+      "3"
+    ],
+    "slugEn": "leviticus"
+  },
+  {
+    "order": 4,
+    "id": "numeros",
+    "slug": "numeros",
+    "name": "Números",
+    "fullName": "Números",
+    "nameEn": "Numbers",
+    "abbrev": "nm",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Pentateuco",
+    "chaptersCount": 36,
+    "aliases": [
+      "numeros",
+      "numbers",
+      "nm",
+      "4"
+    ],
+    "slugEn": "numbers"
+  },
+  {
+    "order": 5,
+    "id": "deuteronomio",
+    "slug": "deuteronomio",
+    "name": "Deuteronômio",
+    "fullName": "Deuteronômio",
+    "nameEn": "Deuteronomy",
+    "abbrev": "dt",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Pentateuco",
+    "chaptersCount": 34,
+    "aliases": [
+      "deuteronomio",
+      "deuteronomy",
+      "dt",
+      "5"
+    ],
+    "slugEn": "deuteronomy"
+  },
+  {
+    "order": 6,
+    "id": "josue",
+    "slug": "josue",
+    "name": "Josué",
+    "fullName": "Josué",
+    "nameEn": "Joshua",
+    "abbrev": "js",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 24,
+    "aliases": [
+      "josue",
+      "joshua",
+      "js",
+      "6"
+    ],
+    "slugEn": "joshua"
+  },
+  {
+    "order": 7,
+    "id": "juizes",
+    "slug": "juizes",
+    "name": "Juízes",
+    "fullName": "Juízes",
+    "nameEn": "Judges",
+    "abbrev": "jz",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 21,
+    "aliases": [
+      "juizes",
+      "judges",
+      "jz",
+      "7"
+    ],
+    "slugEn": "judges"
+  },
+  {
+    "order": 8,
+    "id": "rute",
+    "slug": "rute",
+    "name": "Rute",
+    "fullName": "Rute",
+    "nameEn": "Ruth",
+    "abbrev": "rt",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 4,
+    "aliases": [
+      "rute",
+      "ruth",
+      "rt",
+      "8"
+    ],
+    "slugEn": "ruth"
+  },
+  {
+    "order": 9,
+    "id": "1-samuel",
+    "slug": "1-samuel",
+    "name": "1 Samuel",
+    "fullName": "1 Samuel",
+    "nameEn": "1 Samuel",
+    "abbrev": "1sm",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 31,
+    "aliases": [
+      "1-samuel",
+      "1sm",
+      "9"
+    ],
+    "slugEn": "1-samuel"
+  },
+  {
+    "order": 10,
+    "id": "2-samuel",
+    "slug": "2-samuel",
+    "name": "2 Samuel",
+    "fullName": "2 Samuel",
+    "nameEn": "2 Samuel",
+    "abbrev": "2sm",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 24,
+    "aliases": [
+      "2-samuel",
+      "2sm",
+      "10"
+    ],
+    "slugEn": "2-samuel"
+  },
+  {
+    "order": 11,
+    "id": "1-reis",
+    "slug": "1-reis",
+    "name": "1 Reis",
+    "fullName": "1 Reis",
+    "nameEn": "1 Kings",
+    "abbrev": "1rs",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 22,
+    "aliases": [
+      "1-reis",
+      "1-kings",
+      "1rs",
+      "11"
+    ],
+    "slugEn": "1-kings"
+  },
+  {
+    "order": 12,
+    "id": "2-reis",
+    "slug": "2-reis",
+    "name": "2 Reis",
+    "fullName": "2 Reis",
+    "nameEn": "2 Kings",
+    "abbrev": "2rs",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 25,
+    "aliases": [
+      "2-reis",
+      "2-kings",
+      "2rs",
+      "12"
+    ],
+    "slugEn": "2-kings"
+  },
+  {
+    "order": 13,
+    "id": "1-cronicas",
+    "slug": "1-cronicas",
+    "name": "1 Crônicas",
+    "fullName": "1 Crônicas",
+    "nameEn": "1 Chronicles",
+    "abbrev": "1cr",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 29,
+    "aliases": [
+      "1-cronicas",
+      "1-chronicles",
+      "1cr",
+      "13"
+    ],
+    "slugEn": "1-chronicles"
+  },
+  {
+    "order": 14,
+    "id": "2-cronicas",
+    "slug": "2-cronicas",
+    "name": "2 Crônicas",
+    "fullName": "2 Crônicas",
+    "nameEn": "2 Chronicles",
+    "abbrev": "2cr",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 36,
+    "aliases": [
+      "2-cronicas",
+      "2-chronicles",
+      "2cr",
+      "14"
+    ],
+    "slugEn": "2-chronicles"
+  },
+  {
+    "order": 15,
+    "id": "esdras",
+    "slug": "esdras",
+    "name": "Esdras",
+    "fullName": "Esdras",
+    "nameEn": "Ezra",
+    "abbrev": "ed",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 10,
+    "aliases": [
+      "esdras",
+      "ezra",
+      "ed",
+      "15"
+    ],
+    "slugEn": "ezra"
+  },
+  {
+    "order": 16,
+    "id": "neemias",
+    "slug": "neemias",
+    "name": "Neemias",
+    "fullName": "Neemias",
+    "nameEn": "Nehemiah",
+    "abbrev": "ne",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 13,
+    "aliases": [
+      "neemias",
+      "nehemiah",
+      "ne",
+      "16"
+    ],
+    "slugEn": "nehemiah"
+  },
+  {
+    "order": 17,
+    "id": "ester",
+    "slug": "ester",
+    "name": "Ester",
+    "fullName": "Ester",
+    "nameEn": "Esther",
+    "abbrev": "et",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Históricos",
+    "chaptersCount": 10,
+    "aliases": [
+      "ester",
+      "esther",
+      "et",
+      "17"
+    ],
+    "slugEn": "esther"
+  },
+  {
+    "order": 18,
+    "id": "jo",
+    "slug": "jo",
+    "name": "Jó",
+    "fullName": "Jó",
+    "nameEn": "Job",
+    "abbrev": "jó",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Poéticos e Sapienciais",
+    "chaptersCount": 42,
+    "aliases": [
+      "jo",
+      "job",
+      "jó",
+      "18"
+    ],
+    "slugEn": "job"
+  },
+  {
+    "order": 19,
+    "id": "salmos",
+    "slug": "salmos",
+    "name": "Salmos",
+    "fullName": "Salmos",
+    "nameEn": "Psalms",
+    "abbrev": "sl",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Poéticos e Sapienciais",
+    "chaptersCount": 150,
+    "aliases": [
+      "salmos",
+      "psalms",
+      "sl",
+      "19"
+    ],
+    "slugEn": "psalms"
+  },
+  {
+    "order": 20,
+    "id": "proverbios",
+    "slug": "proverbios",
+    "name": "Provérbios",
+    "fullName": "Provérbios",
+    "nameEn": "Proverbs",
+    "abbrev": "pv",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Poéticos e Sapienciais",
+    "chaptersCount": 31,
+    "aliases": [
+      "proverbios",
+      "proverbs",
+      "pv",
+      "20"
+    ],
+    "slugEn": "proverbs"
+  },
+  {
+    "order": 21,
+    "id": "eclesiastes",
+    "slug": "eclesiastes",
+    "name": "Eclesiastes",
+    "fullName": "Eclesiastes",
+    "nameEn": "Ecclesiastes",
+    "abbrev": "ec",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Poéticos e Sapienciais",
+    "chaptersCount": 12,
+    "aliases": [
+      "eclesiastes",
+      "ecclesiastes",
+      "ec",
+      "21"
+    ],
+    "slugEn": "ecclesiastes"
+  },
+  {
+    "order": 22,
+    "id": "canticos",
+    "slug": "canticos",
+    "name": "Cânticos",
+    "fullName": "Cânticos",
+    "nameEn": "Song of Solomon",
+    "abbrev": "ct",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Poéticos e Sapienciais",
+    "chaptersCount": 8,
+    "aliases": [
+      "canticos",
+      "song-of-solomon",
+      "ct",
+      "22"
+    ],
+    "slugEn": "song-of-solomon"
+  },
+  {
+    "order": 23,
+    "id": "isaias",
+    "slug": "isaias",
+    "name": "Isaías",
+    "fullName": "Isaías",
+    "nameEn": "Isaiah",
+    "abbrev": "is",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Maiores",
+    "chaptersCount": 66,
+    "aliases": [
+      "isaias",
+      "isaiah",
+      "is",
+      "23"
+    ],
+    "slugEn": "isaiah"
+  },
+  {
+    "order": 24,
+    "id": "jeremias",
+    "slug": "jeremias",
+    "name": "Jeremias",
+    "fullName": "Jeremias",
+    "nameEn": "Jeremiah",
+    "abbrev": "jr",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Maiores",
+    "chaptersCount": 52,
+    "aliases": [
+      "jeremias",
+      "jeremiah",
+      "jr",
+      "24"
+    ],
+    "slugEn": "jeremiah"
+  },
+  {
+    "order": 25,
+    "id": "lamentacoes",
+    "slug": "lamentacoes",
+    "name": "Lamentações",
+    "fullName": "Lamentações de Jeremias",
+    "nameEn": "Lamentations",
+    "abbrev": "lm",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Maiores",
+    "chaptersCount": 5,
+    "aliases": [
+      "lamentacoes",
+      "lamentations",
+      "lm",
+      "25",
+      "lamentacoes-de-jeremias"
+    ],
+    "slugEn": "lamentations"
+  },
+  {
+    "order": 26,
+    "id": "ezequiel",
+    "slug": "ezequiel",
+    "name": "Ezequiel",
+    "fullName": "Ezequiel",
+    "nameEn": "Ezekiel",
+    "abbrev": "ez",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Maiores",
+    "chaptersCount": 48,
+    "aliases": [
+      "ezequiel",
+      "ezekiel",
+      "ez",
+      "26"
+    ],
+    "slugEn": "ezekiel"
+  },
+  {
+    "order": 27,
+    "id": "daniel",
+    "slug": "daniel",
+    "name": "Daniel",
+    "fullName": "Daniel",
+    "nameEn": "Daniel",
+    "abbrev": "dn",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Maiores",
+    "chaptersCount": 12,
+    "aliases": [
+      "daniel",
+      "dn",
+      "27"
+    ],
+    "slugEn": "daniel"
+  },
+  {
+    "order": 28,
+    "id": "oseias",
+    "slug": "oseias",
+    "name": "Oséias",
+    "fullName": "Oséias",
+    "nameEn": "Hosea",
+    "abbrev": "os",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 14,
+    "aliases": [
+      "oseias",
+      "hosea",
+      "os",
+      "28"
+    ],
+    "slugEn": "hosea"
+  },
+  {
+    "order": 29,
+    "id": "joel",
+    "slug": "joel",
+    "name": "Joel",
+    "fullName": "Joel",
+    "nameEn": "Joel",
+    "abbrev": "jl",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 3,
+    "aliases": [
+      "joel",
+      "jl",
+      "29"
+    ],
+    "slugEn": "joel"
+  },
+  {
+    "order": 30,
+    "id": "amos",
+    "slug": "amos",
+    "name": "Amós",
+    "fullName": "Amós",
+    "nameEn": "Amos",
+    "abbrev": "am",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 9,
+    "aliases": [
+      "amos",
+      "am",
+      "30"
+    ],
+    "slugEn": "amos"
+  },
+  {
+    "order": 31,
+    "id": "obadias",
+    "slug": "obadias",
+    "name": "Obadias",
+    "fullName": "Obadias",
+    "nameEn": "Obadiah",
+    "abbrev": "ob",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 1,
+    "aliases": [
+      "obadias",
+      "obadiah",
+      "ob",
+      "31"
+    ],
+    "slugEn": "obadiah"
+  },
+  {
+    "order": 32,
+    "id": "jonas",
+    "slug": "jonas",
+    "name": "Jonas",
+    "fullName": "Jonas",
+    "nameEn": "Jonah",
+    "abbrev": "jn",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 4,
+    "aliases": [
+      "jonas",
+      "jonah",
+      "jn",
+      "32"
+    ],
+    "slugEn": "jonah"
+  },
+  {
+    "order": 33,
+    "id": "miqueias",
+    "slug": "miqueias",
+    "name": "Miquéias",
+    "fullName": "Miquéias",
+    "nameEn": "Micah",
+    "abbrev": "mq",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 7,
+    "aliases": [
+      "miqueias",
+      "micah",
+      "mq",
+      "33"
+    ],
+    "slugEn": "micah"
+  },
+  {
+    "order": 34,
+    "id": "naum",
+    "slug": "naum",
+    "name": "Naum",
+    "fullName": "Naum",
+    "nameEn": "Nahum",
+    "abbrev": "na",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 3,
+    "aliases": [
+      "naum",
+      "nahum",
+      "na",
+      "34"
+    ],
+    "slugEn": "nahum"
+  },
+  {
+    "order": 35,
+    "id": "habacuque",
+    "slug": "habacuque",
+    "name": "Habacuque",
+    "fullName": "Habacuque",
+    "nameEn": "Habakkuk",
+    "abbrev": "hc",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 3,
+    "aliases": [
+      "habacuque",
+      "habakkuk",
+      "hc",
+      "35"
+    ],
+    "slugEn": "habakkuk"
+  },
+  {
+    "order": 36,
+    "id": "sofonias",
+    "slug": "sofonias",
+    "name": "Sofonias",
+    "fullName": "Sofonias",
+    "nameEn": "Zephaniah",
+    "abbrev": "sf",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 3,
+    "aliases": [
+      "sofonias",
+      "zephaniah",
+      "sf",
+      "36"
+    ],
+    "slugEn": "zephaniah"
+  },
+  {
+    "order": 37,
+    "id": "ageu",
+    "slug": "ageu",
+    "name": "Ageu",
+    "fullName": "Ageu",
+    "nameEn": "Haggai",
+    "abbrev": "ag",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 2,
+    "aliases": [
+      "ageu",
+      "haggai",
+      "ag",
+      "37"
+    ],
+    "slugEn": "haggai"
+  },
+  {
+    "order": 38,
+    "id": "zacarias",
+    "slug": "zacarias",
+    "name": "Zacarias",
+    "fullName": "Zacarias",
+    "nameEn": "Zechariah",
+    "abbrev": "zc",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 14,
+    "aliases": [
+      "zacarias",
+      "zechariah",
+      "zc",
+      "38"
+    ],
+    "slugEn": "zechariah"
+  },
+  {
+    "order": 39,
+    "id": "malaquias",
+    "slug": "malaquias",
+    "name": "Malaquias",
+    "fullName": "Malaquias",
+    "nameEn": "Malachi",
+    "abbrev": "ml",
+    "testament": "old",
+    "testamentName": "Antigo Testamento",
+    "group": "Profetas Menores",
+    "chaptersCount": 4,
+    "aliases": [
+      "malaquias",
+      "malachi",
+      "ml",
+      "39"
+    ],
+    "slugEn": "malachi"
+  },
+  {
+    "order": 40,
+    "id": "mateus",
+    "slug": "mateus",
+    "name": "Mateus",
+    "fullName": "Mateus",
+    "nameEn": "Matthew",
+    "abbrev": "mt",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Evangelhos",
+    "chaptersCount": 28,
+    "aliases": [
+      "mateus",
+      "matthew",
+      "mt",
+      "40"
+    ],
+    "slugEn": "matthew"
+  },
+  {
+    "order": 41,
+    "id": "marcos",
+    "slug": "marcos",
+    "name": "Marcos",
+    "fullName": "Marcos",
+    "nameEn": "Mark",
+    "abbrev": "mc",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Evangelhos",
+    "chaptersCount": 16,
+    "aliases": [
+      "marcos",
+      "mark",
+      "mc",
+      "41"
+    ],
+    "slugEn": "mark"
+  },
+  {
+    "order": 42,
+    "id": "lucas",
+    "slug": "lucas",
+    "name": "Lucas",
+    "fullName": "Lucas",
+    "nameEn": "Luke",
+    "abbrev": "lc",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Evangelhos",
+    "chaptersCount": 24,
+    "aliases": [
+      "lucas",
+      "luke",
+      "lc",
+      "42"
+    ],
+    "slugEn": "luke"
+  },
+  {
+    "order": 43,
+    "id": "joao",
+    "slug": "joao",
+    "name": "João",
+    "fullName": "João",
+    "nameEn": "John",
+    "abbrev": "jo",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Evangelhos",
+    "chaptersCount": 21,
+    "aliases": [
+      "joao",
+      "john",
+      "43"
+    ],
+    "slugEn": "john"
+  },
+  {
+    "order": 44,
+    "id": "atos",
+    "slug": "atos",
+    "name": "Atos",
+    "fullName": "Atos",
+    "nameEn": "Acts",
+    "abbrev": "atos",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Histórico",
+    "chaptersCount": 28,
+    "aliases": [
+      "atos",
+      "acts",
+      "44"
+    ],
+    "slugEn": "acts"
+  },
+  {
+    "order": 45,
+    "id": "romanos",
+    "slug": "romanos",
+    "name": "Romanos",
+    "fullName": "Romanos",
+    "nameEn": "Romans",
+    "abbrev": "rm",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 16,
+    "aliases": [
+      "romanos",
+      "romans",
+      "rm",
+      "45"
+    ],
+    "slugEn": "romans"
+  },
+  {
+    "order": 46,
+    "id": "1-corintios",
+    "slug": "1-corintios",
+    "name": "1 Coríntios",
+    "fullName": "1 Coríntios",
+    "nameEn": "1 Corinthians",
+    "abbrev": "1co",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 16,
+    "aliases": [
+      "1-corintios",
+      "1-corinthians",
+      "1co",
+      "46"
+    ],
+    "slugEn": "1-corinthians"
+  },
+  {
+    "order": 47,
+    "id": "2-corintios",
+    "slug": "2-corintios",
+    "name": "2 Coríntios",
+    "fullName": "2 Coríntios",
+    "nameEn": "2 Corinthians",
+    "abbrev": "2co",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 13,
+    "aliases": [
+      "2-corintios",
+      "2-corinthians",
+      "2co",
+      "47"
+    ],
+    "slugEn": "2-corinthians"
+  },
+  {
+    "order": 48,
+    "id": "galatas",
+    "slug": "galatas",
+    "name": "Gálatas",
+    "fullName": "Gálatas",
+    "nameEn": "Galatians",
+    "abbrev": "gl",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 6,
+    "aliases": [
+      "galatas",
+      "galatians",
+      "gl",
+      "48"
+    ],
+    "slugEn": "galatians"
+  },
+  {
+    "order": 49,
+    "id": "efesios",
+    "slug": "efesios",
+    "name": "Efésios",
+    "fullName": "Efésios",
+    "nameEn": "Ephesians",
+    "abbrev": "ef",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 6,
+    "aliases": [
+      "efesios",
+      "ephesians",
+      "ef",
+      "49"
+    ],
+    "slugEn": "ephesians"
+  },
+  {
+    "order": 50,
+    "id": "filipenses",
+    "slug": "filipenses",
+    "name": "Filipenses",
+    "fullName": "Filipenses",
+    "nameEn": "Philippians",
+    "abbrev": "fp",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 4,
+    "aliases": [
+      "filipenses",
+      "philippians",
+      "fp",
+      "50"
+    ],
+    "slugEn": "philippians"
+  },
+  {
+    "order": 51,
+    "id": "colossenses",
+    "slug": "colossenses",
+    "name": "Colossenses",
+    "fullName": "Colossenses",
+    "nameEn": "Colossians",
+    "abbrev": "cl",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 4,
+    "aliases": [
+      "colossenses",
+      "colossians",
+      "cl",
+      "51"
+    ],
+    "slugEn": "colossians"
+  },
+  {
+    "order": 52,
+    "id": "1-tessalonicenses",
+    "slug": "1-tessalonicenses",
+    "name": "1 Tessalonicenses",
+    "fullName": "1 Tessalonicenses",
+    "nameEn": "1 Thessalonians",
+    "abbrev": "1ts",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 5,
+    "aliases": [
+      "1-tessalonicenses",
+      "1-thessalonians",
+      "1ts",
+      "52"
+    ],
+    "slugEn": "1-thessalonians"
+  },
+  {
+    "order": 53,
+    "id": "2-tessalonicenses",
+    "slug": "2-tessalonicenses",
+    "name": "2 Tessalonicenses",
+    "fullName": "2 Tessalonicenses",
+    "nameEn": "2 Thessalonians",
+    "abbrev": "2ts",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 3,
+    "aliases": [
+      "2-tessalonicenses",
+      "2-thessalonians",
+      "2ts",
+      "53"
+    ],
+    "slugEn": "2-thessalonians"
+  },
+  {
+    "order": 54,
+    "id": "1-timoteo",
+    "slug": "1-timoteo",
+    "name": "1 Timóteo",
+    "fullName": "1 Timóteo",
+    "nameEn": "1 Timothy",
+    "abbrev": "1tm",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 6,
+    "aliases": [
+      "1-timoteo",
+      "1-timothy",
+      "1tm",
+      "54"
+    ],
+    "slugEn": "1-timothy"
+  },
+  {
+    "order": 55,
+    "id": "2-timoteo",
+    "slug": "2-timoteo",
+    "name": "2 Timóteo",
+    "fullName": "2 Timóteo",
+    "nameEn": "2 Timothy",
+    "abbrev": "2tm",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 4,
+    "aliases": [
+      "2-timoteo",
+      "2-timothy",
+      "2tm",
+      "55"
+    ],
+    "slugEn": "2-timothy"
+  },
+  {
+    "order": 56,
+    "id": "tito",
+    "slug": "tito",
+    "name": "Tito",
+    "fullName": "Tito",
+    "nameEn": "Titus",
+    "abbrev": "tt",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 3,
+    "aliases": [
+      "tito",
+      "titus",
+      "tt",
+      "56"
+    ],
+    "slugEn": "titus"
+  },
+  {
+    "order": 57,
+    "id": "filemom",
+    "slug": "filemom",
+    "name": "Filemom",
+    "fullName": "Filemom",
+    "nameEn": "Philemon",
+    "abbrev": "fm",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Paulinas",
+    "chaptersCount": 1,
+    "aliases": [
+      "filemom",
+      "philemon",
+      "fm",
+      "57"
+    ],
+    "slugEn": "philemon"
+  },
+  {
+    "order": 58,
+    "id": "hebreus",
+    "slug": "hebreus",
+    "name": "Hebreus",
+    "fullName": "Hebreus",
+    "nameEn": "Hebrews",
+    "abbrev": "hb",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Gerais",
+    "chaptersCount": 13,
+    "aliases": [
+      "hebreus",
+      "hebrews",
+      "hb",
+      "58"
+    ],
+    "slugEn": "hebrews"
+  },
+  {
+    "order": 59,
+    "id": "tiago",
+    "slug": "tiago",
+    "name": "Tiago",
+    "fullName": "Tiago",
+    "nameEn": "James",
+    "abbrev": "tg",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Gerais",
+    "chaptersCount": 5,
+    "aliases": [
+      "tiago",
+      "james",
+      "tg",
+      "59"
+    ],
+    "slugEn": "james"
+  },
+  {
+    "order": 60,
+    "id": "1-pedro",
+    "slug": "1-pedro",
+    "name": "1 Pedro",
+    "fullName": "1 Pedro",
+    "nameEn": "1 Peter",
+    "abbrev": "1pe",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Gerais",
+    "chaptersCount": 5,
+    "aliases": [
+      "1-pedro",
+      "1-peter",
+      "1pe",
+      "60"
+    ],
+    "slugEn": "1-peter"
+  },
+  {
+    "order": 61,
+    "id": "2-pedro",
+    "slug": "2-pedro",
+    "name": "2 Pedro",
+    "fullName": "2 Pedro",
+    "nameEn": "2 Peter",
+    "abbrev": "2pe",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Gerais",
+    "chaptersCount": 3,
+    "aliases": [
+      "2-pedro",
+      "2-peter",
+      "2pe",
+      "61"
+    ],
+    "slugEn": "2-peter"
+  },
+  {
+    "order": 62,
+    "id": "1-joao",
+    "slug": "1-joao",
+    "name": "1 João",
+    "fullName": "1 João",
+    "nameEn": "1 John",
+    "abbrev": "1jo",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Gerais",
+    "chaptersCount": 5,
+    "aliases": [
+      "1-joao",
+      "1-john",
+      "1jo",
+      "62"
+    ],
+    "slugEn": "1-john"
+  },
+  {
+    "order": 63,
+    "id": "2-joao",
+    "slug": "2-joao",
+    "name": "2 João",
+    "fullName": "2 João",
+    "nameEn": "2 John",
+    "abbrev": "2jo",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Gerais",
+    "chaptersCount": 1,
+    "aliases": [
+      "2-joao",
+      "2-john",
+      "2jo",
+      "63"
+    ],
+    "slugEn": "2-john"
+  },
+  {
+    "order": 64,
+    "id": "3-joao",
+    "slug": "3-joao",
+    "name": "3 João",
+    "fullName": "3 João",
+    "nameEn": "3 John",
+    "abbrev": "3jo",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Gerais",
+    "chaptersCount": 1,
+    "aliases": [
+      "3-joao",
+      "3-john",
+      "3jo",
+      "64"
+    ],
+    "slugEn": "3-john"
+  },
+  {
+    "order": 65,
+    "id": "judas",
+    "slug": "judas",
+    "name": "Judas",
+    "fullName": "Judas",
+    "nameEn": "Jude",
+    "abbrev": "jd",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Cartas Gerais",
+    "chaptersCount": 1,
+    "aliases": [
+      "judas",
+      "jude",
+      "jd",
+      "65"
+    ],
+    "slugEn": "jude"
+  },
+  {
+    "order": 66,
+    "id": "apocalipse",
+    "slug": "apocalipse",
+    "name": "Apocalipse",
+    "fullName": "Apocalipse",
+    "nameEn": "Revelation",
+    "abbrev": "ap",
+    "testament": "new",
+    "testamentName": "Novo Testamento",
+    "group": "Profético",
+    "chaptersCount": 22,
+    "aliases": [
+      "apocalipse",
+      "revelation",
+      "ap",
+      "66"
+    ],
+    "slugEn": "revelation"
+  }
+]

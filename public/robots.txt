@@ -1,0 +1,8 @@
+# Online Bíblia - https://onlinebiblia.com
+# Permissões de rastreamento para motores de busca (Google, Bing, etc.)
+
+User-agent: *
+Allow: /
+
+# Sitemap oficial gerado dinamicamente com todos os 2.500+ capítulos e livros
+Sitemap: https://onlinebiblia.com/sitemap-index.xml

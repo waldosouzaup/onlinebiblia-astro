@@ -1,0 +1,86 @@
+---
+const { active = "biblia" } = Astro.props;
+---
+
+<header class="site-header">
+  <div class="header-inner shell">
+    <a class="brand" href="/" aria-label="Online Bíblia — página inicial">
+      <span class="brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none"
+          ><path
+            d="M5.5 7.5c4.8-1.6 8.3-.8 10.5 1.6v17c-2.2-2.4-5.7-3.2-10.5-1.6v-17Z"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linejoin="round"></path><path
+            d="M26.5 7.5C21.7 5.9 18.2 6.7 16 9.1v17c2.2-2.4 5.7-3.2 10.5-1.6v-17Z"
+            stroke="currentColor"
+            stroke-width="1.7"
+            stroke-linejoin="round"></path><path
+            d="M16 9v17"
+            stroke="currentColor"
+            stroke-width="1.7"></path></svg
+        >
+      </span>
+      <span class="brand-copy"
+        ><strong>online<span>bíblia</span></strong><small
+          >Leia com calma. Viva a Palavra.</small
+        ></span
+      >
+    </a>
+
+    <nav class="primary-nav" aria-label="Navegação principal">
+      <a class:list={[{ "is-active": active === "biblia" }]} href="/biblia/"
+        >Bíblia (PT)</a
+      >
+      <a class:list={[{ "is-active": active === "bible-en" }]} href="/en/bible/"
+        >Bible (EN)</a
+      >
+      <a
+        class:list={[{ "is-active": active === "concordancia" }]}
+        href="/concordancia/">Concordância</a
+      >
+    </nav>
+
+    <div class="header-actions">
+      <a
+        class="header-search"
+        href="/#busca"
+        aria-label="Ir para a busca bíblica"
+        title="Buscar versículos"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+          ><circle cx="10.8" cy="10.8" r="6.3"></circle><path
+            d="m15.5 15.5 4.1 4.1"></path></svg
+        >
+      </a>
+      <button
+        class="icon-button theme-toggle"
+        type="button"
+        data-theme-toggle
+        aria-label="Ativar tema escuro"
+        title="Alternar tema"
+      >
+        <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"
+          ><circle cx="12" cy="12" r="3.8"></circle><path
+            d="M12 2v2.1M12 19.9V22M4.93 4.93l1.48 1.48m11.18 11.18 1.48 1.48M2 12h2.1m15.8 0H22M4.93 19.07l1.48-1.48M17.59 6.41l1.48-1.48"
+          ></path></svg
+        >
+        <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true"
+          ><path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.7 8.7 0 1 0 20.2 15.1Z"
+          ></path></svg
+        >
+      </button>
+      <button
+        class="mobile-menu-toggle icon-button"
+        type="button"
+        aria-label="Abrir menu"
+        aria-expanded="false"
+        data-mobile-menu
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"
+          ><path d="M4 7h16M4 12h16M4 17h16"></path></svg
+        >
+      </button>
+    </div>
+  </div>
+</header>

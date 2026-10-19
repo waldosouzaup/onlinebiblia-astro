@@ -1,0 +1,566 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SiteHeader from '../../../../components/SiteHeader.astro';
+import { getAllBooks, getEnglishChapter, getAllEnglishChapterPaths } from '../../../../lib/bible.js';
+
+export async function getStaticPaths() {
+  return getAllEnglishChapterPaths();
+}
+
+const { bookSlug, chapter } = Astro.props;
+const chapterData = getEnglishChapter(bookSlug, chapter);
+
+if (!chapterData) {
+  throw new Error(`English chapter not found: ${bookSlug} ${chapter}`);
+}
+
+const { book, verses, prevChapter, nextChapter, equivalentUrl } = chapterData;
+const allBooks = getAllBooks();
+const chaptersList = Array.from({ length: book.chaptersCount }, (_, i) => i + 1);
+
+// Generate excerpt for SEO description
+const excerpt = verses.slice(0, 2).map((v) => `${v.verse}. ${v.text}`).join(' ');
+const seoDescription = `Read ${book.nameEn} ${chapter} in the Holy Bible (NIV): "${excerpt.slice(0, 150)}..." Clean, lightweight chapter reader with verse-by-verse navigation.`;
+
+const siteUrl = 'https://onlinebiblia.com';
+const pageUrl = `${siteUrl}/en/bible/${book.slugEn}/${chapter}/`;
+const bookUrl = `${siteUrl}/en/bible/${book.slugEn}/`;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Bible',
+      item: `${siteUrl}/en/bible/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: book.nameEn,
+      item: bookUrl,
+    },
+    {
+      '@type': 'ListItem',
+      position: 3,
+      name: `Chapter ${chapter}`,
+      item: pageUrl,
+    },
+  ],
+};
+
+const chapterSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Chapter',
+  name: `${book.nameEn} ${chapter}`,
+  headline: `${book.nameEn} ${chapter} — Holy Bible (NIV)`,
+  description: seoDescription,
+  url: pageUrl,
+  inLanguage: 'en',
+  position: chapter,
+  pageStart: chapter,
+  pageEnd: chapter,
+  isPartOf: {
+    '@type': 'Book',
+    name: `Book of ${book.nameEn}`,
+    url: bookUrl,
+    inLanguage: 'en',
+    isPartOf: {
+      '@type': 'Book',
+      name: 'Holy Bible (New International Version - NIV)',
+      url: `${siteUrl}/en/bible/`,
+    },
+  },
+};
+---
+
+<BaseLayout
+  title={`${book.nameEn} ${chapter} — Holy Bible (NIV) | Online Bible`}
+  description={seoDescription}
+  page="bible-en"
+  isReadingPage={true}
+  equivalentUrl={equivalentUrl}
+  schema={[breadcrumbSchema, chapterSchema]}
+>
+  <SiteHeader active="biblia" />
+
+  <main class="reading-page shell">
+    <!-- Breadcrumbs -->
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="/en/bible/">Bible</a>
+      <span aria-hidden="true">/</span>
+      <a href={`/en/bible/${book.slugEn}/`}>{book.nameEn}</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">Chapter {chapter}</span>
+    </nav>
+
+    <!-- Reader Quick Navigation Toolbar -->
+    <section class="reader-sticky-toolbar" aria-label="Reading tools">
+      <div class="quick-nav-controls">
+        <!-- Previous chapter arrow -->
+        {prevChapter ? (
+          <a
+            href={prevChapter.url}
+            class="toolbar-nav-arrow prev"
+            title={`Previous chapter: ${prevChapter.bookName} ${prevChapter.chapter}`}
+            aria-label="Previous chapter"
+            rel="prev"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          </a>
+        ) : (
+          <span class="toolbar-nav-arrow disabled" aria-disabled="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          </span>
+        )}
+
+        <!-- Combined Selector Pill -->
+        <div class="chapter-picker-pill">
+          <!-- Book Select -->
+          <div class="select-wrapper book-picker-wrapper">
+            <label for="en-chapter-book-select" class="sr-only">Choose book</label>
+            <select id="en-chapter-book-select" class="nav-select nav-select-book">
+              <optgroup label="Old Testament">
+                {allBooks.filter((b) => b.testament === 'old').map((b) => (
+                  <option value={b.slugEn} selected={b.slugEn === book.slugEn}>
+                    {b.nameEn}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="New Testament">
+                {allBooks.filter((b) => b.testament === 'new').map((b) => (
+                  <option value={b.slugEn} selected={b.slugEn === book.slugEn}>
+                    {b.nameEn}
+                  </option>
+                ))}
+              </optgroup>
+            </select>
+          </div>
+
+          <span class="pill-divider" aria-hidden="true">:</span>
+
+          <!-- Chapter Select -->
+          <div class="select-wrapper chapter-picker-wrapper">
+            <label for="en-chapter-number-select" class="sr-only">Choose chapter</label>
+            <select id="en-chapter-number-select" class="nav-select nav-select-chapter">
+              {chaptersList.map((ch) => (
+                <option value={ch} selected={ch === chapter}>
+                  {ch}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        <!-- Next chapter arrow -->
+        {nextChapter ? (
+          <a
+            href={nextChapter.url}
+            class="toolbar-nav-arrow next"
+            title={`Next chapter: ${nextChapter.bookName} ${nextChapter.chapter}`}
+            aria-label="Next chapter"
+            rel="next"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </a>
+        ) : (
+          <span class="toolbar-nav-arrow disabled" aria-disabled="true">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+          </span>
+        )}
+      </div>
+
+      <div class="reader-extra-controls">
+        <!-- Theme toggle -->
+        <button
+          class="toolbar-theme-toggle"
+          type="button"
+          data-theme-toggle
+          aria-label="Toggle theme"
+          title="Toggle theme"
+        >
+          <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <circle cx="12" cy="12" r="3.8"></circle>
+            <path d="M12 2v2.1M12 19.9V22M4.93 4.93l1.48 1.48m11.18 11.18 1.48 1.48M2 12h2.1m15.8 0H22M4.93 19.07l1.48-1.48M17.59 6.41l1.48-1.48"></path>
+          </svg>
+          <svg class="moon-icon" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M20.2 15.1A8.4 8.4 0 0 1 8.9 3.8 8.7 8.7 0 1 0 20.2 15.1Z"></path>
+          </svg>
+        </button>
+
+        <!-- Version switcher chip -->
+        <a href={equivalentUrl} class="version-badge-chip" title="Version: NIV (Click to switch to Portuguese NVI)">
+          <span>NIV</span>
+          <svg viewBox="0 0 24 24" class="version-chevron" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+        </a>
+
+        <!-- Font sizing controls (desktop) -->
+        <div class="font-controls desktop-only" aria-label="Adjust font size">
+          <button type="button" id="font-decrease" aria-label="Decrease text" title="Decrease font (A-)">A−</button>
+          <button type="button" id="font-increase" aria-label="Increase text" title="Increase font (A+)">A+</button>
+        </div>
+
+        <!-- Copy chapter text (desktop) -->
+        <button type="button" id="copy-chapter-btn" class="icon-text-btn desktop-only" title="Copy entire chapter">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+          <span class="btn-label">Copy</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- Reading Article -->
+    <article class="chapter-reading-card panel">
+      <header class="chapter-header">
+        <div class="chapter-meta-line">
+          <span class="meta-tag">{book.testamentNameEn}</span>
+          <span class="meta-tag">{book.groupEn}</span>
+          <span class="meta-tag">{verses.length} verses</span>
+        </div>
+        <h1 class="chapter-main-title">{book.nameEn} <span class="chapter-main-num">{chapter}</span></h1>
+      </header>
+
+      <!-- Sub Navigation bar -->
+      <nav class="chapter-nav-bar" aria-label="Navigate between chapters">
+        {prevChapter ? (
+          <a href={prevChapter.url} class="chapter-nav-btn prev" rel="prev">
+            <span aria-hidden="true">←</span>
+            <span>{prevChapter.bookName} {prevChapter.chapter}</span>
+          </a>
+        ) : (
+          <span class="chapter-nav-btn disabled" aria-disabled="true">
+            <span aria-hidden="true">←</span> Start
+          </span>
+        )}
+
+        <span class="chapter-indicator">Chapter {chapter} of {book.chaptersCount}</span>
+
+        {nextChapter ? (
+          <a href={nextChapter.url} class="chapter-nav-btn next" rel="next">
+            <span>{nextChapter.bookName} {nextChapter.chapter}</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        ) : (
+          <span class="chapter-nav-btn disabled" aria-disabled="true">
+            End <span aria-hidden="true">→</span>
+          </span>
+        )}
+      </nav>
+
+      <!-- Verses list rendered in lightweight static HTML -->
+      <div class="reading-content" id="chapter-verses" data-book={book.nameEn} data-chapter={chapter}>
+        {verses.map((v) => (
+          <p class="verse-line" id={`verse-${v.verse}`}>
+            <button
+              type="button"
+              class="verse-number"
+              aria-label={`Verse ${v.verse} — click to select or copy`}
+              title="Click to highlight and copy verse"
+              data-verse-num={v.verse}
+            >
+              {v.verse}
+            </button>
+            <span class="verse-text">{v.text}</span>
+          </p>
+        ))}
+      </div>
+
+      <!-- Bottom Floating / Actions Toast for Selected Verse -->
+      <div id="verse-action-bar" class="verse-action-bar" hidden>
+        <span id="selected-verse-label" class="selected-verse-label">Verse selected</span>
+        <div class="action-bar-buttons">
+          <button type="button" id="btn-copy-verse" class="action-btn copy-btn">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span>Copy</span>
+          </button>
+          <button type="button" id="btn-clear-verse" class="action-btn clear-btn" aria-label="Clear selection">
+            ✕
+          </button>
+        </div>
+      </div>
+
+      <!-- Footer chapter navigation cards -->
+      <footer class="chapter-bottom-nav">
+        <div class="bottom-nav-grid">
+          {prevChapter ? (
+            <a href={prevChapter.url} class="nav-card prev" rel="prev">
+              <span class="nav-card-dir">← Previous Chapter</span>
+              <strong class="nav-card-title">{prevChapter.bookName} {prevChapter.chapter}</strong>
+            </a>
+          ) : <div class="nav-card-empty"></div>}
+
+          <a href={`/en/bible/${book.slugEn}/`} class="nav-card book-index" title={`All chapters of ${book.nameEn}`}>
+            <span class="nav-card-dir">Full Book</span>
+            <strong class="nav-card-title">{book.nameEn} ({book.chaptersCount} chs)</strong>
+          </a>
+
+          {nextChapter ? (
+            <a href={nextChapter.url} class="nav-card next" rel="next">
+              <span class="nav-card-dir">Next Chapter →</span>
+              <strong class="nav-card-title">{nextChapter.bookName} {nextChapter.chapter}</strong>
+            </a>
+          ) : <div class="nav-card-empty"></div>}
+        </div>
+
+        <!-- Quick chapter selector pills at bottom -->
+        {book.chaptersCount > 1 && (
+          <div class="bottom-chapters-strip">
+            <span class="strip-label">Chapters in {book.nameEn}:</span>
+            <div class="strip-pills">
+              {chaptersList.map((ch) => (
+                <a
+                  href={`/en/bible/${book.slugEn}/${ch}/`}
+                  class:list={['strip-pill', { 'is-active': ch === chapter }]}
+                  title={`Go to ${book.nameEn} ${ch}`}
+                >
+                  {ch}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </footer>
+    </article>
+
+    <!-- Floating Minimalist Reader Dock (< — 1x + 📺 >) -->
+    <aside class="reader-floating-dock" aria-label="Reading Controls Dock">
+      {prevChapter ? (
+        <a
+          href={prevChapter.url}
+          class="dock-btn prev"
+          title={`Previous chapter: ${prevChapter.bookName} ${prevChapter.chapter}`}
+          aria-label="Previous chapter"
+          rel="prev"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </a>
+      ) : (
+        <span class="dock-btn disabled" aria-disabled="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+        </span>
+      )}
+
+      <button type="button" class="dock-btn" id="dock-font-decrease" title="Decrease font size" aria-label="Decrease font">
+        <span class="dock-symbol">−</span>
+      </button>
+
+      <button type="button" class="dock-btn dock-scale" id="dock-font-reset" title="Current scale (click to reset to 1x)" aria-label="Font scale">
+        <span id="dock-scale-text">1x</span>
+      </button>
+
+      <button type="button" class="dock-btn" id="dock-font-increase" title="Increase font size" aria-label="Increase font">
+        <span class="dock-symbol">+</span>
+      </button>
+
+      <button type="button" class="dock-btn dock-focus-btn" id="dock-focus-toggle" title="Focus Mode (distraction-free reading)" aria-label="Toggle Focus Mode">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect width="20" height="15" x="2" y="3" rx="2"/>
+          <path d="M12 18v3M8 21h8"/>
+        </svg>
+      </button>
+
+      {nextChapter ? (
+        <a
+          href={nextChapter.url}
+          class="dock-btn next"
+          title={`Next chapter: ${nextChapter.bookName} ${nextChapter.chapter}`}
+          aria-label="Next chapter"
+          rel="next"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+      ) : (
+        <span class="dock-btn disabled" aria-disabled="true">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
+      )}
+    </aside>
+  </main>
+
+  <script>
+    function setupEnglishReaderInteractions() {
+      const year = document.getElementById('footer-year');
+      if (year) year.textContent = String(new Date().getFullYear());
+
+      // Book select jump
+      const bookSelect = document.getElementById('en-chapter-book-select');
+      bookSelect?.addEventListener('change', (e) => {
+        const slug = e.target.value;
+        if (slug) window.location.href = `/en/bible/${slug}/1/`;
+      });
+
+      // Chapter select jump
+      const chapterSelect = document.getElementById('en-chapter-number-select');
+      const bookSlug = bookSelect?.value;
+      chapterSelect?.addEventListener('change', (e) => {
+        const ch = e.target.value;
+        if (ch && bookSlug) window.location.href = `/en/bible/${bookSlug}/${ch}/`;
+      });
+
+      // Font size controls (toolbar and dock)
+      let currentFontSize = Number(localStorage.getItem('onlinebiblia-font-size') || 20);
+
+      const updateFontSize = (size) => {
+        currentFontSize = Math.min(32, Math.max(16, size));
+        document.documentElement.style.setProperty('--reading-size', `${currentFontSize}px`);
+        localStorage.setItem('onlinebiblia-font-size', String(currentFontSize));
+        const scaleText = document.getElementById('dock-scale-text');
+        if (scaleText) {
+          const ratio = (currentFontSize / 20).toFixed(1);
+          scaleText.textContent = currentFontSize === 20 ? '1x' : `${ratio}x`;
+        }
+      };
+
+      updateFontSize(currentFontSize);
+
+      const fontDown = document.getElementById('font-decrease');
+      const dockFontDown = document.getElementById('dock-font-decrease');
+      [fontDown, dockFontDown].forEach((btn) => {
+        btn?.addEventListener('click', () => updateFontSize(currentFontSize - 1));
+      });
+
+      const fontUp = document.getElementById('font-increase');
+      const dockFontUp = document.getElementById('dock-font-increase');
+      [fontUp, dockFontUp].forEach((btn) => {
+        btn?.addEventListener('click', () => updateFontSize(currentFontSize + 1));
+      });
+
+      const dockFontReset = document.getElementById('dock-font-reset');
+      dockFontReset?.addEventListener('click', () => updateFontSize(20));
+
+      // Focus Mode toggle
+      const focusToggle = document.getElementById('dock-focus-toggle');
+      focusToggle?.addEventListener('click', () => {
+        const isFocus = document.body.classList.toggle('is-focus-mode');
+        focusToggle.classList.toggle('is-active', isFocus);
+        focusToggle.setAttribute('aria-pressed', String(isFocus));
+      });
+
+      // Exit focus mode on Escape
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && document.body.classList.contains('is-focus-mode')) {
+          document.body.classList.remove('is-focus-mode');
+          focusToggle?.classList.remove('is-active');
+          focusToggle?.setAttribute('aria-pressed', 'false');
+        }
+      });
+
+      // Verse selection and copying
+      const versesContainer = document.getElementById('chapter-verses');
+      const actionBar = document.getElementById('verse-action-bar');
+      const actionLabel = document.getElementById('selected-verse-label');
+      const copyVerseBtn = document.getElementById('btn-copy-verse');
+      const clearVerseBtn = document.getElementById('btn-clear-verse');
+      const copyChapterBtn = document.getElementById('copy-chapter-btn');
+
+      const bookName = versesContainer?.getAttribute('data-book') || '';
+      const chapterNum = versesContainer?.getAttribute('data-chapter') || '';
+
+      let selectedVerse = null;
+
+      function highlightVerse(verseNum, { updateHash = true } = {}) {
+        versesContainer?.querySelectorAll('.verse-line').forEach((line) => {
+          line.classList.toggle('is-highlighted', line.id === `verse-${verseNum}`);
+        });
+
+        if (verseNum) {
+          selectedVerse = verseNum;
+          if (actionBar && actionLabel) {
+            actionLabel.textContent = `${bookName} ${chapterNum}:${verseNum}`;
+            actionBar.hidden = false;
+          }
+          if (updateHash) {
+            history.replaceState(null, '', `#verse-${verseNum}`);
+          }
+        } else {
+          selectedVerse = null;
+          if (actionBar) actionBar.hidden = true;
+          if (updateHash && window.location.hash) {
+            history.replaceState(null, '', window.location.pathname);
+          }
+        }
+      }
+
+      if (window.location.hash) {
+        const match = window.location.hash.match(/^#verse-(\d+)$/);
+        if (match) {
+          const vNum = match[1];
+          highlightVerse(vNum, { updateHash: false });
+          requestAnimationFrame(() => {
+            document.getElementById(`verse-${vNum}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          });
+        }
+      }
+
+      versesContainer?.addEventListener('click', (e) => {
+        const btn = e.target.closest('.verse-number');
+        const line = e.target.closest('.verse-line');
+        if (btn || line) {
+          const targetLine = btn ? btn.closest('.verse-line') : line;
+          const vNum = targetLine?.id?.replace('verse-', '');
+          if (vNum) {
+            if (selectedVerse === vNum) {
+              highlightVerse(null);
+            } else {
+              highlightVerse(vNum);
+            }
+          }
+        }
+      });
+
+      copyVerseBtn?.addEventListener('click', async () => {
+        if (!selectedVerse) return;
+        const line = document.getElementById(`verse-${selectedVerse}`);
+        const text = line?.querySelector('.verse-text')?.textContent || '';
+        const citation = `"${text}" — ${bookName} ${chapterNum}:${selectedVerse} (NIV)`;
+
+        try {
+          await navigator.clipboard.writeText(citation);
+          const origText = copyVerseBtn.querySelector('span')?.textContent;
+          if (copyVerseBtn.querySelector('span')) {
+            copyVerseBtn.querySelector('span').textContent = 'Copied!';
+            setTimeout(() => {
+              copyVerseBtn.querySelector('span').textContent = origText || 'Copy';
+            }, 2000);
+          }
+        } catch (err) {
+          console.warn('Error copying:', err);
+        }
+      });
+
+      clearVerseBtn?.addEventListener('click', () => {
+        highlightVerse(null);
+      });
+
+      copyChapterBtn?.addEventListener('click', async () => {
+        const lines = versesContainer?.querySelectorAll('.verse-line') || [];
+        const content = Array.from(lines)
+          .map((line) => {
+            const num = line.querySelector('.verse-number')?.textContent.trim();
+            const text = line.querySelector('.verse-text')?.textContent.trim();
+            return `${num}. ${text}`;
+          })
+          .join('\n');
+
+        const fullText = `${bookName} ${chapterNum} (NIV)\n\n${content}`;
+
+        try {
+          await navigator.clipboard.writeText(fullText);
+          const btnLabel = copyChapterBtn.querySelector('.btn-label');
+          if (btnLabel) {
+            btnLabel.textContent = 'Copied!';
+            setTimeout(() => {
+              btnLabel.textContent = 'Copy';
+            }, 2000);
+          }
+        } catch (err) {
+          console.warn('Error copying chapter:', err);
+        }
+      });
+    }
+
+    setupEnglishReaderInteractions();
+    document.addEventListener('astro:page-load', setupEnglishReaderInteractions);
+  </script>
+</BaseLayout>

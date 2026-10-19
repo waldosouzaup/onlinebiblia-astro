@@ -1,0 +1,167 @@
+---
+---
+<footer class="site-footer">
+  <div class="shell footer-inner">
+    <a class="footer-brand" href="/">onlinebíblia</a>
+    <span class="footer-tagline">Um lugar tranquilo para estar com a Palavra.</span>
+
+    <div class="footer-support-wrapper">
+      <button
+        type="button"
+        class="support-project-btn"
+        id="open-support-modal"
+        aria-haspopup="dialog"
+        aria-controls="support-modal"
+      >
+        <span class="support-emoji" aria-hidden="true">🙏</span>
+        <span>Apoiar o projeto</span>
+      </button>
+    </div>
+
+    <span class="footer-copy">© <span id="footer-year"></span> Online Bíblia</span>
+  </div>
+
+  <!-- Modal Popup de Apoio / Pix -->
+  <dialog id="support-modal" class="support-modal" aria-labelledby="support-modal-title">
+    <div class="modal-card">
+      <button type="button" class="modal-close-btn" id="close-support-modal" aria-label="Fechar popup">
+        ✕
+      </button>
+
+      <div class="modal-header">
+        <div class="support-icon-badge" aria-hidden="true">
+          <span>🙏</span>
+        </div>
+        <h3 id="support-modal-title">Apoie Nosso Projeto</h3>
+      </div>
+
+      <div class="modal-body">
+        <p class="modal-lead">
+          Este aplicativo foi criado por <strong>Waldo Eller</strong> para ajudar pessoas que desejam ler a Bíblia online de forma simples e acessível.
+        </p>
+
+        <p class="modal-sublead">
+          Se este projeto te ajudou, considere apoiar com uma pequena doação.
+        </p>
+
+        <div class="pix-card-box">
+          <div class="pix-header">
+            <span class="pix-badge">PIX</span>
+            <span class="pix-label">Chave Pix para doação</span>
+          </div>
+
+          <div class="pix-key-display">
+            <code id="pix-key-value">31988447394</code>
+            <button
+              type="button"
+              id="copy-pix-btn"
+              class="copy-pix-button"
+              title="Copiar chave Pix para a área de transferência"
+            >
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect width="14" height="14" x="8" y="8" rx="2" ry="2" />
+                <path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2" />
+              </svg>
+              <span id="copy-pix-text">Copiar Chave</span>
+            </button>
+          </div>
+
+          <div id="pix-copied-toast" class="pix-copied-toast" hidden>
+            ✓ Chave copiada! Cole no aplicativo do seu banco.
+          </div>
+        </div>
+
+        <p class="modal-gratitude">
+          Muito obrigado pelo seu carinho e apoio à continuidade deste projeto! ✨
+        </p>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="modal-secondary-btn" id="dismiss-support-modal">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </dialog>
+</footer>
+
+<script>
+  function setupSupportModal() {
+    // Dynamic year in footer
+    const yearEl = document.getElementById('footer-year');
+    if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+
+    const openBtn = document.getElementById('open-support-modal');
+    const closeBtn = document.getElementById('close-support-modal');
+    const dismissBtn = document.getElementById('dismiss-support-modal');
+    const modal = document.getElementById('support-modal');
+    const copyBtn = document.getElementById('copy-pix-btn');
+    const copyText = document.getElementById('copy-pix-text');
+    const copiedToast = document.getElementById('pix-copied-toast');
+    const pixKey = '31988447394';
+
+    if (!modal) return;
+
+    function openModal() {
+      if (typeof modal.showModal === 'function') {
+        modal.showModal();
+      } else {
+        modal.setAttribute('open', '');
+      }
+      document.body.classList.add('modal-open');
+    }
+
+    function closeModal() {
+      if (typeof modal.close === 'function') {
+        modal.close();
+      } else {
+        modal.removeAttribute('open');
+      }
+      document.body.classList.remove('modal-open');
+      if (copiedToast) copiedToast.hidden = true;
+      if (copyText) copyText.textContent = 'Copiar Chave';
+    }
+
+    openBtn?.addEventListener('click', openModal);
+    closeBtn?.addEventListener('click', closeModal);
+    dismissBtn?.addEventListener('click', closeModal);
+
+    // Close on click outside modal dialog content
+    modal.addEventListener('click', (e) => {
+      const dialogDimensions = modal.getBoundingClientRect();
+      if (
+        e.clientX < dialogDimensions.left ||
+        e.clientX > dialogDimensions.right ||
+        e.clientY < dialogDimensions.top ||
+        e.clientY > dialogDimensions.bottom
+      ) {
+        closeModal();
+      }
+    });
+
+    // Copy Pix key
+    copyBtn?.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(pixKey);
+        if (copyText) copyText.textContent = 'Copiado!';
+        if (copiedToast) copiedToast.hidden = false;
+        setTimeout(() => {
+          if (copyText) copyText.textContent = 'Copiar Chave';
+        }, 3000);
+      } catch (err) {
+        // Fallback selection
+        const range = document.createRange();
+        const codeEl = document.getElementById('pix-key-value');
+        if (codeEl) {
+          range.selectNodeContents(codeEl);
+          const sel = window.getSelection();
+          sel?.removeAllRanges();
+          sel?.addRange(range);
+        }
+      }
+    });
+  }
+
+  setupSupportModal();
+  document.addEventListener('astro:page-load', setupSupportModal);
+</script>

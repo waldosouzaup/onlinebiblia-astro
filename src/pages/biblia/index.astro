@@ -1,0 +1,223 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { getAllBooks } from '../../lib/bible.js';
+
+const books = getAllBooks();
+const oldTestament = books.filter((b) => b.testament === 'old');
+const newTestament = books.filter((b) => b.testament === 'new');
+
+const siteUrl = 'https://onlinebiblia.com';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Início',
+      item: `${siteUrl}/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Bíblia Completa',
+      item: `${siteUrl}/biblia/`,
+    },
+  ],
+};
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Bíblia Sagrada Completa — Todos os 66 Livros',
+  description: 'Navegue por todos os 66 livros da Bíblia Sagrada (NVI). Antigo e Novo Testamento com leitura suave, rápida e capítulos organizados.',
+  url: `${siteUrl}/biblia/`,
+  inLanguage: 'pt-BR',
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: books.length,
+    itemListElement: books.map((b, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: b.name,
+      url: `${siteUrl}/biblia/${b.slug}/`,
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title="Bíblia Sagrada Completa — Todos os 66 Livros | Online Bíblia"
+  description="Navegue por todos os 66 livros da Bíblia Sagrada (NVI). Antigo e Novo Testamento com leitura suave, rápida e capítulos organizados."
+  page="biblia"
+  equivalentUrl="/en/bible/"
+  schema={[breadcrumbSchema, collectionSchema]}
+>
+  <SiteHeader active="biblia" />
+
+  <main class="shell bible-index-page">
+    <header class="bible-index-hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> As Escrituras Sagradas</p>
+        <h1>Bíblia Completa.<br /><em>66 Livros para Ler e Meditar.</em></h1>
+        <p class="hero-subtitle">
+          Conteúdo integral com 1.189 capítulos. Escolha um livro para começar sua leitura
+          ou navegue pelas seções do Antigo e Novo Testamento.
+        </p>
+      </div>
+      <div class="bible-stats-card">
+        <div class="stat-item">
+          <strong>66</strong>
+          <span>Livros</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>1.189</strong>
+          <span>Capítulos</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>NVI</strong>
+          <span>Versão</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="bible-filter-bar" role="toolbar" aria-label="Filtro de livros">
+      <div class="filter-chips">
+        <button type="button" class="bible-tab-btn is-active" data-filter="all">Todos (66)</button>
+        <button type="button" class="bible-tab-btn" data-filter="old">Antigo Testamento (39)</button>
+        <button type="button" class="bible-tab-btn" data-filter="new">Novo Testamento (27)</button>
+      </div>
+      <div class="quick-book-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg>
+        <input type="search" id="book-search-input" placeholder="Filtrar livro pelo nome..." aria-label="Filtrar livros" />
+      </div>
+    </div>
+
+    <!-- Antigo Testamento -->
+    <section class="testament-section" id="section-old" aria-labelledby="heading-old">
+      <div class="section-heading">
+        <div>
+          <span class="testament-kicker">39 LIVROS</span>
+          <h2 id="heading-old">Antigo Testamento</h2>
+        </div>
+        <p class="section-desc">Do relato da Criação aos livros proféticos que anunciam a promessa.</p>
+      </div>
+
+      <div class="books-grid">
+        {oldTestament.map((book) => (
+          <article class="book-card" data-testament="old" data-name={book.name.toLowerCase()} data-group={book.group.toLowerCase()}>
+            <div class="book-card-header">
+              <span class="book-order">{String(book.order).padStart(2, '0')}</span>
+              <span class="book-group-tag">{book.group}</span>
+            </div>
+            <h3 class="book-card-title">
+              <a href={`/biblia/${book.slug}/1/`}>{book.name}</a>
+            </h3>
+            <p class="book-card-meta">{book.chaptersCount} {book.chaptersCount === 1 ? 'capítulo' : 'capítulos'}</p>
+            <div class="book-card-actions">
+              <a href={`/biblia/${book.slug}/1/`} class="book-read-btn">
+                Ler Cap. 1 <span aria-hidden="true">→</span>
+              </a>
+              <a href={`/biblia/${book.slug}/`} class="book-chapters-link" title={`Ver todos os ${book.chaptersCount} capítulos`}>
+                Ver capítulos
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- Novo Testamento -->
+    <section class="testament-section" id="section-new" aria-labelledby="heading-new">
+      <div class="section-heading">
+        <div>
+          <span class="testament-kicker">27 LIVROS</span>
+          <h2 id="heading-new">Novo Testamento</h2>
+        </div>
+        <p class="section-desc">A vida, ensinamentos e sacrifício de Jesus, os Atos dos apóstolos, as cartas e a revelação final.</p>
+      </div>
+
+      <div class="books-grid">
+        {newTestament.map((book) => (
+          <article class="book-card" data-testament="new" data-name={book.name.toLowerCase()} data-group={book.group.toLowerCase()}>
+            <div class="book-card-header">
+              <span class="book-order">{String(book.order).padStart(2, '0')}</span>
+              <span class="book-group-tag">{book.group}</span>
+            </div>
+            <h3 class="book-card-title">
+              <a href={`/biblia/${book.slug}/1/`}>{book.name}</a>
+            </h3>
+            <p class="book-card-meta">{book.chaptersCount} {book.chaptersCount === 1 ? 'capítulo' : 'capítulos'}</p>
+            <div class="book-card-actions">
+              <a href={`/biblia/${book.slug}/1/`} class="book-read-btn">
+                Ler Cap. 1 <span aria-hidden="true">→</span>
+              </a>
+              <a href={`/biblia/${book.slug}/`} class="book-chapters-link" title={`Ver todos os ${book.chaptersCount} capítulos`}>
+                Ver capítulos
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function setupFilter() {
+      const year = document.getElementById('footer-year');
+      if (year) year.textContent = String(new Date().getFullYear());
+
+      const tabBtns = document.querySelectorAll('.bible-tab-btn');
+      const searchInput = document.getElementById('book-search-input');
+      const bookCards = document.querySelectorAll('.book-card');
+      const secOld = document.getElementById('section-old');
+      const secNew = document.getElementById('section-new');
+
+      let currentFilter = 'all';
+
+      function applyFilters() {
+        const query = (searchInput?.value || '').trim().toLowerCase();
+
+        bookCards.forEach((card) => {
+          const testament = card.getAttribute('data-testament');
+          const name = card.getAttribute('data-name') || '';
+          const group = card.getAttribute('data-group') || '';
+
+          const matchesTestament = currentFilter === 'all' || testament === currentFilter;
+          const matchesQuery = !query || name.includes(query) || group.includes(query);
+
+          const visible = matchesTestament && matchesQuery;
+          card.style.display = visible ? 'flex' : 'none';
+        });
+
+        // Hide testament headings if all their cards are hidden
+        if (secOld) {
+          const hasVisibleOld = secOld.querySelectorAll('.book-card:not([style*="display: none"])').length > 0;
+          secOld.style.display = hasVisibleOld ? 'block' : 'none';
+        }
+        if (secNew) {
+          const hasVisibleNew = secNew.querySelectorAll('.book-card:not([style*="display: none"])').length > 0;
+          secNew.style.display = hasVisibleNew ? 'block' : 'none';
+        }
+      }
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach((b) => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          currentFilter = btn.getAttribute('data-filter') || 'all';
+          applyFilters();
+        });
+      });
+
+      searchInput?.addEventListener('input', applyFilters);
+    }
+
+    setupFilter();
+    document.addEventListener('astro:page-load', setupFilter);
+  </script>
+</BaseLayout>

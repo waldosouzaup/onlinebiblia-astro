@@ -1,0 +1,16 @@
+{
+  "name": "Online Bíblia — Leitura Limpa das Escrituras",
+  "short_name": "Online Bíblia",
+  "description": "Leia a Bíblia Sagrada completa online com foco total no texto, sem distrações.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f8f7f3",
+  "theme_color": "#1b1c20",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

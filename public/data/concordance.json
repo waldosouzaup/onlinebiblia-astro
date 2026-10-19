@@ -1,0 +1,158 @@
+{
+  "topics": [
+    {
+      "id": "amor",
+      "title": "Amor",
+      "category": "Relacionamentos",
+      "description": "O amor como escolha, cuidado e compromisso com o próximo.",
+      "references": [
+        {
+          "bookId": "1-corintios",
+          "chapter": 13,
+          "verse": 4
+        },
+        {
+          "bookId": "joao",
+          "chapter": 3,
+          "verse": 16
+        },
+        {
+          "bookId": "efesios",
+          "chapter": 4,
+          "verse": 32
+        }
+      ]
+    },
+    {
+      "id": "fe",
+      "title": "Fé e confiança",
+      "category": "Vida espiritual",
+      "description": "Passagens sobre confiar em Deus, inclusive quando ainda não vemos o caminho completo.",
+      "references": [
+        {
+          "bookId": "hebreus",
+          "chapter": 11,
+          "verse": 1
+        },
+        {
+          "bookId": "proverbios",
+          "chapter": 3,
+          "verse": 5
+        }
+      ]
+    },
+    {
+      "id": "esperanca",
+      "title": "Esperança",
+      "category": "Emoções e cuidado",
+      "description": "Textos para lembrar que o futuro não precisa ser enfrentado sem esperança.",
+      "references": [
+        {
+          "bookId": "romanos",
+          "chapter": 15,
+          "verse": 13
+        },
+        {
+          "bookId": "jeremias",
+          "chapter": 29,
+          "verse": 11
+        }
+      ]
+    },
+    {
+      "id": "paz",
+      "title": "Paz e ansiedade",
+      "category": "Emoções e cuidado",
+      "description": "Leituras sobre oração, tranquilidade e a paz que sustenta em tempos difíceis.",
+      "references": [
+        {
+          "bookId": "joao",
+          "chapter": 14,
+          "verse": 27
+        },
+        {
+          "bookId": "filipenses",
+          "chapter": 4,
+          "verse": 6
+        },
+        {
+          "bookId": "filipenses",
+          "chapter": 4,
+          "verse": 7
+        }
+      ]
+    },
+    {
+      "id": "sabedoria",
+      "title": "Sabedoria",
+      "category": "Vida prática",
+      "description": "Orientações para buscar discernimento e tomar decisões com humildade.",
+      "references": [
+        {
+          "bookId": "proverbios",
+          "chapter": 2,
+          "verse": 6
+        },
+        {
+          "bookId": "tiago",
+          "chapter": 1,
+          "verse": 5
+        }
+      ]
+    },
+    {
+      "id": "perdao",
+      "title": "Perdão",
+      "category": "Relacionamentos",
+      "description": "Passagens sobre confessar, receber perdão e tratar o outro com compaixão.",
+      "references": [
+        {
+          "bookId": "efesios",
+          "chapter": 4,
+          "verse": 32
+        },
+        {
+          "bookId": "1-joao",
+          "chapter": 1,
+          "verse": 9
+        }
+      ]
+    },
+    {
+      "id": "coragem",
+      "title": "Coragem em tempos difíceis",
+      "category": "Emoções e cuidado",
+      "description": "Lembretes de presença e cuidado quando atravessamos períodos de incerteza.",
+      "references": [
+        {
+          "bookId": "salmos",
+          "chapter": 23,
+          "verse": 4
+        },
+        {
+          "bookId": "joao",
+          "chapter": 14,
+          "verse": 27
+        }
+      ]
+    },
+    {
+      "id": "criacao",
+      "title": "Criação e começo",
+      "category": "Temas bíblicos",
+      "description": "O início da narrativa bíblica e a imagem de um mundo que recebe forma.",
+      "references": [
+        {
+          "bookId": "genesis",
+          "chapter": 1,
+          "verse": 1
+        },
+        {
+          "bookId": "genesis",
+          "chapter": 1,
+          "verse": 2
+        }
+      ]
+    }
+  ]
+}

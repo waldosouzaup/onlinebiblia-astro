@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+
+const siteUrl = 'https://onlinebiblia.com';
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  'name': 'Online Bíblia',
+  'alternateName': ['OnlineBiblia', 'Bíblia Online'],
+  'url': `${siteUrl}/`,
+  'description': 'Leia a Bíblia Sagrada completa online com foco total na leitura, sem distrações. 66 livros e 1.189 capítulos em português e inglês.',
+  'inLanguage': ['pt-BR', 'en'],
+  'potentialAction': {
+    '@type': 'SearchAction',
+    'target': {
+      '@type': 'EntryPoint',
+      'urlTemplate': `${siteUrl}/?q={search_term_string}`
+    },
+    'query-input': 'required name=search_term_string'
+  }
+};
+
+const organizationSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  'name': 'Online Bíblia',
+  'url': `${siteUrl}/`,
+  'logo': `${siteUrl}/favicon.svg`,
+  'founder': {
+    '@type': 'Person',
+    'name': 'Waldo Eller'
+  }
+};
+---
+<BaseLayout
+  title="Online Bíblia — Leitura Limpa da Bíblia Sagrada Online"
+  description="Leia a Bíblia Sagrada completa online com conforto e foco total no texto. Navegue pelos 66 livros e 1.189 capítulos em português (NVI) e inglês (NIV)."
+  page="biblia"
+  schema={[websiteSchema, organizationSchema]}
+>
+  <SiteHeader active="biblia" />
+  <main>
+    <section class="reader-layout shell" aria-label="Leitor da Bíblia">
+      <div id="selection-backdrop" class="selection-backdrop" aria-hidden="true"></div>
+
+      <aside class="selection-panel panel" id="selection-panel" aria-label="Navegação bíblica">
+        <div class="panel-heading">
+          <span class="panel-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5c3.3-1.3 5.9-.8 8 1.1v13c-2.1-1.9-4.7-2.4-8-1.1v-13ZM20 5.5c-3.3-1.3-5.9-.8-8 1.1v13c2.1-1.9 4.7-2.4 8-1.1v-13Z"/></svg></span>
+          <div><h2>Encontre sua leitura</h2><p>Escolha onde começar</p></div>
+          <button type="button" class="panel-close-btn" id="close-selection-panel" aria-label="Fechar painel de seleção">✕</button>
+        </div>
+        <div class="testament-filter" role="group" aria-label="Filtrar por testamento">
+          <button type="button" class="filter-chip is-selected" data-testament="all" aria-pressed="true">Todos</button>
+          <button type="button" class="filter-chip" data-testament="old" aria-pressed="false">Antigo</button>
+          <button type="button" class="filter-chip" data-testament="new" aria-pressed="false">Novo</button>
+        </div>
+        <div class="field-group">
+          <label for="book-select">Livro</label>
+          <select id="book-select" disabled><option>Carregando livros…</option></select>
+        </div>
+        <div class="field-row">
+          <div class="field-group"><label for="chapter-select">Capítulo</label><select id="chapter-select" disabled><option>—</option></select></div>
+          <div class="field-group"><label for="verse-select">Versículo</label><select id="verse-select" disabled><option>—</option></select></div>
+        </div>
+        <div class="panel-divider"></div>
+        <form id="search-form" class="search-form" role="search">
+          <label for="bible-search">Buscar na Bíblia</label>
+          <div class="search-field" id="busca">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg>
+            <input id="bible-search" type="search" placeholder="Palavra ou expressão…" autocomplete="off" />
+            <button type="submit" aria-label="Buscar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+          </div>
+          <p class="field-hint">Pesquise palavras nos arquivos carregados.</p>
+        </form>
+        <div id="search-results" class="search-results" aria-live="polite"></div>
+
+        <a class="side-link" href="/biblia/">
+          <span class="side-link-icon" aria-hidden="true">📖</span>
+          <span><strong>Todos os 66 Livros</strong><small>Páginas em HTML leve</small></span>
+          <span class="side-arrow" aria-hidden="true">→</span>
+        </a>
+        <a class="side-link" href="/concordancia/">
+          <span class="side-link-icon" aria-hidden="true">⌕</span>
+          <span><strong>Concordância bíblica</strong><small>Explore temas e referências</small></span>
+          <span class="side-arrow" aria-hidden="true">↗</span>
+        </a>
+      </aside>
+
+      <section class="reading-column" aria-labelledby="current-ref">
+        <div class="reading-toolbar">
+          <button
+            type="button"
+            class="mobile-open-panel-btn"
+            id="toggle-selection-panel"
+            aria-expanded="false"
+            aria-controls="selection-panel"
+            title="Escolha um livro ou faça uma busca"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
+              <path d="M6 6h10M6 10h10"/>
+            </svg>
+            <span>Escolher leitura / Buscar</span>
+          </button>
+
+          <div class="version-switch" role="group" aria-label="Idioma da Bíblia">
+            <button type="button" class="version-button is-active" data-version="pt" aria-pressed="true">PT <span>Português</span></button>
+            <button type="button" class="version-button" data-version="en" aria-pressed="false">EN <span>English</span></button>
+          </div>
+          <div class="font-controls" aria-label="Tamanho do texto">
+            <button type="button" id="font-decrease" aria-label="Diminuir tamanho da fonte" title="Diminuir fonte">A−</button>
+            <button type="button" id="font-increase" aria-label="Aumentar tamanho da fonte" title="Aumentar fonte">A+</button>
+          </div>
+        </div>
+        <div id="demo-notice" class="demo-notice" hidden><span aria-hidden="true">ⓘ</span> Conteúdo carregado.</div>
+        <article class="reading-card panel">
+          <div class="reading-card-top">
+            <div><p class="reading-kicker">SUA LEITURA</p><h1 id="current-ref">Preparando sua Bíblia…</h1></div>
+            <span class="version-label" id="version-label">NVI</span>
+          </div>
+          <div class="chapter-navigation">
+            <button type="button" id="previous-chapter" class="text-button" disabled><span aria-hidden="true">←</span> Anterior</button>
+            <span id="chapter-count" class="chapter-count">Capítulo</span>
+            <button type="button" id="next-chapter" class="text-button" disabled>Próximo <span aria-hidden="true">→</span></button>
+          </div>
+          <div id="reading-status" class="reading-status" role="status">Carregando conteúdo…</div>
+          <div id="reading-content" class="reading-content" aria-live="polite"></div>
+        </article>
+      </section>
+    </section>
+
+    <!-- Floating Minimalist Reader Dock (< — 1x + 📺 >) -->
+    <aside class="reader-floating-dock" aria-label="Controles de Leitura">
+      <button type="button" class="dock-btn prev" id="dock-previous-chapter" title="Capítulo anterior" aria-label="Capítulo anterior" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+      </button>
+
+      <button type="button" class="dock-btn" id="dock-font-decrease" title="Diminuir tamanho da fonte" aria-label="Diminuir fonte">
+        <span class="dock-symbol">−</span>
+      </button>
+
+      <button type="button" class="dock-btn dock-scale" id="dock-font-reset" title="Tamanho da fonte (clique para redefinir para 1x)" aria-label="Tamanho da fonte">
+        <span id="dock-scale-text">1x</span>
+      </button>
+
+      <button type="button" class="dock-btn" id="dock-font-increase" title="Aumentar tamanho da fonte" aria-label="Aumentar fonte">
+        <span class="dock-symbol">+</span>
+      </button>
+
+      <button type="button" class="dock-btn dock-focus-btn" id="dock-focus-toggle" title="Modo Foco (tela limpa para meditação)" aria-label="Alternar Modo Foco">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <rect width="20" height="15" x="2" y="3" rx="2"/>
+          <path d="M12 18v3M8 21h8"/>
+        </svg>
+      </button>
+
+      <button type="button" class="dock-btn next" id="dock-next-chapter" title="Próximo capítulo" aria-label="Próximo capítulo" disabled>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+      </button>
+    </aside>
+  </main>
+  <script>
+    import '../scripts/reader.js';
+  </script>
+</BaseLayout>

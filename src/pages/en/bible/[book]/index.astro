@@ -1,0 +1,142 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+import SiteHeader from '../../../../components/SiteHeader.astro';
+import { getAllBooks, getAllEnglishBookPaths } from '../../../../lib/bible.js';
+
+export async function getStaticPaths() {
+  return getAllEnglishBookPaths();
+}
+
+const { book } = Astro.props;
+const allBooks = getAllBooks();
+const currentIdx = allBooks.findIndex((b) => b.order === book.order);
+const prevBook = currentIdx > 0 ? allBooks[currentIdx - 1] : null;
+const nextBook = currentIdx < allBooks.length - 1 ? allBooks[currentIdx + 1] : null;
+
+const chapters = Array.from({ length: book.chaptersCount }, (_, i) => i + 1);
+
+const siteUrl = 'https://onlinebiblia.com';
+const bookUrl = `${siteUrl}/en/bible/${book.slugEn}/`;
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Bible',
+      item: `${siteUrl}/en/bible/`,
+    },
+    {
+      '@type': 'ListItem',
+      position: 2,
+      name: book.nameEn,
+      item: bookUrl,
+    },
+  ],
+};
+
+const bookSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Book',
+  name: `Book of ${book.nameEn}`,
+  headline: `Book of ${book.nameEn} — Holy Bible (NIV)`,
+  url: bookUrl,
+  inLanguage: 'en',
+  bookFormat: 'https://schema.org/EBook',
+  numberOfPages: book.chaptersCount,
+  about: `Biblical book of the ${book.testamentNameEn}, category ${book.groupEn}. Contains ${book.chaptersCount} chapters in the New International Version.`,
+  isPartOf: {
+    '@type': 'Book',
+    name: 'Holy Bible (New International Version - NIV)',
+    url: `${siteUrl}/en/bible/`,
+  },
+};
+---
+
+<BaseLayout
+  title={`Book of ${book.nameEn} — Holy Bible Chapters (NIV) | Online Bible`}
+  description={`Read the complete Book of ${book.nameEn} in the New International Version (NIV). Choose from all ${book.chaptersCount} chapters to begin reading.`}
+  page="bible-en"
+  equivalentUrl={`/biblia/${book.slug}/`}
+  schema={[breadcrumbSchema, bookSchema]}
+>
+  <SiteHeader active="biblia" />
+
+  <main class="shell book-detail-page">
+    <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+      <a href="/en/bible/">Bible</a>
+      <span aria-hidden="true">/</span>
+      <span aria-current="page">{book.nameEn}</span>
+    </nav>
+
+    <header class="book-detail-hero">
+      <div class="book-detail-meta-tags">
+        <span class="badge-pill">{book.testamentNameEn}</span>
+        <span class="badge-pill badge-outline">{book.groupEn}</span>
+        <span class="badge-pill badge-muted">Book {book.order} of 66</span>
+      </div>
+
+      <h1 class="book-detail-title">{book.nameEn}</h1>
+      <p class="book-detail-subtitle">
+        This book contains <strong>{book.chaptersCount} {book.chaptersCount === 1 ? 'chapter' : 'chapters'}</strong> in the New International Version (NIV).
+        Select a chapter below or start from the beginning.
+      </p>
+
+      <div class="book-hero-actions">
+        <a href={`/en/bible/${book.slugEn}/1/`} class="primary-read-btn">
+          <span>Start Reading — Chapter 1</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
+        </a>
+        <a href={`/biblia/${book.slug}/`} class="lang-switch-btn" title="Ver este livro em português">
+          🇧🇷 Ler em Português
+        </a>
+      </div>
+    </header>
+
+    <section class="chapters-selection-section" aria-labelledby="chapters-title">
+      <div class="section-top-bar">
+        <h2 id="chapters-title">Chapters in {book.nameEn}</h2>
+        <span class="chapters-count-badge">{book.chaptersCount} available</span>
+      </div>
+
+      <div class="chapters-tiles-grid" role="list">
+        {chapters.map((ch) => (
+          <a
+            href={`/en/bible/${book.slugEn}/${ch}/`}
+            class="chapter-tile"
+            role="listitem"
+            title={`Read ${book.nameEn} Chapter ${ch}`}
+          >
+            <span class="chapter-tile-number">{ch}</span>
+            <span class="chapter-tile-label">Chapter</span>
+          </a>
+        ))}
+      </div>
+    </section>
+
+    <nav class="book-sibling-nav" aria-label="Browse between books">
+      {prevBook ? (
+        <a href={`/en/bible/${prevBook.slugEn}/`} class="sibling-book-link prev">
+          <span class="sibling-dir">← Previous Book</span>
+          <strong class="sibling-name">{prevBook.nameEn}</strong>
+          <small class="sibling-meta">{prevBook.chaptersCount} chapters</small>
+        </a>
+      ) : <div class="sibling-placeholder"></div>}
+
+      <a href="/en/bible/" class="all-books-hub-link">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+        <span>All 66 Books</span>
+      </a>
+
+      {nextBook ? (
+        <a href={`/en/bible/${nextBook.slugEn}/`} class="sibling-book-link next">
+          <span class="sibling-dir">Next Book →</span>
+          <strong class="sibling-name">{nextBook.nameEn}</strong>
+          <small class="sibling-meta">{nextBook.chaptersCount} chapters</small>
+        </a>
+      ) : <div class="sibling-placeholder"></div>}
+    </nav>
+  </main>
+</BaseLayout>

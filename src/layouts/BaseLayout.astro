@@ -1,0 +1,137 @@
+---
+import '../styles/global.css';
+import { ClientRouter } from 'astro:transitions';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  page?: string;
+  isReadingPage?: boolean;
+  canonical?: string;
+  lang?: string;
+  equivalentUrl?: string;
+  ogType?: string;
+  ogImage?: string;
+  schema?: Record<string, any> | Array<Record<string, any>>;
+  noindex?: boolean;
+}
+
+const {
+  title = 'Online Bíblia — Leitura Limpa da Palavra de Deus',
+  description = 'Leia, pesquise e explore a Bíblia Sagrada completa com todos os 66 livros em português e inglês. Leitura suave sem distrações, rápida e acessível.',
+  page = 'biblia',
+  isReadingPage = false,
+  canonical,
+  lang = page === 'bible-en' ? 'en' : 'pt-BR',
+  equivalentUrl,
+  ogType = isReadingPage ? 'article' : 'website',
+  ogImage,
+  schema,
+  noindex = false,
+} = Astro.props;
+
+const siteUrl = Astro.site ? Astro.site.origin : 'https://onlinebiblia.com';
+const currentCanonical = canonical || new URL(Astro.url.pathname, siteUrl).href;
+const socialImage = ogImage || new URL('/og-image.svg', siteUrl).href;
+
+// Calculate reciprocal hreflangs if equivalentUrl exists
+let ptAlternate = '';
+let enAlternate = '';
+
+if (equivalentUrl) {
+  if (lang === 'en') {
+    enAlternate = currentCanonical;
+    ptAlternate = new URL(equivalentUrl, siteUrl).href;
+  } else {
+    ptAlternate = currentCanonical;
+    enAlternate = new URL(equivalentUrl, siteUrl).href;
+  }
+}
+---
+<!doctype html>
+<html lang={lang} data-theme="light">
+  <head>
+    <!-- Basic Metadata -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={currentCanonical} />
+
+    <!-- Search Engine Directives -->
+    <meta
+      name="robots"
+      content={noindex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'}
+    />
+    <meta
+      name="googlebot"
+      content={noindex ? 'noindex, nofollow' : 'index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1'}
+    />
+
+    <!-- Multilingual Alternate Links (hreflang) -->
+    {ptAlternate && <link rel="alternate" hreflang="pt-BR" href={ptAlternate} />}
+    {enAlternate && <link rel="alternate" hreflang="en" href={enAlternate} />}
+    {ptAlternate && <link rel="alternate" hreflang="x-default" href={ptAlternate} />}
+
+    <!-- Open Graph / Facebook / WhatsApp -->
+    <meta property="og:site_name" content="Online Bíblia" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={currentCanonical} />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content={lang === 'en' ? 'en_US' : 'pt_BR'} />
+    {lang === 'en' ? (
+      <meta property="og:locale:alternate" content="pt_BR" />
+    ) : (
+      <meta property="og:locale:alternate" content="en_US" />
+    )}
+    <meta property="og:image" content={socialImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={title} />
+
+    <!-- Twitter Cards -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImage} />
+
+    <!-- PWA & Mobile Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="author" content="Waldo Eller" />
+    <meta name="application-name" content="Online Bíblia" />
+    <meta name="apple-mobile-web-app-title" content="Online Bíblia" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="theme-color" content="#f8f7f3" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121214" media="(prefers-color-scheme: dark)" />
+
+    <!-- Typography Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Structured Data (JSON-LD) -->
+    {schema && (
+      Array.isArray(schema) ? (
+        schema.map((item) => (
+          <script type="application/ld+json" set:html={JSON.stringify(item)} />
+        ))
+      ) : (
+        <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+      )
+    )}
+
+    <ClientRouter />
+  </head>
+  <body data-page={page} class:list={[{ 'is-reading-mode': isReadingPage }]}>
+    <slot />
+    <SiteFooter />
+    <script>
+      import '../scripts/theme.js';
+    </script>
+  </body>
+</html>
+

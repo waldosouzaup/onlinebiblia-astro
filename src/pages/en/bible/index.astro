@@ -1,0 +1,221 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SiteHeader from '../../../components/SiteHeader.astro';
+import { getAllBooks } from '../../../lib/bible.js';
+
+const books = getAllBooks();
+const oldTestament = books.filter((b) => b.testament === 'old');
+const newTestament = books.filter((b) => b.testament === 'new');
+
+const siteUrl = 'https://onlinebiblia.com';
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    {
+      '@type': 'ListItem',
+      position: 1,
+      name: 'Bible',
+      item: `${siteUrl}/en/bible/`,
+    },
+  ],
+};
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Holy Bible (NIV) — All 66 Books',
+  description: 'Read and explore all 66 books of the Holy Bible in the New International Version (NIV). Complete Old and New Testament with clean, lightweight chapters.',
+  url: `${siteUrl}/en/bible/`,
+  inLanguage: 'en',
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: books.length,
+    itemListElement: books.map((b, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: b.nameEn,
+      url: `${siteUrl}/en/bible/${b.slugEn}/`,
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title="Holy Bible (NIV) — All 66 Books | Online Bible"
+  description="Read and explore all 66 books of the Holy Bible in the New International Version (NIV). Complete Old and New Testament with clean, lightweight chapters."
+  page="bible-en"
+  equivalentUrl="/biblia/"
+  schema={[breadcrumbSchema, collectionSchema]}
+>
+  <SiteHeader active="biblia" />
+
+  <main class="shell bible-index-page">
+    <header class="bible-index-hero">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-dot"></span> Holy Scriptures — English NIV</p>
+        <h1>Complete Bible.<br /><em>66 Books to Read & Reflect.</em></h1>
+        <p class="hero-subtitle">
+          Full New International Version (NIV) with all 1,189 chapters.
+          Select a book below to begin your reading or browse the Old and New Testaments.
+        </p>
+
+        <div class="lang-switch-banner">
+          <span>Versão em Português disponível:</span>
+          <a href="/biblia/" class="lang-switch-link">Ver Bíblia em Português (NVI) 🇧🇷 →</a>
+        </div>
+      </div>
+      <div class="bible-stats-card">
+        <div class="stat-item">
+          <strong>66</strong>
+          <span>Books</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>1,189</strong>
+          <span>Chapters</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <strong>NIV</strong>
+          <span>Version</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="bible-filter-bar" role="toolbar" aria-label="Book filters">
+      <div class="filter-chips">
+        <button type="button" class="bible-tab-btn is-active" data-filter="all">All (66)</button>
+        <button type="button" class="bible-tab-btn" data-filter="old">Old Testament (39)</button>
+        <button type="button" class="bible-tab-btn" data-filter="new">New Testament (27)</button>
+      </div>
+      <div class="quick-book-search">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg>
+        <input type="search" id="book-search-input" placeholder="Search book by name..." aria-label="Search books" />
+      </div>
+    </div>
+
+    <!-- Old Testament -->
+    <section class="testament-section" id="section-old" aria-labelledby="heading-old">
+      <div class="section-heading">
+        <div>
+          <span class="testament-kicker">39 BOOKS</span>
+          <h2 id="heading-old">Old Testament</h2>
+        </div>
+        <p class="section-desc">From Genesis and the account of Creation to the prophetic promises of Malachi.</p>
+      </div>
+
+      <div class="books-grid">
+        {oldTestament.map((book) => (
+          <article class="book-card" data-testament="old" data-name={book.nameEn.toLowerCase()} data-group={book.groupEn.toLowerCase()}>
+            <div class="book-card-header">
+              <span class="book-order">{String(book.order).padStart(2, '0')}</span>
+              <span class="book-group-tag">{book.groupEn}</span>
+            </div>
+            <h3 class="book-card-title">
+              <a href={`/en/bible/${book.slugEn}/1/`}>{book.nameEn}</a>
+            </h3>
+            <p class="book-card-meta">{book.chaptersCount} {book.chaptersCount === 1 ? 'chapter' : 'chapters'}</p>
+            <div class="book-card-actions">
+              <a href={`/en/bible/${book.slugEn}/1/`} class="book-read-btn">
+                Read Ch. 1 <span aria-hidden="true">→</span>
+              </a>
+              <a href={`/en/bible/${book.slugEn}/`} class="book-chapters-link" title={`View all ${book.chaptersCount} chapters`}>
+                All chapters
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- New Testament -->
+    <section class="testament-section" id="section-new" aria-labelledby="heading-new">
+      <div class="section-heading">
+        <div>
+          <span class="testament-kicker">27 BOOKS</span>
+          <h2 id="heading-new">New Testament</h2>
+        </div>
+        <p class="section-desc">The life and teachings of Jesus Christ, the Acts of the Apostles, the Epistles, and Revelation.</p>
+      </div>
+
+      <div class="books-grid">
+        {newTestament.map((book) => (
+          <article class="book-card" data-testament="new" data-name={book.nameEn.toLowerCase()} data-group={book.groupEn.toLowerCase()}>
+            <div class="book-card-header">
+              <span class="book-order">{String(book.order).padStart(2, '0')}</span>
+              <span class="book-group-tag">{book.groupEn}</span>
+            </div>
+            <h3 class="book-card-title">
+              <a href={`/en/bible/${book.slugEn}/1/`}>{book.nameEn}</a>
+            </h3>
+            <p class="book-card-meta">{book.chaptersCount} {book.chaptersCount === 1 ? 'chapter' : 'chapters'}</p>
+            <div class="book-card-actions">
+              <a href={`/en/bible/${book.slugEn}/1/`} class="book-read-btn">
+                Read Ch. 1 <span aria-hidden="true">→</span>
+              </a>
+              <a href={`/en/bible/${book.slugEn}/`} class="book-chapters-link" title={`View all ${book.chaptersCount} chapters`}>
+                All chapters
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <script>
+    function setupEnglishFilter() {
+      const year = document.getElementById('footer-year');
+      if (year) year.textContent = String(new Date().getFullYear());
+
+      const tabBtns = document.querySelectorAll('.bible-tab-btn');
+      const searchInput = document.getElementById('book-search-input');
+      const bookCards = document.querySelectorAll('.book-card');
+      const secOld = document.getElementById('section-old');
+      const secNew = document.getElementById('section-new');
+
+      let currentFilter = 'all';
+
+      function applyFilters() {
+        const query = (searchInput?.value || '').trim().toLowerCase();
+
+        bookCards.forEach((card) => {
+          const testament = card.getAttribute('data-testament');
+          const name = card.getAttribute('data-name') || '';
+          const group = card.getAttribute('data-group') || '';
+
+          const matchesTestament = currentFilter === 'all' || testament === currentFilter;
+          const matchesQuery = !query || name.includes(query) || group.includes(query);
+
+          const visible = matchesTestament && matchesQuery;
+          card.style.display = visible ? 'flex' : 'none';
+        });
+
+        if (secOld) {
+          const hasVisibleOld = secOld.querySelectorAll('.book-card:not([style*="display: none"])').length > 0;
+          secOld.style.display = hasVisibleOld ? 'block' : 'none';
+        }
+        if (secNew) {
+          const hasVisibleNew = secNew.querySelectorAll('.book-card:not([style*="display: none"])').length > 0;
+          secNew.style.display = hasVisibleNew ? 'block' : 'none';
+        }
+      }
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach((b) => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          currentFilter = btn.getAttribute('data-filter') || 'all';
+          applyFilters();
+        });
+      });
+
+      searchInput?.addEventListener('input', applyFilters);
+    }
+
+    setupEnglishFilter();
+    document.addEventListener('astro:page-load', setupEnglishFilter);
+  </script>
+</BaseLayout>

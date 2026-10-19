@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#141416"/>
+      <stop offset="100%" stop-color="#23242a"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#f5d499"/>
+      <stop offset="100%" stop-color="#d4af37"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle border -->
+  <rect x="40" y="40" width="1120" height="550" rx="24" fill="none" stroke="rgba(255, 255, 255, 0.08)" stroke-width="2"/>
+
+  <!-- Book Icon Badge -->
+  <g transform="translate(100, 120)">
+    <rect width="72" height="72" rx="18" fill="rgba(255, 255, 255, 0.06)" stroke="rgba(212, 175, 55, 0.3)" stroke-width="1.5"/>
+    <path d="M22 25C26 23 31 23.5 36 26V45C31 42.5 26 42 22 43.5V25Z" fill="#e6c387"/>
+    <path d="M50 25C46 23 41 23.5 36 26V45C41 42.5 46 42 50 43.5V25Z" fill="#f8f4ec"/>
+    <path d="M36 26V45" stroke="#141416" stroke-width="2" stroke-linecap="round"/>
+  </g>
+
+  <!-- Brand Name -->
+  <text x="195" y="165" font-family="system-ui, -apple-system, Inter, sans-serif" font-size="28" font-weight="700" fill="url(#gold)" letter-spacing="1">ONLINE BÍBLIA</text>
+
+  <!-- Main Title -->
+  <text x="100" y="270" font-family="system-ui, -apple-system, Inter, Georgia, serif" font-size="62" font-weight="700" fill="#ffffff" letter-spacing="-0.5">
+    A Palavra de Deus
+  </text>
+  <text x="100" y="340" font-family="system-ui, -apple-system, Inter, Georgia, serif" font-size="62" font-weight="700" fill="url(#gold)" letter-spacing="-0.5">
+    com leitura limpa e sem distrações.
+  </text>
+
+  <!-- Subtitle -->
+  <text x="100" y="420" font-family="system-ui, -apple-system, Inter, sans-serif" font-size="26" font-weight="400" fill="#a1a1aa">
+    Todos os 66 livros da Bíblia Sagrada · 1.189 capítulos · Versões NVI, ACF, AA e English NIV
+  </text>
+
+  <!-- Feature Chips at bottom -->
+  <g transform="translate(100, 480)">
+    <!-- Chip 1 -->
+    <rect x="0" y="0" width="180" height="44" rx="22" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)"/>
+    <text x="25" y="28" font-family="system-ui, sans-serif" font-size="16" font-weight="500" fill="#e4e4e7">⚡ 100% Rápido</text>
+
+    <!-- Chip 2 -->
+    <rect x="200" y="0" width="180" height="44" rx="22" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)"/>
+    <text x="225" y="28" font-family="system-ui, sans-serif" font-size="16" font-weight="500" fill="#e4e4e7">🌙 Modo Escuro</text>
+
+    <!-- Chip 3 -->
+    <rect x="400" y="0" width="180" height="44" rx="22" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)"/>
+    <text x="425" y="28" font-family="system-ui, sans-serif" font-size="16" font-weight="500" fill="#e4e4e7">📖 66 Livros</text>
+
+    <!-- Chip 4 -->
+    <rect x="600" y="0" width="220" height="44" rx="22" fill="rgba(255, 255, 255, 0.05)" stroke="rgba(255, 255, 255, 0.1)"/>
+    <text x="625" y="28" font-family="system-ui, sans-serif" font-size="16" font-weight="500" fill="#e4e4e7">🔍 Concordância</text>
+  </g>
+
+  <!-- URL watermark -->
+  <text x="960" y="510" font-family="system-ui, sans-serif" font-size="20" font-weight="600" fill="#71717a">onlinebiblia.com</text>
+</svg>

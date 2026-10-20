@@ -1,4 +1,28 @@
 :root {
+  color-scheme: dark;
+  --page: #0a0c0b;
+  --surface: #121513;
+  --surface-soft: #171b18;
+  --surface-tint: #141f17;
+  --ink: #e6e6e6;
+  --ink-strong: #ffffff;
+  --muted: #88938b;
+  --line: rgba(255, 255, 255, 0.08);
+  --accent: #92bfa0;
+  --accent-strong: #bde5cb;
+  --accent-soft: rgba(146, 191, 160, 0.12);
+  --gold: #d8be87;
+  --gold-soft: rgba(216, 190, 135, 0.12);
+  --shadow: 0 24px 64px rgba(0, 0, 0, 0.55), 0 2px 8px rgba(0, 0, 0, 0.3);
+  --reading-font: 'Inter', system-ui, -apple-system, sans-serif;
+  --reading-size: 20px;
+  --reading-line-height: 42px;
+  --reading-color: #e6e6e6;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+:root[data-theme='light'] {
   color-scheme: light;
   --page: #fbf9f5;
   --surface: #ffffff;
@@ -14,13 +38,7 @@
   --gold: #b38b42;
   --gold-soft: #f8f1e2;
   --shadow: 0 16px 44px rgba(28, 38, 32, .06), 0 1px 3px rgba(28, 38, 32, .04);
-  --reading-font: 'Inter', system-ui, -apple-system, sans-serif;
-  --reading-size: 20px;
-  --reading-line-height: 42px;
   --reading-color: #232724;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
 }
 :root[data-theme='dark'] {
   color-scheme: dark;
@@ -66,8 +84,10 @@ svg { display: block; width: 20px; height: 20px; fill: none; stroke: currentColo
 .header-actions { display: flex; align-items: center; gap: 9px; }
 .header-search, .icon-button { display: grid; place-items: center; width: 40px; height: 40px; padding: 0; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 12px; transition: background .2s ease, border-color .2s ease; }
 .header-search:hover, .icon-button:hover { background: var(--surface-soft); border-color: var(--accent); }
-.sun-icon { display: none; }
-.moon-icon { display: block; }
+.sun-icon { display: block; }
+.moon-icon { display: none; }
+:root[data-theme='light'] .sun-icon { display: none; }
+:root[data-theme='light'] .moon-icon { display: block; }
 :root[data-theme='dark'] .sun-icon { display: block; }
 :root[data-theme='dark'] .moon-icon { display: none; }
 .mobile-menu-toggle { display: none; }

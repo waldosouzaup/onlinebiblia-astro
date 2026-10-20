@@ -15,11 +15,11 @@ function initTheme() {
     });
   }
 
-  let savedTheme = 'light';
+  let savedTheme = 'dark';
   try {
-    savedTheme = localStorage.getItem('onlinebiblia-theme') || 'light';
+    savedTheme = localStorage.getItem('onlinebiblia-theme') || 'dark';
   } catch (_) {}
-  applyTheme(savedTheme === 'dark' ? 'dark' : 'light');
+  applyTheme(savedTheme === 'light' ? 'light' : 'dark');
 
   themeButtons.forEach((button) => {
     button.onclick = () => {

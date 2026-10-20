@@ -50,8 +50,18 @@ if (equivalentUrl) {
 }
 ---
 <!doctype html>
-<html lang={lang} data-theme="light">
+<html lang={lang} data-theme="dark">
   <head>
+    <!-- Prevent theme flicker: default to dark -->
+    <script is:inline>
+      try {
+        const savedTheme = localStorage.getItem('onlinebiblia-theme');
+        document.documentElement.dataset.theme = savedTheme === 'light' ? 'light' : 'dark';
+      } catch (_) {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    </script>
+
     <!-- Basic Metadata -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

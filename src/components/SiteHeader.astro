@@ -39,9 +39,36 @@ const { active = "biblia" } = Astro.props;
         class:list={[{ "is-active": active === "concordancia" }]}
         href="/concordancia/">Concordância</a
       >
+      <button
+        class="nav-pwa-install-btn"
+        type="button"
+        data-pwa-install
+        hidden
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Instalar App Offline</span>
+      </button>
     </nav>
 
     <div class="header-actions">
+      <button
+        class="icon-button pwa-header-install"
+        type="button"
+        data-pwa-install
+        aria-label="Instalar Aplicativo da Bíblia"
+        title="Instalar Bíblia no Celular / Computador"
+        hidden
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+      </button>
       <a
         class="header-search"
         href="/#busca"

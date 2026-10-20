@@ -1,16 +1,65 @@
 {
-  "name": "Online Bíblia — Leitura Limpa das Escrituras",
+  "name": "Online Bíblia — Sagrada Escritura Completa",
   "short_name": "Online Bíblia",
-  "description": "Leia a Bíblia Sagrada completa online com foco total no texto, sem distrações.",
+  "id": "/",
+  "description": "Leia a Bíblia Sagrada completa online e offline, sem distrações. 66 livros e 1.189 capítulos com busca rápida e leitura fluida.",
   "start_url": "/",
+  "scope": "/",
   "display": "standalone",
-  "background_color": "#f8f7f3",
-  "theme_color": "#1b1c20",
+  "orientation": "any",
+  "background_color": "#0a0c0b",
+  "theme_color": "#0a0c0b",
+  "categories": ["books", "education", "lifestyle"],
   "icons": [
     {
       "src": "/favicon.svg",
       "sizes": "any",
-      "type": "image/svg+xml"
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Bíblia em Português",
+      "short_name": "Bíblia (PT)",
+      "url": "/biblia/",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Holy Bible in English",
+      "short_name": "Bible (EN)",
+      "url": "/en/bible/",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "Concordância Bíblica",
+      "short_name": "Concordância",
+      "url": "/concordancia/",
+      "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }]
     }
   ]
 }

@@ -5,17 +5,41 @@
     <a class="footer-brand" href="/">onlinebíblia</a>
     <span class="footer-tagline">Um lugar tranquilo para estar com a Palavra.</span>
 
-    <div class="footer-support-wrapper">
-      <button
-        type="button"
-        class="support-project-btn"
-        id="open-support-modal"
-        aria-haspopup="dialog"
-        aria-controls="support-modal"
-      >
-        <span class="support-emoji" aria-hidden="true">🙏</span>
-        <span>Apoiar o projeto</span>
-      </button>
+    <div class="footer-actions-group">
+      <div class="footer-pwa-wrapper">
+        <button
+          type="button"
+          class="pwa-footer-install-btn"
+          data-pwa-install
+          hidden
+        >
+          <span class="pwa-install-icon" aria-hidden="true">📲</span>
+          <span>Instalar App no Celular</span>
+        </button>
+
+        <button
+          type="button"
+          class="pwa-offline-status-btn"
+          data-pwa-offline-status
+          title="Toque para verificar ou baixar toda a Bíblia para ler sem internet"
+        >
+          <span class="pwa-dot-green"></span>
+          <span>Bíblia Pronta para Ler Offline</span>
+        </button>
+      </div>
+
+      <div class="footer-support-wrapper">
+        <button
+          type="button"
+          class="support-project-btn"
+          id="open-support-modal"
+          aria-haspopup="dialog"
+          aria-controls="support-modal"
+        >
+          <span class="support-emoji" aria-hidden="true">🙏</span>
+          <span>Apoiar o projeto</span>
+        </button>
+      </div>
     </div>
 
     <span class="footer-copy">© <span id="footer-year"></span> Online Bíblia</span>

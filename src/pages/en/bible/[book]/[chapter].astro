@@ -87,6 +87,19 @@ const chapterSchema = {
   <SiteHeader active="biblia" />
 
   <main class="reading-page shell">
+    <!-- Floating Focus Mode Exit Pill -->
+    <button
+      type="button"
+      id="focus-exit-pill"
+      class="focus-exit-pill"
+      title="Exit Focus Mode (Esc)"
+      aria-label="Exit Focus Mode"
+    >
+      <span class="focus-exit-dot" aria-hidden="true"></span>
+      <span>Exit Focus Mode</span>
+      <span class="focus-exit-close" aria-hidden="true">✕</span>
+    </button>
+
     <!-- Breadcrumbs -->
     <nav class="breadcrumb-nav" aria-label="Breadcrumb">
       <a href="/en/bible/">Bible</a>
@@ -207,6 +220,21 @@ const chapterSchema = {
           <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
           <span class="btn-label">Copy</span>
         </button>
+
+        <!-- Focus mode toggle (desktop) -->
+        <button
+          type="button"
+          id="toolbar-focus-toggle"
+          class="icon-text-btn desktop-only"
+          title="Toggle Focus Mode (distraction-free reading)"
+          aria-label="Toggle Focus Mode"
+        >
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <rect width="20" height="15" x="2" y="3" rx="2"/>
+            <path d="M12 18v3M8 21h8"/>
+          </svg>
+          <span class="btn-label">Focus</span>
+        </button>
       </div>
     </section>
 
@@ -266,19 +294,29 @@ const chapterSchema = {
         ))}
       </div>
 
-      <!-- Bottom Floating / Actions Toast for Selected Verse -->
-      <div id="verse-action-bar" class="verse-action-bar" hidden>
-        <span id="selected-verse-label" class="selected-verse-label">Verse selected</span>
+      <!-- Bottom Floating Actions Bar for Selected Verses (1 to 10) -->
+      <div id="verse-action-bar" class="verse-action-bar" hidden aria-live="polite">
+        <div class="verse-selection-info">
+          <span id="selected-verse-label" class="selected-verse-label">Selected verses</span>
+          <span id="selected-verse-count" class="selected-verse-count" title="Selected verses (max 10)">1/10</span>
+        </div>
         <div class="action-bar-buttons">
-          <button type="button" id="btn-copy-verse" class="action-btn copy-btn">
+          <button type="button" id="btn-copy-verse" class="action-btn copy-btn" title="Copy selected verse(s)">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
-            <span>Copy</span>
+            <span class="btn-text">Copy</span>
           </button>
-          <button type="button" id="btn-clear-verse" class="action-btn clear-btn" aria-label="Clear selection">
+          <button type="button" id="btn-share-verse" class="action-btn share-btn" title="Share via WhatsApp or apps">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" x2="15.42" y1="13.51" y2="17.49"/><line x1="15.41" x2="8.59" y1="6.51" y2="10.49"/></svg>
+            <span class="btn-text">Share</span>
+          </button>
+          <button type="button" id="btn-clear-verse" class="action-btn clear-btn" aria-label="Clear selection" title="Clear all">
             ✕
           </button>
         </div>
       </div>
+
+      <!-- Floating feedback toast for selection limits and actions -->
+      <div id="verse-toast" class="verse-toast" hidden role="status" aria-live="polite"></div>
 
       <!-- Footer chapter navigation cards -->
       <footer class="chapter-bottom-nav">
@@ -380,6 +418,10 @@ const chapterSchema = {
 
   <script>
     function setupEnglishReaderInteractions() {
+      const pageRoot = document.querySelector('.reading-page');
+      if (!pageRoot || pageRoot.dataset.readerBound === 'true') return;
+      pageRoot.dataset.readerBound = 'true';
+
       const year = document.getElementById('footer-year');
       if (year) year.textContent = String(new Date().getFullYear());
 
@@ -429,52 +471,141 @@ const chapterSchema = {
       const dockFontReset = document.getElementById('dock-font-reset');
       dockFontReset?.addEventListener('click', () => updateFontSize(20));
 
-      // Focus Mode toggle
-      const focusToggle = document.getElementById('dock-focus-toggle');
-      focusToggle?.addEventListener('click', () => {
-        const isFocus = document.body.classList.toggle('is-focus-mode');
-        focusToggle.classList.toggle('is-active', isFocus);
-        focusToggle.setAttribute('aria-pressed', String(isFocus));
-      });
+      // Focus Mode controller (toolbar, dock, floating exit pill, Esc key, and session persistence)
+      const dockFocusToggle = document.getElementById('dock-focus-toggle');
+      const toolbarFocusToggle = document.getElementById('toolbar-focus-toggle');
+      const focusExitPill = document.getElementById('focus-exit-pill');
+      const focusButtons = [dockFocusToggle, toolbarFocusToggle];
 
-      // Exit focus mode on Escape
-      window.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && document.body.classList.contains('is-focus-mode')) {
-          document.body.classList.remove('is-focus-mode');
-          focusToggle?.classList.remove('is-active');
-          focusToggle?.setAttribute('aria-pressed', 'false');
+      const setFocusMode = (enable) => {
+        const isFocus = Boolean(enable);
+        document.body.classList.toggle('is-focus-mode', isFocus);
+
+        focusButtons.forEach((btn) => {
+          if (!btn) return;
+          btn.classList.toggle('is-active', isFocus);
+          btn.setAttribute('aria-pressed', String(isFocus));
+          if (btn.id === 'dock-focus-toggle') {
+            btn.title = isFocus
+              ? 'Exit Focus Mode (Esc)'
+              : 'Focus Mode (distraction-free reading)';
+          }
+        });
+
+        try {
+          sessionStorage.setItem('onlinebiblia-focus-mode', String(isFocus));
+        } catch (_) {}
+      };
+
+      // Restore saved focus mode if previously enabled
+      try {
+        if (sessionStorage.getItem('onlinebiblia-focus-mode') === 'true') {
+          setFocusMode(true);
         }
-      });
+      } catch (_) {}
 
-      // Verse selection and copying
+      const toggleFocus = () => {
+        const isCurrentlyFocus = document.body.classList.contains('is-focus-mode');
+        setFocusMode(!isCurrentlyFocus);
+      };
+
+      dockFocusToggle?.addEventListener('click', toggleFocus);
+      toolbarFocusToggle?.addEventListener('click', toggleFocus);
+      focusExitPill?.addEventListener('click', () => setFocusMode(false));
+
+      // Exit focus mode or clear verse selection on Escape (bound only once globally)
+      if (!window.__readerEscapeBound) {
+        window.__readerEscapeBound = true;
+        window.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape') {
+            const bar = document.getElementById('verse-action-bar');
+            if (bar && !bar.hidden) {
+              document.getElementById('btn-clear-verse')?.click();
+              return;
+            }
+            if (document.body.classList.contains('is-focus-mode')) {
+              document.body.classList.remove('is-focus-mode');
+              document.querySelectorAll('#dock-focus-toggle, #toolbar-focus-toggle').forEach((btn) => {
+                btn.classList.remove('is-active');
+                btn.setAttribute('aria-pressed', 'false');
+              });
+              try {
+                sessionStorage.setItem('onlinebiblia-focus-mode', 'false');
+              } catch (_) {}
+            }
+          }
+        });
+      }
+
+      // Verse multi-selection (1 to 10 verses), copying and sharing
       const versesContainer = document.getElementById('chapter-verses');
       const actionBar = document.getElementById('verse-action-bar');
       const actionLabel = document.getElementById('selected-verse-label');
+      const actionCount = document.getElementById('selected-verse-count');
       const copyVerseBtn = document.getElementById('btn-copy-verse');
+      const shareVerseBtn = document.getElementById('btn-share-verse');
       const clearVerseBtn = document.getElementById('btn-clear-verse');
       const copyChapterBtn = document.getElementById('copy-chapter-btn');
+      const verseToast = document.getElementById('verse-toast');
 
       const bookName = versesContainer?.getAttribute('data-book') || '';
       const chapterNum = versesContainer?.getAttribute('data-chapter') || '';
+      const maxVerses = 10;
+      const selectedVerses = new Set();
+      let toastTimer = null;
 
-      let selectedVerse = null;
+      function showToast(msg) {
+        if (!verseToast) return;
+        verseToast.textContent = msg;
+        verseToast.hidden = false;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          verseToast.hidden = true;
+        }, 2600);
+      }
 
-      function highlightVerse(verseNum, { updateHash = true } = {}) {
+      function formatVerseRanges(numbers) {
+        if (!numbers.length) return '';
+        const sorted = [...numbers].sort((a, b) => a - b);
+        const ranges = [];
+        let start = sorted[0];
+        let end = start;
+
+        for (let i = 1; i < sorted.length; i++) {
+          if (sorted[i] === end + 1) {
+            end = sorted[i];
+          } else {
+            ranges.push(start === end ? `${start}` : `${start}–${end}`);
+            start = sorted[i];
+            end = start;
+          }
+        }
+        ranges.push(start === end ? `${start}` : `${start}–${end}`);
+        return ranges.join(', ');
+      }
+
+      function updateSelectionUI({ updateHash = true } = {}) {
+        const sorted = Array.from(selectedVerses).sort((a, b) => a - b);
+
         versesContainer?.querySelectorAll('.verse-line').forEach((line) => {
-          line.classList.toggle('is-highlighted', line.id === `verse-${verseNum}`);
+          const vNum = Number(line.id.replace('verse-', ''));
+          line.classList.toggle('is-highlighted', selectedVerses.has(vNum));
         });
 
-        if (verseNum) {
-          selectedVerse = verseNum;
-          if (actionBar && actionLabel) {
-            actionLabel.textContent = `${bookName} ${chapterNum}:${verseNum}`;
-            actionBar.hidden = false;
+        if (sorted.length > 0) {
+          if (actionBar) actionBar.hidden = false;
+          const rangeText = formatVerseRanges(sorted);
+          if (actionLabel) {
+            actionLabel.textContent = `${bookName} ${chapterNum}:${rangeText}`;
+          }
+          if (actionCount) {
+            actionCount.textContent = `${sorted.length}/${maxVerses}`;
+            actionCount.hidden = false;
           }
           if (updateHash) {
-            history.replaceState(null, '', `#verse-${verseNum}`);
+            history.replaceState(null, '', `#verse-${sorted[0]}`);
           }
         } else {
-          selectedVerse = null;
           if (actionBar) actionBar.hidden = true;
           if (updateHash && window.location.hash) {
             history.replaceState(null, '', window.location.pathname);
@@ -482,55 +613,128 @@ const chapterSchema = {
         }
       }
 
+      function buildQuotePayload() {
+        const sorted = Array.from(selectedVerses).sort((a, b) => a - b);
+        if (!sorted.length) return null;
+
+        const rangeText = formatVerseRanges(sorted);
+        const shareUrl = `${window.location.origin}${window.location.pathname}#verse-${sorted[0]}`;
+
+        let textBody = '';
+        if (sorted.length === 1) {
+          const line = document.getElementById(`verse-${sorted[0]}`);
+          const text = line?.querySelector('.verse-text')?.textContent?.trim() || '';
+          textBody = `"${text}"\n— ${bookName} ${chapterNum}:${sorted[0]} (NIV)\n${shareUrl}`;
+        } else {
+          const lines = sorted
+            .map((v) => {
+              const line = document.getElementById(`verse-${v}`);
+              const text = line?.querySelector('.verse-text')?.textContent?.trim() || '';
+              return `${v}. ${text}`;
+            })
+            .join('\n');
+          textBody = `"${lines}"\n— ${bookName} ${chapterNum}:${rangeText} (NIV)\n${shareUrl}`;
+        }
+
+        return {
+          title: `${bookName} ${chapterNum}:${rangeText} (NIV)`,
+          text: textBody,
+          url: shareUrl,
+        };
+      }
+
+      // Check if URL has a hash like #verse-13 on load
       if (window.location.hash) {
         const match = window.location.hash.match(/^#verse-(\d+)$/);
         if (match) {
-          const vNum = match[1];
-          highlightVerse(vNum, { updateHash: false });
-          requestAnimationFrame(() => {
-            document.getElementById(`verse-${vNum}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-          });
+          const vNum = Number(match[1]);
+          if (vNum) {
+            selectedVerses.add(vNum);
+            updateSelectionUI({ updateHash: false });
+            requestAnimationFrame(() => {
+              document.getElementById(`verse-${vNum}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            });
+          }
         }
       }
 
+      // Verse click listener (multi-select 1 to 10)
       versesContainer?.addEventListener('click', (e) => {
         const btn = e.target.closest('.verse-number');
         const line = e.target.closest('.verse-line');
         if (btn || line) {
           const targetLine = btn ? btn.closest('.verse-line') : line;
-          const vNum = targetLine?.id?.replace('verse-', '');
-          if (vNum) {
-            if (selectedVerse === vNum) {
-              highlightVerse(null);
-            } else {
-              highlightVerse(vNum);
+          const vNum = Number(targetLine?.id?.replace('verse-', ''));
+          if (!vNum) return;
+
+          if (selectedVerses.has(vNum)) {
+            selectedVerses.delete(vNum);
+            updateSelectionUI();
+          } else {
+            if (selectedVerses.size >= maxVerses) {
+              showToast('You can select a maximum of 10 verses.');
+              return;
             }
+            selectedVerses.add(vNum);
+            updateSelectionUI();
           }
         }
       });
 
+      // Copy selected verses
       copyVerseBtn?.addEventListener('click', async () => {
-        if (!selectedVerse) return;
-        const line = document.getElementById(`verse-${selectedVerse}`);
-        const text = line?.querySelector('.verse-text')?.textContent || '';
-        const citation = `"${text}" — ${bookName} ${chapterNum}:${selectedVerse} (NIV)`;
+        const payload = buildQuotePayload();
+        if (!payload) return;
 
         try {
-          await navigator.clipboard.writeText(citation);
-          const origText = copyVerseBtn.querySelector('span')?.textContent;
-          if (copyVerseBtn.querySelector('span')) {
-            copyVerseBtn.querySelector('span').textContent = 'Copied!';
+          await navigator.clipboard.writeText(payload.text);
+          const btnText = copyVerseBtn.querySelector('.btn-text');
+          if (btnText) {
+            const original = btnText.textContent;
+            btnText.textContent = 'Copied!';
             setTimeout(() => {
-              copyVerseBtn.querySelector('span').textContent = origText || 'Copy';
+              btnText.textContent = original;
             }, 2000);
           }
+          showToast(selectedVerses.size === 1 ? 'Verse copied to clipboard!' : `${selectedVerses.size} verses copied!`);
         } catch (err) {
-          console.warn('Error copying:', err);
+          console.warn('Error copying verses:', err);
         }
       });
 
+      // Share selected verses
+      shareVerseBtn?.addEventListener('click', async () => {
+        const payload = buildQuotePayload();
+        if (!payload) return;
+
+        if (navigator.share) {
+          try {
+            await navigator.share({
+              title: payload.title,
+              text: payload.text,
+              url: payload.url,
+            });
+            return;
+          } catch (err) {
+            if (err.name === 'AbortError') return;
+          }
+        }
+
+        // WhatsApp direct fallback
+        const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(payload.text)}`;
+        const opened = window.open(whatsappUrl, '_blank', 'noopener,noreferrer');
+        if (!opened) {
+          try {
+            await navigator.clipboard.writeText(payload.text);
+            showToast('Link and verses copied to clipboard!');
+          } catch (_) {}
+        }
+      });
+
+      // Clear selection
       clearVerseBtn?.addEventListener('click', () => {
-        highlightVerse(null);
+        selectedVerses.clear();
+        updateSelectionUI();
       });
 
       copyChapterBtn?.addEventListener('click', async () => {
@@ -560,7 +764,9 @@ const chapterSchema = {
       });
     }
 
-    setupEnglishReaderInteractions();
     document.addEventListener('astro:page-load', setupEnglishReaderInteractions);
+    if (document.readyState === 'complete' || document.readyState === 'interactive') {
+      setupEnglishReaderInteractions();
+    }
   </script>
 </BaseLayout>

@@ -1,0 +1,493 @@
+<!doctype html>
+<html lang="pt-BR" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>Leitura Offline — Online Bíblia</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/icon-192.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content="#0a0c0b" />
+    <style>
+      :root {
+        color-scheme: dark;
+        --page: #0a0c0b;
+        --surface: #121513;
+        --surface-soft: #171b18;
+        --ink: #e6e6e6;
+        --ink-strong: #ffffff;
+        --muted: #88938b;
+        --line: rgba(255, 255, 255, 0.08);
+        --accent: #92bfa0;
+        --accent-strong: #bde5cb;
+        --accent-soft: rgba(146, 191, 160, 0.12);
+        --reading-size: 20px;
+        --reading-line-height: 42px;
+      }
+      body {
+        margin: 0;
+        background: var(--page);
+        color: var(--ink);
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        line-height: 1.55;
+      }
+      .offline-badge-banner {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 5px 14px;
+        margin-bottom: 16px;
+        border-radius: 999px;
+        background: rgba(146, 191, 160, 0.12);
+        color: var(--accent-strong);
+        border: 1px solid rgba(146, 191, 160, 0.3);
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: .02em;
+      }
+      .offline-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 8px var(--accent);
+      }
+      .offline-container {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 24px 20px 100px;
+      }
+      .offline-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 36px 32px;
+        box-shadow: 0 16px 44px rgba(0, 0, 0, 0.4);
+      }
+      .offline-header {
+        text-align: center;
+        margin-bottom: 28px;
+      }
+      .offline-title {
+        font-size: 32px;
+        font-weight: 800;
+        color: var(--ink-strong);
+        margin: 0 0 8px;
+      }
+      .offline-verses {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .offline-verse-line {
+        padding: 10px 14px;
+        border-radius: 10px;
+        font-size: var(--reading-size, 20px);
+        line-height: var(--reading-line-height, 42px);
+        transition: background .15s ease;
+        cursor: pointer;
+      }
+      .offline-verse-line:hover {
+        background: var(--surface-soft);
+      }
+      .offline-verse-line.is-highlighted {
+        background: var(--accent-soft);
+        box-shadow: inset 3.5px 0 0 var(--accent);
+      }
+      .offline-verse-num {
+        display: inline-block;
+        min-width: 26px;
+        color: var(--accent);
+        font-size: 13px;
+        font-weight: 700;
+        vertical-align: 0.45em;
+        user-select: none;
+      }
+      .offline-nav-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 36px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
+      }
+      .offline-nav-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 18px;
+        border-radius: 12px;
+        background: var(--surface-soft);
+        color: var(--ink-strong);
+        text-decoration: none;
+        font-size: 13px;
+        font-weight: 600;
+        border: 1px solid var(--line);
+        transition: all .16s ease;
+      }
+      .offline-nav-btn:hover {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent-strong);
+      }
+      .offline-nav-btn.disabled {
+        opacity: 0.35;
+        pointer-events: none;
+      }
+      .offline-book-list {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .offline-book-item {
+        display: block;
+        padding: 12px;
+        background: var(--surface-soft);
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        color: var(--ink-strong);
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 13px;
+        text-align: center;
+      }
+      .offline-book-item:hover {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+      }
+
+      /* Floating Action Bar */
+      .verse-action-bar {
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 50;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 8px 14px;
+        background: rgba(18, 21, 19, 0.94);
+        color: var(--ink-strong);
+        border: 1px solid rgba(255, 255, 255, 0.14);
+        border-radius: 999px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        max-width: calc(100vw - 32px);
+        box-sizing: border-box;
+      }
+      .verse-action-bar[hidden] {
+        display: none !important;
+      }
+      .verse-selection-info {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding-left: 6px;
+        white-space: nowrap;
+      }
+      .selected-verse-label {
+        font-size: 12px;
+        font-weight: 700;
+        color: var(--ink-strong);
+      }
+      .selected-verse-count {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 2px 8px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        font-size: 11px;
+        font-weight: 700;
+        border: 1px solid rgba(146, 191, 160, 0.3);
+      }
+      .action-bar-buttons {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .action-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 13px;
+        border-radius: 999px;
+        border: 0;
+        font-size: 11.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all .16s ease;
+        white-space: nowrap;
+      }
+      .action-btn svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .copy-btn {
+        background: var(--accent-strong);
+        color: #0a0c0b;
+      }
+      .copy-btn:hover {
+        filter: brightness(1.08);
+      }
+      .share-btn {
+        background: var(--surface-soft);
+        color: var(--ink);
+        border: 1px solid var(--line);
+      }
+      .share-btn:hover {
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        border-color: var(--accent);
+      }
+      .clear-btn {
+        background: transparent;
+        color: var(--muted);
+        padding: 6px 9px;
+        font-size: 13px;
+      }
+      .clear-btn:hover {
+        color: var(--ink-strong);
+        background: var(--surface-soft);
+      }
+      .verse-toast {
+        position: fixed;
+        bottom: 84px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 60;
+        padding: 8px 18px;
+        border-radius: 999px;
+        background: rgba(18, 21, 19, 0.94);
+        color: #ffffff;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        font-size: 12px;
+        font-weight: 600;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        pointer-events: none;
+        white-space: nowrap;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="offline-container">
+      <div style="text-align: center;">
+        <div class="offline-badge-banner">
+          <span class="offline-dot" aria-hidden="true"></span>
+          <span>Modo Offline — Bíblia Instalada</span>
+        </div>
+      </div>
+
+      <article class="offline-card" id="offline-content">
+        <div style="text-align: center; padding: 40px 20px;">
+          <p>Carregando as Sagradas Escrituras do armazenamento local...</p>
+        </div>
+      </article>
+
+      <!-- Floating Action Bar for Selected Verses (1 to 10) -->
+      <div id="verse-action-bar" class="verse-action-bar" hidden aria-live="polite">
+        <div class="verse-selection-info">
+          <span id="selected-verse-label" class="selected-verse-label">Versículos selecionados</span>
+          <span id="selected-verse-count" class="selected-verse-count">1/10</span>
+        </div>
+        <div class="action-bar-buttons">
+          <button type="button" id="btn-copy-verse" class="action-btn copy-btn" title="Copiar versículos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+            <span class="btn-text">Copiar</span>
+          </button>
+          <button type="button" id="btn-share-verse" class="action-btn share-btn" title="Compartilhar versículos">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            <span class="btn-text">Compartilhar</span>
+          </button>
+          <button type="button" id="btn-clear-verse" class="action-btn clear-btn" aria-label="Desmarcar">✕</button>
+        </div>
+      </div>
+
+      <div id="verse-toast" class="verse-toast" hidden role="status" aria-live="polite"></div>
+    </main>
+
+    <script>
+      (async function initOfflineReader() {
+        const path = window.location.pathname;
+        const isEnglish = path.startsWith('/en/');
+        const langFile = isEnglish ? '/data/bible-en.json' : '/data/bible-pt.json';
+        const prefix = isEnglish ? '/en/bible' : '/biblia';
+        const contentEl = document.getElementById('offline-content');
+
+        // Extract book and chapter from URL like /biblia/genesis/1/
+        const match = path.match(new RegExp(`^${prefix}/([^/]+)(?:/(\\d+))?`));
+        const bookSlug = match ? match[1].toLowerCase() : null;
+        const chapterNum = match && match[2] ? parseInt(match[2], 10) : 1;
+
+        try {
+          const res = await fetch(langFile);
+          if (!res.ok) throw new Error('Não foi possível ler os dados locais');
+          const data = await res.json();
+          const books = data.books || [];
+
+          if (!bookSlug) {
+            // Render Books directory
+            contentEl.innerHTML = `
+              <header class="offline-header">
+                <h1 class="offline-title">${isEnglish ? 'Holy Bible (Offline)' : 'Bíblia Sagrada (Offline)'}</h1>
+                <p style="color: var(--muted);">${isEnglish ? 'Select a book to read without internet:' : 'Selecione um livro para ler sem internet:'}</p>
+              </header>
+              <div class="offline-book-list">
+                ${books.map(b => `
+                  <a class="offline-book-item" href="${prefix}/${b.id || b.slug || b.name.toLowerCase()}/1/">
+                    ${b.name}
+                  </a>
+                `).join('')}
+              </div>
+            `;
+            return;
+          }
+
+          // Find requested book
+          const book = books.find(b => {
+            const id = (b.id || '').toLowerCase();
+            const name = (b.name || '').toLowerCase();
+            return id === bookSlug || name === bookSlug || id.replace(/-/g, '') === bookSlug.replace(/-/g, '');
+          }) || books[0];
+
+          const chapters = book.chapters || [];
+          const currentChapter = chapters.find(c => c.chapter === chapterNum) || chapters[0] || { chapter: chapterNum, verses: [] };
+
+          const prevCh = chapterNum > 1 ? chapterNum - 1 : null;
+          const nextCh = chapterNum < chapters.length ? chapterNum + 1 : null;
+
+          contentEl.innerHTML = `
+            <header class="offline-header">
+              <span class="offline-badge-banner">Capítulo ${currentChapter.chapter} de ${chapters.length}</span>
+              <h1 class="offline-title">${book.name} ${currentChapter.chapter}</h1>
+            </header>
+            <div class="offline-verses" id="chapter-verses">
+              ${currentChapter.verses.map(v => `
+                <div class="offline-verse-line" id="verse-${v.verse}" data-num="${v.verse}">
+                  <span class="offline-verse-num">${v.verse}</span>
+                  <span class="verse-text">${v.text}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="offline-nav-row">
+              ${prevCh ? `<a class="offline-nav-btn" href="${prefix}/${book.id || bookSlug}/${prevCh}/">← Capítulo ${prevCh}</a>` : `<span class="offline-nav-btn disabled">← Início</span>`}
+              <a class="offline-nav-btn" href="${prefix}/">${isEnglish ? 'All Books' : 'Todos os Livros'}</a>
+              ${nextCh ? `<a class="offline-nav-btn" href="${prefix}/${book.id || bookSlug}/${nextCh}/">Capítulo ${nextCh} →</a>` : `<span class="offline-nav-btn disabled">Fim →</span>`}
+            </div>
+          `;
+
+          // Multi-selection 1 to 10 verses offline
+          const selected = new Set();
+          const actionBar = document.getElementById('verse-action-bar');
+          const labelEl = document.getElementById('selected-verse-label');
+          const countEl = document.getElementById('selected-verse-count');
+          const copyBtn = document.getElementById('btn-copy-verse');
+          const clearBtn = document.getElementById('btn-clear-verse');
+          const toast = document.getElementById('verse-toast');
+
+          function showToast(msg) {
+            if (!toast) return;
+            toast.textContent = msg;
+            toast.hidden = false;
+            setTimeout(() => { toast.hidden = true; }, 2500);
+          }
+
+          function updateUI() {
+            const sorted = Array.from(selected).sort((a,b) => a - b);
+            document.querySelectorAll('.offline-verse-line').forEach(l => {
+              const num = parseInt(l.getAttribute('data-num'), 10);
+              l.classList.toggle('is-highlighted', selected.has(num));
+            });
+            if (sorted.length > 0) {
+              actionBar.hidden = false;
+              labelEl.textContent = `${book.name} ${currentChapter.chapter}:${sorted[0]}${sorted.length > 1 ? '–' + sorted[sorted.length - 1] : ''}`;
+              countEl.textContent = `${sorted.length}/10`;
+            } else {
+              actionBar.hidden = true;
+            }
+          }
+
+          document.getElementById('chapter-verses')?.addEventListener('click', (e) => {
+            const line = e.target.closest('.offline-verse-line');
+            if (!line) return;
+            const num = parseInt(line.getAttribute('data-num'), 10);
+            if (selected.has(num)) {
+              selected.delete(num);
+            } else {
+              if (selected.size >= 10) {
+                showToast('Máximo de 10 versículos selecionados.');
+                return;
+              }
+              selected.add(num);
+            }
+            updateUI();
+          });
+
+          copyBtn?.addEventListener('click', async () => {
+            const sorted = Array.from(selected).sort((a,b) => a - b);
+            if (!sorted.length) return;
+            const lines = sorted.map(v => {
+              const text = document.getElementById(`verse-${v}`)?.querySelector('.verse-text')?.textContent?.trim() || '';
+              return `${v}. ${text}`;
+            }).join('\n');
+            const quote = `"${lines}"\n— ${book.name} ${currentChapter.chapter} (Offline)\n${window.location.href}`;
+            try {
+              await navigator.clipboard.writeText(quote);
+              showToast('Copiado com sucesso!');
+            } catch (_) {}
+          });
+
+          const shareBtn = document.getElementById('btn-share-verse');
+
+          shareBtn?.addEventListener('click', async () => {
+            const sorted = Array.from(selected).sort((a,b) => a - b);
+            if (!sorted.length) return;
+            const lines = sorted.map(v => {
+              const text = document.getElementById(`verse-${v}`)?.querySelector('.verse-text')?.textContent?.trim() || '';
+              return `${v}. ${text}`;
+            }).join('\n');
+            const refTitle = `${book.name} ${currentChapter.chapter}:${sorted[0]}${sorted.length > 1 ? '–' + sorted[sorted.length - 1] : ''}`;
+            const quote = `"${lines}"\n— ${refTitle} (Online Bíblia Offline)\n${window.location.href}`;
+
+            if (navigator.share) {
+              try {
+                await navigator.share({
+                  title: refTitle,
+                  text: quote,
+                  url: window.location.href,
+                });
+                return;
+              } catch (err) {
+                if (err.name === 'AbortError') return;
+              }
+            }
+            // WhatsApp fallback
+            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(quote)}`;
+            window.open(waUrl, '_blank', 'noopener,noreferrer');
+          });
+
+        } catch (err) {
+          contentEl.innerHTML = `
+            <div style="text-align: center; padding: 40px 20px;">
+              <h2>Leitura Offline</h2>
+              <p>Os arquivos locais da Bíblia ainda não foram baixados.</p>
+              <p>Conecte-se à internet uma vez para que o aplicativo salve a Bíblia completa no seu celular.</p>
+              <a class="offline-nav-btn" href="/">Tentar Reconectar</a>
+            </div>
+          `;
+        }
+      })();
+    </script>
+  </body>
+</html>

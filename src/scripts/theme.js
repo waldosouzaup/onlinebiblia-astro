@@ -13,6 +13,10 @@ function initTheme() {
       button.setAttribute('aria-label', theme === 'dark' ? 'Ativar tema claro' : 'Ativar tema escuro');
       button.setAttribute('title', theme === 'dark' ? 'Usar tema claro' : 'Usar tema escuro');
     });
+    const metaTheme = document.querySelector('meta[name="theme-color"]:not([media])');
+    if (metaTheme) {
+      metaTheme.setAttribute('content', theme === 'dark' ? '#0a0c0b' : '#fbf9f5');
+    }
   }
 
   let savedTheme = 'dark';

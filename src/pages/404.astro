@@ -1,0 +1,164 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+---
+
+<BaseLayout
+  title="Página não encontrada (404) — Online Bíblia"
+  description="A página ou passagem bíblica que você está procurando não foi encontrada. Navegue pelos 66 livros da Bíblia Sagrada ou faça uma busca."
+  page="404"
+  noindex={true}
+>
+  <SiteHeader active="" />
+
+  <main class="shell error-page">
+    <div class="error-container">
+      <span class="error-badge">ERRO 404</span>
+      <h1 class="error-title">Página não encontrada</h1>
+      <p class="error-desc">
+        O livro, capítulo ou página que você tentou acessar não existe ou pode ter sido movido.
+      </p>
+
+      <div class="error-actions">
+        <a href="/" class="error-btn primary">
+          <span>📖 Voltar para o Início</span>
+        </a>
+        <a href="/biblia/" class="error-btn secondary">
+          <span>Todos os 66 Livros</span>
+        </a>
+        <a href="/concordancia/" class="error-btn secondary">
+          <span>Concordância Bíblica</span>
+        </a>
+      </div>
+
+      <p class="error-verse">
+        <em>"A tua palavra é lâmpada que ilumina os meus passos e luz que clareia o meu caminho."</em>
+        <span>— Salmos 119:105</span>
+      </p>
+    </div>
+  </main>
+</BaseLayout>
+
+<style>
+  .error-page {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: calc(100vh - 280px);
+    padding: 60px 20px;
+  }
+
+  .error-container {
+    max-width: 580px;
+    width: 100%;
+    text-align: center;
+    padding: 48px 32px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 20px;
+    box-shadow: var(--shadow);
+  }
+
+  .error-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    background: var(--accent-soft);
+    color: var(--accent-strong);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    margin-bottom: 16px;
+  }
+
+  .error-title {
+    margin: 0 0 12px;
+    font-family: 'Literata', Georgia, serif;
+    font-size: 32px;
+    font-weight: 400;
+    color: var(--ink-strong);
+  }
+
+  .error-desc {
+    margin: 0 0 32px;
+    color: var(--muted);
+    font-size: 15px;
+    line-height: 1.6;
+  }
+
+  .error-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+
+  .error-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.18s ease;
+  }
+
+  .error-btn.primary {
+    background: var(--accent-strong);
+    color: #ffffff;
+  }
+
+  .error-btn.primary:hover {
+    opacity: 0.92;
+    transform: translateY(-1px);
+  }
+
+  .error-btn.secondary {
+    background: var(--surface-soft);
+    color: var(--ink);
+    border: 1px solid var(--line);
+  }
+
+  .error-btn.secondary:hover {
+    background: var(--line);
+  }
+
+  .error-verse {
+    margin: 0;
+    padding-top: 24px;
+    border-top: 1px solid var(--line);
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.6;
+  }
+
+  .error-verse em {
+    display: block;
+    margin-bottom: 4px;
+    font-family: 'Literata', Georgia, serif;
+    font-style: italic;
+  }
+
+  .error-verse span {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent-strong);
+  }
+
+  @media (max-width: 600px) {
+    .error-container {
+      padding: 32px 20px;
+    }
+    .error-actions {
+      flex-direction: column;
+      width: 100%;
+    }
+    .error-btn {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+</style>

@@ -921,6 +921,237 @@ dialog.support-modal[open] {
   font-size: 12px;
 }
 
+/* Home Page Spotlight Search Header */
+.home-search-spotlight {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  padding: 42px 0 32px;
+  max-width: 860px;
+  margin-inline: auto;
+  width: 100%;
+}
+
+.spotlight-search-bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  min-height: 58px;
+  padding: 8px 18px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.spotlight-search-bar:hover {
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--line));
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+}
+
+.spotlight-search-bar:focus-within {
+  border-color: var(--accent);
+  background: var(--surface);
+  box-shadow: 0 10px 32px rgba(55, 89, 69, 0.12), 0 0 0 3px var(--accent-soft);
+  transform: translateY(-1px);
+}
+
+.spotlight-search-icon {
+  display: grid;
+  place-items: center;
+  color: var(--accent-strong);
+  flex-shrink: 0;
+}
+
+.spotlight-search-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.2;
+}
+
+.spotlight-search-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ink-strong);
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.4;
+  font-family: inherit;
+}
+
+.spotlight-search-input::placeholder {
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.spotlight-clear-btn {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 0;
+  background: var(--surface-soft);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+
+.spotlight-clear-btn:hover {
+  background: var(--line);
+  color: var(--ink-strong);
+}
+
+.spotlight-counter {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 12px;
+  border-radius: 20px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.home-filter-chips {
+  justify-content: center;
+}
+
+.home-filter-chips .bible-tab-btn {
+  padding: 9px 18px;
+  font-size: 12px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.home-filter-chips .bible-tab-btn.is-active {
+  color: var(--accent-strong);
+  background: var(--accent-soft);
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+}
+
+.home-filter-chips .bible-tab-btn:hover:not(.is-active) {
+  background: var(--surface-soft);
+  color: var(--ink);
+}
+
+/* Quick Jump Suggestion */
+.quick-jump-card {
+  width: 100%;
+  margin-top: -6px;
+  padding: 12px 18px;
+  background: var(--surface);
+  border: 1.5px solid var(--accent);
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(35, 51, 42, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  box-sizing: border-box;
+}
+
+.quick-jump-card[hidden] {
+  display: none !important;
+}
+
+.quick-jump-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--accent-strong);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.quick-jump-link:hover {
+  text-decoration: underline;
+}
+
+.quick-jump-hint {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+/* No results state */
+.search-no-results {
+  text-align: center;
+  padding: 56px 24px;
+  background: var(--surface);
+  border: 1px dashed var(--line);
+  border-radius: 16px;
+  margin: 16px 0 48px;
+}
+
+.search-no-results p {
+  margin: 0 0 16px;
+  color: var(--muted);
+  font-size: 15px;
+}
+
+.search-no-results strong {
+  color: var(--ink-strong);
+}
+
+.search-reset-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 20px;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.search-reset-btn:hover {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+@media (max-width: 640px) {
+  .home-search-spotlight {
+    padding: 24px 0 20px;
+    gap: 14px;
+  }
+  .spotlight-search-bar {
+    min-height: 50px;
+    padding: 6px 14px;
+    gap: 10px;
+    border-radius: 14px;
+  }
+  .spotlight-search-input {
+    font-size: 15px;
+  }
+  .spotlight-counter {
+    display: none;
+  }
+  .home-filter-chips .bible-tab-btn {
+    padding: 7px 12px;
+    font-size: 11px;
+  }
+}
+
 .testament-section {
   margin-bottom: 52px;
 }

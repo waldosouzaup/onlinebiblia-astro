@@ -1,167 +1,422 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { getAllBooks } from '../lib/bible.js';
+
+const books = getAllBooks();
+const oldTestament = books.filter((b) => b.testament === 'old');
+const newTestament = books.filter((b) => b.testament === 'new');
 
 const siteUrl = 'https://onlinebiblia.com';
 
 const websiteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
-  'name': 'Online Bíblia',
-  'alternateName': ['OnlineBiblia', 'Bíblia Online'],
-  'url': `${siteUrl}/`,
-  'description': 'Leia a Bíblia Sagrada completa online com foco total na leitura, sem distrações. 66 livros e 1.189 capítulos em português e inglês.',
-  'inLanguage': ['pt-BR', 'en'],
-  'potentialAction': {
+  name: 'Online Bíblia',
+  alternateName: ['OnlineBiblia', 'Bíblia Online'],
+  url: `${siteUrl}/`,
+  description: 'Leia a Bíblia Sagrada completa online com foco total na leitura, sem distrações. 66 livros e 1.189 capítulos em português e inglês.',
+  inLanguage: ['pt-BR', 'en'],
+  potentialAction: {
     '@type': 'SearchAction',
-    'target': {
+    target: {
       '@type': 'EntryPoint',
-      'urlTemplate': `${siteUrl}/?q={search_term_string}`
+      urlTemplate: `${siteUrl}/#busca`,
     },
-    'query-input': 'required name=search_term_string'
-  }
+    'query-input': 'required name=search_term_string',
+  },
 };
 
 const organizationSchema = {
   '@context': 'https://schema.org',
   '@type': 'Organization',
-  'name': 'Online Bíblia',
-  'url': `${siteUrl}/`,
-  'logo': `${siteUrl}/favicon.svg`,
-  'founder': {
+  name: 'Online Bíblia',
+  url: `${siteUrl}/`,
+  logo: `${siteUrl}/favicon.svg`,
+  founder: {
     '@type': 'Person',
-    'name': 'Waldo Eller'
-  }
+    name: 'Waldo Eller',
+  },
+};
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Bíblia Sagrada Completa — Todos os 66 Livros',
+  description: 'Navegue por todos os 66 livros da Bíblia Sagrada (NVI). Antigo e Novo Testamento com leitura suave, rápida e capítulos organizados.',
+  url: `${siteUrl}/`,
+  inLanguage: 'pt-BR',
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: books.length,
+    itemListElement: books.map((b, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: b.name,
+      url: `${siteUrl}/biblia/${b.slug}/`,
+    })),
+  },
 };
 ---
+
 <BaseLayout
-  title="Online Bíblia — Leitura Limpa da Bíblia Sagrada Online"
-  description="Leia a Bíblia Sagrada completa online com conforto e foco total no texto. Navegue pelos 66 livros e 1.189 capítulos em português (NVI) e inglês (NIV)."
+  title="Online Bíblia — Todos os 66 Livros da Bíblia Sagrada Online"
+  description="Leia a Bíblia Sagrada completa online. Navegue pelos 66 livros e 1.189 capítulos do Antigo e Novo Testamento com busca rápida e leitura sem distrações."
   page="biblia"
-  schema={[websiteSchema, organizationSchema]}
+  equivalentUrl="/en/bible/"
+  schema={[websiteSchema, organizationSchema, collectionSchema]}
 >
   <SiteHeader active="biblia" />
-  <main>
-    <section class="reader-layout shell" aria-label="Leitor da Bíblia">
-      <div id="selection-backdrop" class="selection-backdrop" aria-hidden="true"></div>
 
-      <aside class="selection-panel panel" id="selection-panel" aria-label="Navegação bíblica">
-        <div class="panel-heading">
-          <span class="panel-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5.5c3.3-1.3 5.9-.8 8 1.1v13c-2.1-1.9-4.7-2.4-8-1.1v-13ZM20 5.5c-3.3-1.3-5.9-.8-8 1.1v13c2.1-1.9 4.7-2.4 8-1.1v-13Z"/></svg></span>
-          <div><h2>Encontre sua leitura</h2><p>Escolha onde começar</p></div>
-          <button type="button" class="panel-close-btn" id="close-selection-panel" aria-label="Fechar painel de seleção">✕</button>
-        </div>
-        <div class="testament-filter" role="group" aria-label="Filtrar por testamento">
-          <button type="button" class="filter-chip is-selected" data-testament="all" aria-pressed="true">Todos</button>
-          <button type="button" class="filter-chip" data-testament="old" aria-pressed="false">Antigo</button>
-          <button type="button" class="filter-chip" data-testament="new" aria-pressed="false">Novo</button>
-        </div>
-        <div class="field-group">
-          <label for="book-select">Livro</label>
-          <select id="book-select" disabled><option>Carregando livros…</option></select>
-        </div>
-        <div class="field-row">
-          <div class="field-group"><label for="chapter-select">Capítulo</label><select id="chapter-select" disabled><option>—</option></select></div>
-          <div class="field-group"><label for="verse-select">Versículo</label><select id="verse-select" disabled><option>—</option></select></div>
-        </div>
-        <div class="panel-divider"></div>
-        <form id="search-form" class="search-form" role="search">
-          <label for="bible-search">Buscar na Bíblia</label>
-          <div class="search-field" id="busca">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg>
-            <input id="bible-search" type="search" placeholder="Palavra ou expressão…" autocomplete="off" />
-            <button type="submit" aria-label="Buscar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
-          </div>
-          <p class="field-hint">Pesquise palavras nos arquivos carregados.</p>
-        </form>
-        <div id="search-results" class="search-results" aria-live="polite"></div>
+  <main class="shell bible-index-page">
+    <h1 class="sr-only">Bíblia Sagrada Completa — Todos os 66 Livros do Antigo e Novo Testamento</h1>
 
-        <a class="side-link" href="/biblia/">
-          <span class="side-link-icon" aria-hidden="true">📖</span>
-          <span><strong>Todos os 66 Livros</strong><small>Páginas em HTML leve</small></span>
-          <span class="side-arrow" aria-hidden="true">→</span>
-        </a>
-        <a class="side-link" href="/concordancia/">
-          <span class="side-link-icon" aria-hidden="true">⌕</span>
-          <span><strong>Concordância bíblica</strong><small>Explore temas e referências</small></span>
-          <span class="side-arrow" aria-hidden="true">↗</span>
-        </a>
-      </aside>
+    <!-- Destaque para o campo de busca (Spotlight Search) -->
+    <header class="home-search-spotlight" id="busca">
+      <div class="spotlight-search-bar">
+        <span class="spotlight-search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg>
+        </span>
+        <input
+          type="search"
+          id="book-search-input"
+          class="spotlight-search-input"
+          placeholder="Pesquisar livro da Bíblia (ex: Salmos, Gênesis, Mateus, Sl)..."
+          aria-label="Pesquisar livro da Bíblia"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button
+          type="button"
+          id="clear-search-btn"
+          class="spotlight-clear-btn"
+          aria-label="Limpar pesquisa"
+          title="Limpar pesquisa"
+          hidden
+        >
+          ✕
+        </button>
+        <span class="spotlight-counter" id="search-counter-badge">{books.length} livros</span>
+      </div>
 
-      <section class="reading-column" aria-labelledby="current-ref">
-        <div class="reading-toolbar">
-          <button
-            type="button"
-            class="mobile-open-panel-btn"
-            id="toggle-selection-panel"
-            aria-expanded="false"
-            aria-controls="selection-panel"
-            title="Escolha um livro ou faça uma busca"
+      <!-- Card de atalho rápido para capítulo quando o usuário digita passagem (ex: João 3, Salmos 23) -->
+      <div id="quick-jump-card" class="quick-jump-card" hidden></div>
+
+      <div class="filter-chips home-filter-chips" role="toolbar" aria-label="Filtro de livros por testamento">
+        <button type="button" class="bible-tab-btn is-active" data-filter="all">Todos ({books.length})</button>
+        <button type="button" class="bible-tab-btn" data-filter="old">Antigo Testamento ({oldTestament.length})</button>
+        <button type="button" class="bible-tab-btn" data-filter="new">Novo Testamento ({newTestament.length})</button>
+      </div>
+    </header>
+
+    <!-- Estado sem resultados -->
+    <div id="search-no-results" class="search-no-results" hidden>
+      <p>Nenhum livro encontrado para "<strong id="search-query-text"></strong>".</p>
+      <button type="button" id="reset-search-btn" class="search-reset-btn">
+        <span>✕ Limpar busca</span>
+      </button>
+    </div>
+
+    <!-- Antigo Testamento -->
+    <section class="testament-section" id="section-old" aria-labelledby="heading-old">
+      <div class="section-heading">
+        <div>
+          <span class="testament-kicker">{oldTestament.length} LIVROS</span>
+          <h2 id="heading-old">Antigo Testamento</h2>
+        </div>
+        <p class="section-desc">Do relato da Criação aos livros proféticos que anunciam a promessa.</p>
+      </div>
+
+      <div class="books-grid">
+        {oldTestament.map((book) => (
+          <article
+            class="book-card"
+            data-testament="old"
+            data-name={book.name.toLowerCase()}
+            data-group={book.group.toLowerCase()}
+            data-abbrev={book.abbrev.toLowerCase()}
+            data-slug={book.slug.toLowerCase()}
+            data-aliases={(book.aliases || []).join(' ').toLowerCase()}
+            data-chapters={book.chaptersCount}
           >
-            <svg viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/>
-              <path d="M6 6h10M6 10h10"/>
-            </svg>
-            <span>Escolher leitura / Buscar</span>
-          </button>
-
-          <div class="version-switch" role="group" aria-label="Idioma da Bíblia">
-            <button type="button" class="version-button is-active" data-version="pt" aria-pressed="true">PT <span>Português</span></button>
-            <button type="button" class="version-button" data-version="en" aria-pressed="false">EN <span>English</span></button>
-          </div>
-          <div class="font-controls" aria-label="Tamanho do texto">
-            <button type="button" id="font-decrease" aria-label="Diminuir tamanho da fonte" title="Diminuir fonte">A−</button>
-            <button type="button" id="font-increase" aria-label="Aumentar tamanho da fonte" title="Aumentar fonte">A+</button>
-          </div>
-        </div>
-        <div id="demo-notice" class="demo-notice" hidden><span aria-hidden="true">ⓘ</span> Conteúdo carregado.</div>
-        <article class="reading-card panel">
-          <div class="reading-card-top">
-            <div><p class="reading-kicker">SUA LEITURA</p><h1 id="current-ref">Preparando sua Bíblia…</h1></div>
-            <span class="version-label" id="version-label">NVI</span>
-          </div>
-          <div class="chapter-navigation">
-            <button type="button" id="previous-chapter" class="text-button" disabled><span aria-hidden="true">←</span> Anterior</button>
-            <span id="chapter-count" class="chapter-count">Capítulo</span>
-            <button type="button" id="next-chapter" class="text-button" disabled>Próximo <span aria-hidden="true">→</span></button>
-          </div>
-          <div id="reading-status" class="reading-status" role="status">Carregando conteúdo…</div>
-          <div id="reading-content" class="reading-content" aria-live="polite"></div>
-        </article>
-      </section>
+            <div class="book-card-header">
+              <span class="book-order">{String(book.order).padStart(2, '0')}</span>
+              <span class="book-group-tag">{book.group}</span>
+            </div>
+            <h3 class="book-card-title">
+              <a href={`/biblia/${book.slug}/1/`}>{book.name}</a>
+            </h3>
+            <p class="book-card-meta">{book.chaptersCount} {book.chaptersCount === 1 ? 'capítulo' : 'capítulos'}</p>
+            <div class="book-card-actions">
+              <a href={`/biblia/${book.slug}/1/`} class="book-read-btn">
+                Ler Cap. 1 <span aria-hidden="true">→</span>
+              </a>
+              <a href={`/biblia/${book.slug}/`} class="book-chapters-link" title={`Ver todos os ${book.chaptersCount} capítulos`}>
+                Ver capítulos
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
     </section>
 
-    <!-- Floating Minimalist Reader Dock (< — 1x + 📺 >) -->
-    <aside class="reader-floating-dock" aria-label="Controles de Leitura">
-      <button type="button" class="dock-btn prev" id="dock-previous-chapter" title="Capítulo anterior" aria-label="Capítulo anterior" disabled>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
-      </button>
+    <!-- Novo Testamento -->
+    <section class="testament-section" id="section-new" aria-labelledby="heading-new">
+      <div class="section-heading">
+        <div>
+          <span class="testament-kicker">{newTestament.length} LIVROS</span>
+          <h2 id="heading-new">Novo Testamento</h2>
+        </div>
+        <p class="section-desc">A vida, ensinamentos e sacrifício de Jesus, os Atos dos apóstolos, as cartas e a revelação final.</p>
+      </div>
 
-      <button type="button" class="dock-btn" id="dock-font-decrease" title="Diminuir tamanho da fonte" aria-label="Diminuir fonte">
-        <span class="dock-symbol">−</span>
-      </button>
-
-      <button type="button" class="dock-btn dock-scale" id="dock-font-reset" title="Tamanho da fonte (clique para redefinir para 1x)" aria-label="Tamanho da fonte">
-        <span id="dock-scale-text">1x</span>
-      </button>
-
-      <button type="button" class="dock-btn" id="dock-font-increase" title="Aumentar tamanho da fonte" aria-label="Aumentar fonte">
-        <span class="dock-symbol">+</span>
-      </button>
-
-      <button type="button" class="dock-btn dock-focus-btn" id="dock-focus-toggle" title="Modo Foco (tela limpa para meditação)" aria-label="Alternar Modo Foco">
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <rect width="20" height="15" x="2" y="3" rx="2"/>
-          <path d="M12 18v3M8 21h8"/>
-        </svg>
-      </button>
-
-      <button type="button" class="dock-btn next" id="dock-next-chapter" title="Próximo capítulo" aria-label="Próximo capítulo" disabled>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
-      </button>
-    </aside>
+      <div class="books-grid">
+        {newTestament.map((book) => (
+          <article
+            class="book-card"
+            data-testament="new"
+            data-name={book.name.toLowerCase()}
+            data-group={book.group.toLowerCase()}
+            data-abbrev={book.abbrev.toLowerCase()}
+            data-slug={book.slug.toLowerCase()}
+            data-aliases={(book.aliases || []).join(' ').toLowerCase()}
+            data-chapters={book.chaptersCount}
+          >
+            <div class="book-card-header">
+              <span class="book-order">{String(book.order).padStart(2, '0')}</span>
+              <span class="book-group-tag">{book.group}</span>
+            </div>
+            <h3 class="book-card-title">
+              <a href={`/biblia/${book.slug}/1/`}>{book.name}</a>
+            </h3>
+            <p class="book-card-meta">{book.chaptersCount} {book.chaptersCount === 1 ? 'capítulo' : 'capítulos'}</p>
+            <div class="book-card-actions">
+              <a href={`/biblia/${book.slug}/1/`} class="book-read-btn">
+                Ler Cap. 1 <span aria-hidden="true">→</span>
+              </a>
+              <a href={`/biblia/${book.slug}/`} class="book-chapters-link" title={`Ver todos os ${book.chaptersCount} capítulos`}>
+                Ver capítulos
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
   </main>
+
   <script>
-    import '../scripts/reader.js';
+    function setupHomeSearch() {
+      const searchInput = document.getElementById('book-search-input');
+      const clearBtn = document.getElementById('clear-search-btn');
+      const counterBadge = document.getElementById('search-counter-badge');
+      const noResultsBox = document.getElementById('search-no-results');
+      const queryTextSpan = document.getElementById('search-query-text');
+      const resetBtn = document.getElementById('reset-search-btn');
+      const quickJumpCard = document.getElementById('quick-jump-card');
+      const tabBtns = document.querySelectorAll('.bible-tab-btn');
+      const bookCards = Array.from(document.querySelectorAll('.book-card'));
+      const secOld = document.getElementById('section-old');
+      const secNew = document.getElementById('section-new');
+
+      if (!searchInput || bookCards.length === 0) return;
+
+      let currentFilter = 'all';
+
+      function normalize(str) {
+        return String(str || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .trim();
+      }
+
+      function updateQuickJump(rawQuery) {
+        if (!quickJumpCard) return null;
+
+        const match = rawQuery.match(/^([0-9]?\s*[a-zA-ZÀ-ÿ]+?)\s+(\d+)(?::(\d+))?$/);
+        if (!match) {
+          quickJumpCard.hidden = true;
+          quickJumpCard.innerHTML = '';
+          return null;
+        }
+
+        const bookQuery = normalize(match[1]);
+        const chapterNum = parseInt(match[2], 10);
+        const verseNum = match[3] ? parseInt(match[3], 10) : null;
+
+        // Find matching book
+        const foundCard = bookCards.find((card) => {
+          const name = normalize(card.getAttribute('data-name'));
+          const slug = normalize(card.getAttribute('data-slug'));
+          const abbrev = normalize(card.getAttribute('data-abbrev'));
+          const aliases = normalize(card.getAttribute('data-aliases'));
+
+          return (
+            name === bookQuery ||
+            slug === bookQuery ||
+            abbrev === bookQuery ||
+            name.startsWith(bookQuery) ||
+            aliases.split(' ').includes(bookQuery)
+          );
+        });
+
+        if (!foundCard) {
+          quickJumpCard.hidden = true;
+          quickJumpCard.innerHTML = '';
+          return null;
+        }
+
+        const bookTitle = foundCard.querySelector('.book-card-title a')?.textContent || '';
+        const bookSlug = foundCard.getAttribute('data-slug');
+        const maxChapters = parseInt(foundCard.getAttribute('data-chapters') || '999', 10);
+
+        if (chapterNum < 1 || chapterNum > maxChapters) {
+          quickJumpCard.hidden = true;
+          quickJumpCard.innerHTML = '';
+          return null;
+        }
+
+        const targetUrl = `/biblia/${bookSlug}/${chapterNum}/`;
+        const refText = verseNum ? `${bookTitle} ${chapterNum}:${verseNum}` : `${bookTitle} ${chapterNum}`;
+
+        quickJumpCard.hidden = false;
+        quickJumpCard.innerHTML = `
+          <a href="${targetUrl}" class="quick-jump-link">
+            <span>📖</span>
+            <span>Ir direto para <strong>${refText}</strong></span>
+            <span aria-hidden="true">→</span>
+          </a>
+          <span class="quick-jump-hint">Pressione Enter ↵</span>
+        `;
+
+        return targetUrl;
+      }
+
+      function applyFilters() {
+        const rawQuery = (searchInput.value || '').trim();
+        const query = normalize(rawQuery);
+
+        if (clearBtn) {
+          clearBtn.hidden = !rawQuery;
+        }
+
+        const directJumpUrl = updateQuickJump(rawQuery);
+
+        let visibleCount = 0;
+        let firstVisibleCard = null;
+
+        bookCards.forEach((card) => {
+          const testament = card.getAttribute('data-testament');
+          const name = normalize(card.getAttribute('data-name'));
+          const group = normalize(card.getAttribute('data-group'));
+          const abbrev = normalize(card.getAttribute('data-abbrev'));
+          const slug = normalize(card.getAttribute('data-slug'));
+          const aliases = normalize(card.getAttribute('data-aliases'));
+
+          const matchesTestament = currentFilter === 'all' || testament === currentFilter;
+          const matchesQuery =
+            !query ||
+            name.includes(query) ||
+            group.includes(query) ||
+            abbrev === query ||
+            slug.includes(query) ||
+            aliases.includes(query);
+
+          const visible = matchesTestament && matchesQuery;
+          card.style.display = visible ? 'flex' : 'none';
+
+          if (visible) {
+            visibleCount++;
+            if (!firstVisibleCard) firstVisibleCard = card;
+          }
+        });
+
+        // Hide testament headings if all their cards are hidden
+        if (secOld) {
+          const hasVisibleOld = secOld.querySelectorAll('.book-card:not([style*="display: none"])').length > 0;
+          secOld.style.display = hasVisibleOld ? 'block' : 'none';
+        }
+        if (secNew) {
+          const hasVisibleNew = secNew.querySelectorAll('.book-card:not([style*="display: none"])').length > 0;
+          secNew.style.display = hasVisibleNew ? 'block' : 'none';
+        }
+
+        // Update Counter
+        if (counterBadge) {
+          if (visibleCount === 1) {
+            counterBadge.textContent = '1 livro';
+          } else {
+            counterBadge.textContent = `${visibleCount} livros`;
+          }
+        }
+
+        // Update No results
+        if (noResultsBox && queryTextSpan) {
+          if (visibleCount === 0 && query) {
+            queryTextSpan.textContent = rawQuery;
+            noResultsBox.hidden = false;
+          } else {
+            noResultsBox.hidden = true;
+          }
+        }
+
+        return { directJumpUrl, firstVisibleCard };
+      }
+
+      function clearSearch() {
+        searchInput.value = '';
+        searchInput.focus();
+        applyFilters();
+      }
+
+      tabBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          tabBtns.forEach((b) => b.classList.remove('is-active'));
+          btn.classList.add('is-active');
+          currentFilter = btn.getAttribute('data-filter') || 'all';
+          applyFilters();
+        });
+      });
+
+      searchInput.addEventListener('input', applyFilters);
+
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const { directJumpUrl, firstVisibleCard } = applyFilters();
+          if (directJumpUrl) {
+            window.location.href = directJumpUrl;
+          } else if (firstVisibleCard) {
+            const firstLink = firstVisibleCard.querySelector('.book-card-title a');
+            if (firstLink) window.location.href = firstLink.href;
+          }
+        } else if (e.key === 'Escape') {
+          clearSearch();
+        }
+      });
+
+      clearBtn?.addEventListener('click', clearSearch);
+      resetBtn?.addEventListener('click', clearSearch);
+
+      // Keyboard shortcut '/' to focus search anywhere
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== searchInput && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        }
+      });
+
+      // If URL has #busca, focus the search bar smoothly
+      if (window.location.hash === '#busca') {
+        searchInput.focus();
+      }
+
+      // Initial run
+      applyFilters();
+    }
+
+    setupHomeSearch();
+    document.addEventListener('astro:page-load', setupHomeSearch);
   </script>
 </BaseLayout>

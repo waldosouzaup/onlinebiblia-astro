@@ -58,50 +58,59 @@ const collectionSchema = {
   <SiteHeader active="biblia" />
 
   <main class="shell bible-index-page">
-    <header class="bible-index-hero">
-      <div class="hero-copy">
-        <p class="eyebrow"><span class="eyebrow-dot"></span> As Escrituras Sagradas</p>
-        <h1>Bíblia Completa.<br /><em>66 Livros para Ler e Meditar.</em></h1>
-        <p class="hero-subtitle">
-          Conteúdo integral com 1.189 capítulos. Escolha um livro para começar sua leitura
-          ou navegue pelas seções do Antigo e Novo Testamento.
-        </p>
+    <h1 class="sr-only">Bíblia Sagrada Completa — Todos os 66 Livros do Antigo e Novo Testamento</h1>
+
+    <!-- Destaque para o campo de busca (Spotlight Search) -->
+    <header class="home-search-spotlight" id="busca">
+      <div class="spotlight-search-bar">
+        <span class="spotlight-search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg>
+        </span>
+        <input
+          type="search"
+          id="book-search-input"
+          class="spotlight-search-input"
+          placeholder="Pesquisar livro da Bíblia (ex: Salmos, Gênesis, Mateus, Sl)..."
+          aria-label="Pesquisar livro da Bíblia"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button
+          type="button"
+          id="clear-search-btn"
+          class="spotlight-clear-btn"
+          aria-label="Limpar pesquisa"
+          title="Limpar pesquisa"
+          hidden
+        >
+          ✕
+        </button>
+        <span class="spotlight-counter" id="search-counter-badge">{books.length} livros</span>
       </div>
-      <div class="bible-stats-card">
-        <div class="stat-item">
-          <strong>66</strong>
-          <span>Livros</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <strong>1.189</strong>
-          <span>Capítulos</span>
-        </div>
-        <div class="stat-divider"></div>
-        <div class="stat-item">
-          <strong>NVI</strong>
-          <span>Versão</span>
-        </div>
+
+      <!-- Card de atalho rápido para capítulo quando o usuário digita passagem (ex: João 3, Salmos 23) -->
+      <div id="quick-jump-card" class="quick-jump-card" hidden></div>
+
+      <div class="filter-chips home-filter-chips" role="toolbar" aria-label="Filtro de livros por testamento">
+        <button type="button" class="bible-tab-btn is-active" data-filter="all">Todos ({books.length})</button>
+        <button type="button" class="bible-tab-btn" data-filter="old">Antigo Testamento ({oldTestament.length})</button>
+        <button type="button" class="bible-tab-btn" data-filter="new">Novo Testamento ({newTestament.length})</button>
       </div>
     </header>
 
-    <div class="bible-filter-bar" role="toolbar" aria-label="Filtro de livros">
-      <div class="filter-chips">
-        <button type="button" class="bible-tab-btn is-active" data-filter="all">Todos (66)</button>
-        <button type="button" class="bible-tab-btn" data-filter="old">Antigo Testamento (39)</button>
-        <button type="button" class="bible-tab-btn" data-filter="new">Novo Testamento (27)</button>
-      </div>
-      <div class="quick-book-search">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg>
-        <input type="search" id="book-search-input" placeholder="Filtrar livro pelo nome..." aria-label="Filtrar livros" />
-      </div>
+    <!-- Estado sem resultados -->
+    <div id="search-no-results" class="search-no-results" hidden>
+      <p>Nenhum livro encontrado para "<strong id="search-query-text"></strong>".</p>
+      <button type="button" id="reset-search-btn" class="search-reset-btn">
+        <span>✕ Limpar busca</span>
+      </button>
     </div>
 
     <!-- Antigo Testamento -->
     <section class="testament-section" id="section-old" aria-labelledby="heading-old">
       <div class="section-heading">
         <div>
-          <span class="testament-kicker">39 LIVROS</span>
+          <span class="testament-kicker">{oldTestament.length} LIVROS</span>
           <h2 id="heading-old">Antigo Testamento</h2>
         </div>
         <p class="section-desc">Do relato da Criação aos livros proféticos que anunciam a promessa.</p>
@@ -109,7 +118,16 @@ const collectionSchema = {
 
       <div class="books-grid">
         {oldTestament.map((book) => (
-          <article class="book-card" data-testament="old" data-name={book.name.toLowerCase()} data-group={book.group.toLowerCase()}>
+          <article
+            class="book-card"
+            data-testament="old"
+            data-name={book.name.toLowerCase()}
+            data-group={book.group.toLowerCase()}
+            data-abbrev={book.abbrev.toLowerCase()}
+            data-slug={book.slug.toLowerCase()}
+            data-aliases={(book.aliases || []).join(' ').toLowerCase()}
+            data-chapters={book.chaptersCount}
+          >
             <div class="book-card-header">
               <span class="book-order">{String(book.order).padStart(2, '0')}</span>
               <span class="book-group-tag">{book.group}</span>
@@ -135,7 +153,7 @@ const collectionSchema = {
     <section class="testament-section" id="section-new" aria-labelledby="heading-new">
       <div class="section-heading">
         <div>
-          <span class="testament-kicker">27 LIVROS</span>
+          <span class="testament-kicker">{newTestament.length} LIVROS</span>
           <h2 id="heading-new">Novo Testamento</h2>
         </div>
         <p class="section-desc">A vida, ensinamentos e sacrifício de Jesus, os Atos dos apóstolos, as cartas e a revelação final.</p>
@@ -143,7 +161,16 @@ const collectionSchema = {
 
       <div class="books-grid">
         {newTestament.map((book) => (
-          <article class="book-card" data-testament="new" data-name={book.name.toLowerCase()} data-group={book.group.toLowerCase()}>
+          <article
+            class="book-card"
+            data-testament="new"
+            data-name={book.name.toLowerCase()}
+            data-group={book.group.toLowerCase()}
+            data-abbrev={book.abbrev.toLowerCase()}
+            data-slug={book.slug.toLowerCase()}
+            data-aliases={(book.aliases || []).join(' ').toLowerCase()}
+            data-chapters={book.chaptersCount}
+          >
             <div class="book-card-header">
               <span class="book-order">{String(book.order).padStart(2, '0')}</span>
               <span class="book-group-tag">{book.group}</span>
@@ -167,31 +194,130 @@ const collectionSchema = {
   </main>
 
   <script>
-    function setupFilter() {
-      const year = document.getElementById('footer-year');
-      if (year) year.textContent = String(new Date().getFullYear());
-
-      const tabBtns = document.querySelectorAll('.bible-tab-btn');
+    function setupBibliaSearch() {
       const searchInput = document.getElementById('book-search-input');
-      const bookCards = document.querySelectorAll('.book-card');
+      const clearBtn = document.getElementById('clear-search-btn');
+      const counterBadge = document.getElementById('search-counter-badge');
+      const noResultsBox = document.getElementById('search-no-results');
+      const queryTextSpan = document.getElementById('search-query-text');
+      const resetBtn = document.getElementById('reset-search-btn');
+      const quickJumpCard = document.getElementById('quick-jump-card');
+      const tabBtns = document.querySelectorAll('.bible-tab-btn');
+      const bookCards = Array.from(document.querySelectorAll('.book-card'));
       const secOld = document.getElementById('section-old');
       const secNew = document.getElementById('section-new');
 
+      if (!searchInput || bookCards.length === 0) return;
+
       let currentFilter = 'all';
 
+      function normalize(str) {
+        return String(str || '')
+          .normalize('NFD')
+          .replace(/[\u0300-\u036f]/g, '')
+          .toLowerCase()
+          .trim();
+      }
+
+      function updateQuickJump(rawQuery) {
+        if (!quickJumpCard) return null;
+
+        const match = rawQuery.match(/^([0-9]?\s*[a-zA-ZÀ-ÿ]+?)\s+(\d+)(?::(\d+))?$/);
+        if (!match) {
+          quickJumpCard.hidden = true;
+          quickJumpCard.innerHTML = '';
+          return null;
+        }
+
+        const bookQuery = normalize(match[1]);
+        const chapterNum = parseInt(match[2], 10);
+        const verseNum = match[3] ? parseInt(match[3], 10) : null;
+
+        // Find matching book
+        const foundCard = bookCards.find((card) => {
+          const name = normalize(card.getAttribute('data-name'));
+          const slug = normalize(card.getAttribute('data-slug'));
+          const abbrev = normalize(card.getAttribute('data-abbrev'));
+          const aliases = normalize(card.getAttribute('data-aliases'));
+
+          return (
+            name === bookQuery ||
+            slug === bookQuery ||
+            abbrev === bookQuery ||
+            name.startsWith(bookQuery) ||
+            aliases.split(' ').includes(bookQuery)
+          );
+        });
+
+        if (!foundCard) {
+          quickJumpCard.hidden = true;
+          quickJumpCard.innerHTML = '';
+          return null;
+        }
+
+        const bookTitle = foundCard.querySelector('.book-card-title a')?.textContent || '';
+        const bookSlug = foundCard.getAttribute('data-slug');
+        const maxChapters = parseInt(foundCard.getAttribute('data-chapters') || '999', 10);
+
+        if (chapterNum < 1 || chapterNum > maxChapters) {
+          quickJumpCard.hidden = true;
+          quickJumpCard.innerHTML = '';
+          return null;
+        }
+
+        const targetUrl = `/biblia/${bookSlug}/${chapterNum}/`;
+        const refText = verseNum ? `${bookTitle} ${chapterNum}:${verseNum}` : `${bookTitle} ${chapterNum}`;
+
+        quickJumpCard.hidden = false;
+        quickJumpCard.innerHTML = `
+          <a href="${targetUrl}" class="quick-jump-link">
+            <span>📖</span>
+            <span>Ir direto para <strong>${refText}</strong></span>
+            <span aria-hidden="true">→</span>
+          </a>
+          <span class="quick-jump-hint">Pressione Enter ↵</span>
+        `;
+
+        return targetUrl;
+      }
+
       function applyFilters() {
-        const query = (searchInput?.value || '').trim().toLowerCase();
+        const rawQuery = (searchInput.value || '').trim();
+        const query = normalize(rawQuery);
+
+        if (clearBtn) {
+          clearBtn.hidden = !rawQuery;
+        }
+
+        const directJumpUrl = updateQuickJump(rawQuery);
+
+        let visibleCount = 0;
+        let firstVisibleCard = null;
 
         bookCards.forEach((card) => {
           const testament = card.getAttribute('data-testament');
-          const name = card.getAttribute('data-name') || '';
-          const group = card.getAttribute('data-group') || '';
+          const name = normalize(card.getAttribute('data-name'));
+          const group = normalize(card.getAttribute('data-group'));
+          const abbrev = normalize(card.getAttribute('data-abbrev'));
+          const slug = normalize(card.getAttribute('data-slug'));
+          const aliases = normalize(card.getAttribute('data-aliases'));
 
           const matchesTestament = currentFilter === 'all' || testament === currentFilter;
-          const matchesQuery = !query || name.includes(query) || group.includes(query);
+          const matchesQuery =
+            !query ||
+            name.includes(query) ||
+            group.includes(query) ||
+            abbrev === query ||
+            slug.includes(query) ||
+            aliases.includes(query);
 
           const visible = matchesTestament && matchesQuery;
           card.style.display = visible ? 'flex' : 'none';
+
+          if (visible) {
+            visibleCount++;
+            if (!firstVisibleCard) firstVisibleCard = card;
+          }
         });
 
         // Hide testament headings if all their cards are hidden
@@ -203,6 +329,33 @@ const collectionSchema = {
           const hasVisibleNew = secNew.querySelectorAll('.book-card:not([style*="display: none"])').length > 0;
           secNew.style.display = hasVisibleNew ? 'block' : 'none';
         }
+
+        // Update Counter
+        if (counterBadge) {
+          if (visibleCount === 1) {
+            counterBadge.textContent = '1 livro';
+          } else {
+            counterBadge.textContent = `${visibleCount} livros`;
+          }
+        }
+
+        // Update No results
+        if (noResultsBox && queryTextSpan) {
+          if (visibleCount === 0 && query) {
+            queryTextSpan.textContent = rawQuery;
+            noResultsBox.hidden = false;
+          } else {
+            noResultsBox.hidden = true;
+          }
+        }
+
+        return { directJumpUrl, firstVisibleCard };
+      }
+
+      function clearSearch() {
+        searchInput.value = '';
+        searchInput.focus();
+        applyFilters();
       }
 
       tabBtns.forEach((btn) => {
@@ -214,10 +367,45 @@ const collectionSchema = {
         });
       });
 
-      searchInput?.addEventListener('input', applyFilters);
+      searchInput.addEventListener('input', applyFilters);
+
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          const { directJumpUrl, firstVisibleCard } = applyFilters();
+          if (directJumpUrl) {
+            window.location.href = directJumpUrl;
+          } else if (firstVisibleCard) {
+            const firstLink = firstVisibleCard.querySelector('.book-card-title a');
+            if (firstLink) window.location.href = firstLink.href;
+          }
+        } else if (e.key === 'Escape') {
+          clearSearch();
+        }
+      });
+
+      clearBtn?.addEventListener('click', clearSearch);
+      resetBtn?.addEventListener('click', clearSearch);
+
+      // Keyboard shortcut '/' to focus search anywhere
+      document.addEventListener('keydown', (e) => {
+        if (e.key === '/' && document.activeElement !== searchInput && !['INPUT', 'TEXTAREA'].includes(document.activeElement?.tagName)) {
+          e.preventDefault();
+          searchInput.focus();
+          searchInput.select();
+        }
+      });
+
+      // If URL has #busca, focus the search bar smoothly
+      if (window.location.hash === '#busca') {
+        searchInput.focus();
+      }
+
+      // Initial run
+      applyFilters();
     }
 
-    setupFilter();
-    document.addEventListener('astro:page-load', setupFilter);
+    setupBibliaSearch();
+    document.addEventListener('astro:page-load', setupBibliaSearch);
   </script>
 </BaseLayout>

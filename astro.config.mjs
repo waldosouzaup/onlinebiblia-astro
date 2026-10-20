@@ -9,6 +9,7 @@ export default defineConfig({
       changefreq: 'monthly',
       priority: 0.8,
       lastmod: new Date(),
+      filter: (page) => !page.includes('/404'),
     }),
   ],
 });

@@ -21,9 +21,13 @@
         --accent: #92bfa0;
         --accent-strong: #bde5cb;
         --accent-soft: rgba(146, 191, 160, 0.12);
+        --gold: #d8be87;
+        --gold-soft: rgba(216, 190, 135, 0.12);
         --reading-size: 20px;
         --reading-line-height: 42px;
       }
+      * { box-sizing: border-box; }
+      html { scroll-behavior: smooth; }
       body {
         margin: 0;
         background: var(--page);
@@ -31,53 +35,183 @@
         font-family: 'Inter', system-ui, -apple-system, sans-serif;
         line-height: 1.55;
       }
-      .offline-badge-banner {
+
+      /* Sticky Toolbar */
+      .offline-toolbar {
+        position: sticky;
+        top: 0;
+        z-index: 30;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        padding: 10px 14px;
+        background: color-mix(in srgb, var(--page) 92%, transparent);
+        border-bottom: 1px solid var(--line);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+      }
+      .offline-nav-controls {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        flex: 1;
+        min-width: 0;
+      }
+      .offline-nav-arrow {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 9px;
+        background: transparent;
+        border: none;
+        color: var(--ink);
+        cursor: pointer;
+        flex-shrink: 0;
+        transition: all .18s ease;
+        opacity: .75;
+        text-decoration: none;
+      }
+      .offline-nav-arrow:hover { opacity: 1; background: var(--surface-soft); }
+      .offline-nav-arrow.disabled { opacity: .2; pointer-events: none; cursor: default; }
+      .offline-nav-arrow svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; display: block; }
+
+      /* Combined pill selector */
+      .offline-picker-pill {
+        display: inline-flex;
+        align-items: center;
+        background: var(--surface-soft);
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 10px;
+        gap: 0;
+        max-width: 240px;
+        flex: 1;
+        min-width: 0;
+      }
+      .offline-select {
+        appearance: none;
+        -webkit-appearance: none;
+        min-height: 28px;
+        padding: 0 4px;
+        border: none;
+        background: transparent;
+        font: 600 13.5px/1 'Inter', system-ui, sans-serif;
+        color: var(--ink-strong);
+        cursor: pointer;
+        outline: none;
+      }
+      .offline-select-book {
+        max-width: 110px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+      }
+      .offline-select-chapter {
+        min-width: 44px;
+        max-width: 58px;
+      }
+      .offline-pill-divider {
+        color: var(--muted);
+        font-weight: 600;
+        font-size: 13px;
+        margin: 0 1px;
+        flex-shrink: 0;
+      }
+      .offline-chapter-arrow {
+        position: relative;
+        padding-right: 14px;
+        display: inline-flex;
+        align-items: center;
+      }
+      .offline-chapter-arrow::after {
+        content: '';
+        position: absolute;
+        right: 2px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 0;
+        height: 0;
+        border-left: 3.5px solid transparent;
+        border-right: 3.5px solid transparent;
+        border-top: 4.5px solid var(--muted);
+        pointer-events: none;
+      }
+      .offline-toolbar-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 5px 10px;
+        border-radius: 999px;
+        background: var(--accent-soft);
+        border: 1px solid rgba(146, 191, 160, 0.25);
+        color: var(--accent-strong);
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+        flex-shrink: 0;
+      }
+      .offline-dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: var(--accent);
+        box-shadow: 0 0 7px var(--accent);
+        flex-shrink: 0;
+      }
+
+      /* Main content */
+      .offline-container {
+        max-width: 860px;
+        margin: 0 auto;
+        padding: 20px 18px 120px;
+      }
+      .offline-card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        padding: 32px 28px;
+        box-shadow: 0 16px 44px rgba(0, 0, 0, 0.4);
+      }
+      @media (max-width: 640px) {
+        .offline-card {
+          background: transparent;
+          border: none;
+          box-shadow: none;
+          padding: 0;
+        }
+      }
+      .offline-header {
+        text-align: center;
+        margin-bottom: 24px;
+      }
+      .offline-title {
+        font-size: clamp(30px, 8vw, 40px);
+        font-weight: 800;
+        color: var(--ink-strong);
+        margin: 0 0 6px;
+        letter-spacing: -0.03em;
+      }
+      .offline-chap-badge {
         display: inline-flex;
         align-items: center;
         gap: 8px;
         padding: 5px 14px;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
         border-radius: 999px;
-        background: rgba(146, 191, 160, 0.12);
+        background: var(--accent-soft);
         color: var(--accent-strong);
         border: 1px solid rgba(146, 191, 160, 0.3);
         font-size: 11.5px;
         font-weight: 700;
         letter-spacing: .02em;
       }
-      .offline-dot {
-        width: 8px;
-        height: 8px;
-        border-radius: 50%;
-        background: var(--accent);
-        box-shadow: 0 0 8px var(--accent);
-      }
-      .offline-container {
-        max-width: 860px;
-        margin: 0 auto;
-        padding: 24px 20px 100px;
-      }
-      .offline-card {
-        background: var(--surface);
-        border: 1px solid var(--line);
-        border-radius: 20px;
-        padding: 36px 32px;
-        box-shadow: 0 16px 44px rgba(0, 0, 0, 0.4);
-      }
-      .offline-header {
-        text-align: center;
-        margin-bottom: 28px;
-      }
-      .offline-title {
-        font-size: 32px;
-        font-weight: 800;
-        color: var(--ink-strong);
-        margin: 0 0 8px;
-      }
+
+      /* Verses */
       .offline-verses {
         display: flex;
         flex-direction: column;
-        gap: 6px;
+        gap: 0;
       }
       .offline-verse-line {
         padding: 10px 14px;
@@ -87,22 +221,34 @@
         transition: background .15s ease;
         cursor: pointer;
       }
-      .offline-verse-line:hover {
-        background: var(--surface-soft);
-      }
+      .offline-verse-line:hover { background: var(--surface-soft); }
       .offline-verse-line.is-highlighted {
         background: var(--accent-soft);
         box-shadow: inset 3.5px 0 0 var(--accent);
       }
       .offline-verse-num {
         display: inline-block;
-        min-width: 26px;
+        min-width: 22px;
         color: var(--accent);
-        font-size: 13px;
+        font-size: 12px;
         font-weight: 700;
-        vertical-align: 0.45em;
+        vertical-align: 0.55em;
         user-select: none;
+        margin-right: 4px;
+        opacity: 0.7;
       }
+      @media (max-width: 640px) {
+        .offline-verse-line {
+          padding: 6px 0;
+          border-radius: 0;
+          font-size: 20px;
+          line-height: 42px;
+          margin-bottom: 20px;
+        }
+        .offline-verse-line:hover { background: transparent; }
+      }
+
+      /* Bottom Nav Row */
       .offline-nav-row {
         display: flex;
         justify-content: space-between;
@@ -110,6 +256,7 @@
         margin-top: 36px;
         padding-top: 20px;
         border-top: 1px solid var(--line);
+        gap: 10px;
       }
       .offline-nav-btn {
         display: inline-flex;
@@ -124,16 +271,59 @@
         font-weight: 600;
         border: 1px solid var(--line);
         transition: all .16s ease;
+        white-space: nowrap;
       }
       .offline-nav-btn:hover {
         background: var(--accent-soft);
         border-color: var(--accent);
         color: var(--accent-strong);
       }
-      .offline-nav-btn.disabled {
-        opacity: 0.35;
-        pointer-events: none;
+      .offline-nav-btn.disabled { opacity: .35; pointer-events: none; }
+
+      /* Quick chapter strip */
+      .offline-chaps-strip {
+        margin-top: 28px;
+        padding-top: 20px;
+        border-top: 1px solid var(--line);
       }
+      .offline-strip-label {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        letter-spacing: .06em;
+        text-transform: uppercase;
+        margin-bottom: 10px;
+      }
+      .offline-strip-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .offline-strip-pill {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 32px;
+        padding: 0 8px;
+        border-radius: 8px;
+        background: var(--surface-soft);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all .15s ease;
+      }
+      .offline-strip-pill:hover,
+      .offline-strip-pill.is-active {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent-strong);
+      }
+      .offline-strip-pill.is-active { font-weight: 700; }
+
+      /* Book list index */
       .offline-book-list {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
@@ -151,10 +341,12 @@
         font-weight: 600;
         font-size: 13px;
         text-align: center;
+        transition: all .15s ease;
       }
       .offline-book-item:hover {
         border-color: var(--accent);
         background: var(--accent-soft);
+        color: var(--accent-strong);
       }
 
       /* Floating Action Bar */
@@ -176,146 +368,128 @@
         backdrop-filter: blur(20px);
         -webkit-backdrop-filter: blur(20px);
         max-width: calc(100vw - 32px);
-        box-sizing: border-box;
       }
-      .verse-action-bar[hidden] {
-        display: none !important;
-      }
-      .verse-selection-info {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding-left: 6px;
-        white-space: nowrap;
-      }
-      .selected-verse-label {
-        font-size: 12px;
-        font-weight: 700;
-        color: var(--ink-strong);
-      }
+      .verse-action-bar[hidden] { display: none !important; }
+      .verse-selection-info { display: flex; align-items: center; gap: 8px; padding-left: 6px; white-space: nowrap; }
+      .selected-verse-label { font-size: 12px; font-weight: 700; color: var(--ink-strong); }
       .selected-verse-count {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 2px 8px;
-        border-radius: 999px;
-        background: var(--accent-soft);
-        color: var(--accent-strong);
-        font-size: 11px;
-        font-weight: 700;
-        border: 1px solid rgba(146, 191, 160, 0.3);
+        display: inline-flex; align-items: center; justify-content: center;
+        padding: 2px 8px; border-radius: 999px;
+        background: var(--accent-soft); color: var(--accent-strong);
+        font-size: 11px; font-weight: 700; border: 1px solid rgba(146, 191, 160, 0.3);
       }
-      .action-bar-buttons {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-      }
+      .action-bar-buttons { display: flex; align-items: center; gap: 6px; }
       .action-btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        padding: 6px 13px;
-        border-radius: 999px;
-        border: 0;
-        font-size: 11.5px;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all .16s ease;
-        white-space: nowrap;
+        display: inline-flex; align-items: center; gap: 6px;
+        padding: 6px 13px; border-radius: 999px; border: 0;
+        font-size: 11.5px; font-weight: 600; cursor: pointer;
+        transition: all .16s ease; white-space: nowrap;
       }
-      .action-btn svg {
-        width: 14px;
-        height: 14px;
-        stroke: currentColor;
-        fill: none;
-        stroke-width: 2;
-        stroke-linecap: round;
-        stroke-linejoin: round;
-      }
-      .copy-btn {
-        background: var(--accent-strong);
-        color: #0a0c0b;
-      }
-      .copy-btn:hover {
-        filter: brightness(1.08);
-      }
-      .share-btn {
-        background: var(--surface-soft);
-        color: var(--ink);
-        border: 1px solid var(--line);
-      }
-      .share-btn:hover {
-        background: var(--accent-soft);
-        color: var(--accent-strong);
-        border-color: var(--accent);
-      }
-      .clear-btn {
-        background: transparent;
-        color: var(--muted);
-        padding: 6px 9px;
-        font-size: 13px;
-      }
-      .clear-btn:hover {
-        color: var(--ink-strong);
-        background: var(--surface-soft);
-      }
+      .action-btn svg { width: 14px; height: 14px; stroke: currentColor; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .copy-btn { background: var(--accent-strong); color: #0a0c0b; }
+      .copy-btn:hover { filter: brightness(1.08); }
+      .share-btn { background: var(--surface-soft); color: var(--ink); border: 1px solid var(--line); }
+      .share-btn:hover { background: var(--accent-soft); color: var(--accent-strong); border-color: var(--accent); }
+      .clear-btn { background: transparent; color: var(--muted); padding: 6px 9px; font-size: 13px; }
+      .clear-btn:hover { color: var(--ink-strong); background: var(--surface-soft); }
+
+      /* Toast */
       .verse-toast {
-        position: fixed;
-        bottom: 84px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 60;
-        padding: 8px 18px;
-        border-radius: 999px;
-        background: rgba(18, 21, 19, 0.94);
-        color: #ffffff;
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        font-size: 12px;
-        font-weight: 600;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
-        pointer-events: none;
-        white-space: nowrap;
+        position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%);
+        z-index: 60; padding: 8px 18px; border-radius: 999px;
+        background: rgba(18, 21, 19, 0.94); color: #fff;
+        border: 1px solid rgba(255,255,255,.15); font-size: 12px; font-weight: 600;
+        box-shadow: 0 10px 30px rgba(0,0,0,.35); backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px); pointer-events: none; white-space: nowrap;
+      }
+
+      /* Back to Top */
+      .back-to-top-btn {
+        position: fixed; bottom: 88px; right: 16px; z-index: 200;
+        display: grid; place-items: center; width: 40px; height: 40px;
+        border-radius: 50%; padding: 0;
+        background: color-mix(in srgb, var(--page) 88%, transparent);
+        border: 1px solid rgba(216, 190, 135, 0.35);
+        color: var(--gold); cursor: pointer;
+        box-shadow: 0 4px 20px rgba(0,0,0,.4);
+        backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px);
+        opacity: 0; transform: translateY(16px) scale(.85); pointer-events: none;
+        transition: opacity .28s cubic-bezier(.16,1,.3,1), transform .28s cubic-bezier(.16,1,.3,1), background .18s, border-color .18s;
+      }
+      .back-to-top-btn.is-visible { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+      .back-to-top-btn:hover { background: var(--gold-soft); border-color: rgba(216,190,135,.7); transform: translateY(-2px) scale(1); }
+      .back-to-top-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; display: block; }
+
+      @media (min-width: 641px) {
+        .back-to-top-btn { bottom: 28px; right: 24px; width: 44px; height: 44px; }
+        .back-to-top-btn svg { width: 18px; height: 18px; }
       }
     </style>
   </head>
   <body>
-    <main class="offline-container">
-      <div style="text-align: center;">
-        <div class="offline-badge-banner">
-          <span class="offline-dot" aria-hidden="true"></span>
-          <span>Modo Offline — Bíblia Instalada</span>
+    <!-- Sticky Navigation Toolbar -->
+    <div class="offline-toolbar" id="offline-toolbar">
+      <div class="offline-nav-controls">
+        <span class="offline-nav-arrow disabled" id="toolbar-prev" aria-label="Capitulo anterior">
+          <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+        </span>
+
+        <div class="offline-picker-pill">
+          <select id="offline-book-select" class="offline-select offline-select-book" aria-label="Escolher livro">
+            <option value="">Carregando...</option>
+          </select>
+          <span class="offline-pill-divider">:</span>
+          <div class="offline-chapter-arrow">
+            <select id="offline-chapter-select" class="offline-select offline-select-chapter" aria-label="Escolher capitulo">
+              <option value="1">1</option>
+            </select>
+          </div>
         </div>
+
+        <span class="offline-nav-arrow disabled" id="toolbar-next" aria-label="Proximo capitulo">
+          <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+        </span>
       </div>
 
+      <div class="offline-toolbar-badge">
+        <span class="offline-dot" aria-hidden="true"></span>
+        <span>Offline</span>
+      </div>
+    </div>
+
+    <main class="offline-container">
       <article class="offline-card" id="offline-content">
         <div style="text-align: center; padding: 40px 20px;">
           <p>Carregando as Sagradas Escrituras do armazenamento local...</p>
         </div>
       </article>
 
-      <!-- Floating Action Bar for Selected Verses (1 to 10) -->
+      <!-- Floating Action Bar for Selected Verses -->
       <div id="verse-action-bar" class="verse-action-bar" hidden aria-live="polite">
         <div class="verse-selection-info">
-          <span id="selected-verse-label" class="selected-verse-label">Versículos selecionados</span>
+          <span id="selected-verse-label" class="selected-verse-label">Versiculos selecionados</span>
           <span id="selected-verse-count" class="selected-verse-count">1/10</span>
         </div>
         <div class="action-bar-buttons">
-          <button type="button" id="btn-copy-verse" class="action-btn copy-btn" title="Copiar versículos">
+          <button type="button" id="btn-copy-verse" class="action-btn copy-btn" title="Copiar versiculos">
             <svg viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
             <span class="btn-text">Copiar</span>
           </button>
-          <button type="button" id="btn-share-verse" class="action-btn share-btn" title="Compartilhar versículos">
+          <button type="button" id="btn-share-verse" class="action-btn share-btn" title="Compartilhar versiculos">
             <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
             <span class="btn-text">Compartilhar</span>
           </button>
-          <button type="button" id="btn-clear-verse" class="action-btn clear-btn" aria-label="Desmarcar">✕</button>
+          <button type="button" id="btn-clear-verse" class="action-btn clear-btn" aria-label="Desmarcar">X</button>
         </div>
       </div>
 
       <div id="verse-toast" class="verse-toast" hidden role="status" aria-live="polite"></div>
     </main>
+
+    <!-- Back to Top -->
+    <button id="back-to-top" type="button" class="back-to-top-btn" aria-label="Voltar ao topo" title="Voltar ao topo">
+      <svg viewBox="0 0 24 24"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    </button>
 
     <script>
       (async function initOfflineReader() {
@@ -326,166 +500,311 @@
         const contentEl = document.getElementById('offline-content');
 
         // Extract book and chapter from URL like /biblia/genesis/1/
-        const match = path.match(new RegExp(`^${prefix}/([^/]+)(?:/(\\d+))?`));
+        const match = path.match(new RegExp('^' + prefix + '/([^/]+)(?:/(\\d+))?'));
         const bookSlug = match ? match[1].toLowerCase() : null;
         const chapterNum = match && match[2] ? parseInt(match[2], 10) : 1;
 
+        // Back to Top
+        const bttBtn = document.getElementById('back-to-top');
+        if (bttBtn) {
+          let ticking = false;
+          window.addEventListener('scroll', function() {
+            if (!ticking) {
+              requestAnimationFrame(function() {
+                bttBtn.classList.toggle('is-visible', (window.scrollY || document.documentElement.scrollTop) > 280);
+                ticking = false;
+              });
+              ticking = true;
+            }
+          }, { passive: true });
+          bttBtn.addEventListener('click', function() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          });
+        }
+
         try {
           const res = await fetch(langFile);
-          if (!res.ok) throw new Error('Não foi possível ler os dados locais');
+          if (!res.ok) throw new Error('Nao foi possivel ler os dados locais');
           const data = await res.json();
           const books = data.books || [];
 
+          // Populate book selector
+          var bookSelect = document.getElementById('offline-book-select');
+          var chapSelect = document.getElementById('offline-chapter-select');
+          var toolbarPrevEl = document.getElementById('toolbar-prev');
+          var toolbarNextEl = document.getElementById('toolbar-next');
+
+          if (bookSelect && books.length) {
+            bookSelect.innerHTML = '';
+
+            var oldBooks = books.filter(function(b) {
+              return (b.testament === 'old') || (typeof b.order === 'number' && b.order <= 39);
+            });
+            var newBooks = books.filter(function(b) {
+              return !((b.testament === 'old') || (typeof b.order === 'number' && b.order <= 39));
+            });
+
+            function appendGroup(label, list) {
+              if (!list.length) return;
+              var optGroup = document.createElement('optgroup');
+              optGroup.label = label;
+              list.forEach(function(b) {
+                var opt = document.createElement('option');
+                var bSlug = ((b.id || b.slug || b.name || '')).toLowerCase().replace(/\s+/g, '-');
+                opt.value = bSlug;
+                opt.textContent = b.name;
+                if (bookSlug && (bSlug === bookSlug || bSlug.replace(/-/g,'') === bookSlug.replace(/-/g,''))) {
+                  opt.selected = true;
+                }
+                optGroup.appendChild(opt);
+              });
+              bookSelect.appendChild(optGroup);
+            }
+
+            if (oldBooks.length && newBooks.length) {
+              appendGroup(isEnglish ? 'Old Testament' : 'Antigo Testamento', oldBooks);
+              appendGroup(isEnglish ? 'New Testament' : 'Novo Testamento', newBooks);
+            } else {
+              books.forEach(function(b) {
+                var opt = document.createElement('option');
+                var bSlug = ((b.id || b.slug || b.name || '')).toLowerCase().replace(/\s+/g, '-');
+                opt.value = bSlug;
+                opt.textContent = b.name;
+                if (bookSlug && (bSlug === bookSlug || bSlug.replace(/-/g,'') === bookSlug.replace(/-/g,''))) {
+                  opt.selected = true;
+                }
+                bookSelect.appendChild(opt);
+              });
+            }
+          }
+
           if (!bookSlug) {
             // Render Books directory
-            contentEl.innerHTML = `
-              <header class="offline-header">
-                <h1 class="offline-title">${isEnglish ? 'Holy Bible (Offline)' : 'Bíblia Sagrada (Offline)'}</h1>
-                <p style="color: var(--muted);">${isEnglish ? 'Select a book to read without internet:' : 'Selecione um livro para ler sem internet:'}</p>
-              </header>
-              <div class="offline-book-list">
-                ${books.map(b => `
-                  <a class="offline-book-item" href="${prefix}/${b.id || b.slug || b.name.toLowerCase()}/1/">
-                    ${b.name}
-                  </a>
-                `).join('')}
-              </div>
-            `;
+            contentEl.innerHTML =
+              '<header class="offline-header">' +
+                '<h1 class="offline-title">' + (isEnglish ? 'Holy Bible (Offline)' : 'Biblia Sagrada (Offline)') + '</h1>' +
+                '<p style="color: var(--muted);">' + (isEnglish ? 'Select a book to read without internet:' : 'Selecione um livro para ler sem internet:') + '</p>' +
+              '</header>' +
+              '<div class="offline-book-list">' +
+                books.map(function(b) {
+                  return '<a class="offline-book-item" href="' + prefix + '/' + (b.id || b.slug || b.name.toLowerCase()) + '/1/">' + b.name + '</a>';
+                }).join('') +
+              '</div>';
+
+            if (toolbarPrevEl) toolbarPrevEl.classList.add('disabled');
+            if (toolbarNextEl) toolbarNextEl.classList.add('disabled');
             return;
           }
 
           // Find requested book
-          const book = books.find(b => {
-            const id = (b.id || '').toLowerCase();
-            const name = (b.name || '').toLowerCase();
-            return id === bookSlug || name === bookSlug || id.replace(/-/g, '') === bookSlug.replace(/-/g, '');
-          }) || books[0];
+          var book = null;
+          for (var i = 0; i < books.length; i++) {
+            var b = books[i];
+            var id = (b.id || '').toLowerCase();
+            var name = (b.name || '').toLowerCase();
+            if (id === bookSlug || name === bookSlug || id.replace(/-/g,'') === bookSlug.replace(/-/g,'')) {
+              book = b;
+              break;
+            }
+          }
+          if (!book) book = books[0];
 
-          const chapters = book.chapters || [];
-          const currentChapter = chapters.find(c => c.chapter === chapterNum) || chapters[0] || { chapter: chapterNum, verses: [] };
+          var chapters = book.chapters || [];
+          var currentChapter = null;
+          for (var j = 0; j < chapters.length; j++) {
+            if (chapters[j].chapter === chapterNum) { currentChapter = chapters[j]; break; }
+          }
+          if (!currentChapter) currentChapter = chapters[0] || { chapter: chapterNum, verses: [] };
+          var currentChapNum = currentChapter.chapter;
 
-          const prevCh = chapterNum > 1 ? chapterNum - 1 : null;
-          const nextCh = chapterNum < chapters.length ? chapterNum + 1 : null;
+          var prevCh = currentChapNum > 1 ? currentChapNum - 1 : null;
+          var nextCh = currentChapNum < chapters.length ? currentChapNum + 1 : null;
+          var bookId = book.id || bookSlug;
 
-          contentEl.innerHTML = `
-            <header class="offline-header">
-              <span class="offline-badge-banner">Capítulo ${currentChapter.chapter} de ${chapters.length}</span>
-              <h1 class="offline-title">${book.name} ${currentChapter.chapter}</h1>
-            </header>
-            <div class="offline-verses" id="chapter-verses">
-              ${currentChapter.verses.map(v => `
-                <div class="offline-verse-line" id="verse-${v.verse}" data-num="${v.verse}">
-                  <span class="offline-verse-num">${v.verse}</span>
-                  <span class="verse-text">${v.text}</span>
-                </div>
-              `).join('')}
-            </div>
-            <div class="offline-nav-row">
-              ${prevCh ? `<a class="offline-nav-btn" href="${prefix}/${book.id || bookSlug}/${prevCh}/">← Capítulo ${prevCh}</a>` : `<span class="offline-nav-btn disabled">← Início</span>`}
-              <a class="offline-nav-btn" href="${prefix}/">${isEnglish ? 'All Books' : 'Todos os Livros'}</a>
-              ${nextCh ? `<a class="offline-nav-btn" href="${prefix}/${book.id || bookSlug}/${nextCh}/">Capítulo ${nextCh} →</a>` : `<span class="offline-nav-btn disabled">Fim →</span>`}
-            </div>
-          `;
+          // Populate chapter selector
+          if (chapSelect && chapters.length) {
+            chapSelect.innerHTML = chapters.map(function(c) {
+              return '<option value="' + c.chapter + '"' + (c.chapter === currentChapNum ? ' selected' : '') + '>' + c.chapter + '</option>';
+            }).join('');
+          }
 
-          // Multi-selection 1 to 10 verses offline
-          const selected = new Set();
-          const actionBar = document.getElementById('verse-action-bar');
-          const labelEl = document.getElementById('selected-verse-label');
-          const countEl = document.getElementById('selected-verse-count');
-          const copyBtn = document.getElementById('btn-copy-verse');
-          const clearBtn = document.getElementById('btn-clear-verse');
-          const toast = document.getElementById('verse-toast');
+          // Toolbar prev/next arrows — replace spans with anchors when navigable
+          var navControls = document.querySelector('.offline-nav-controls');
+          if (navControls) {
+            // Rebuild prev arrow
+            var prevSpan = document.getElementById('toolbar-prev');
+            if (prevSpan) {
+              if (prevCh) {
+                var prevA = document.createElement('a');
+                prevA.href = prefix + '/' + bookId + '/' + prevCh + '/';
+                prevA.className = 'offline-nav-arrow';
+                prevA.id = 'toolbar-prev';
+                prevA.setAttribute('aria-label', 'Capitulo anterior');
+                prevA.innerHTML = '<svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>';
+                prevSpan.parentNode.replaceChild(prevA, prevSpan);
+              }
+            }
+            // Rebuild next arrow
+            var nextSpan = document.getElementById('toolbar-next');
+            if (nextSpan) {
+              if (nextCh) {
+                var nextA = document.createElement('a');
+                nextA.href = prefix + '/' + bookId + '/' + nextCh + '/';
+                nextA.className = 'offline-nav-arrow';
+                nextA.id = 'toolbar-next';
+                nextA.setAttribute('aria-label', 'Proximo capitulo');
+                nextA.innerHTML = '<svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>';
+                nextSpan.parentNode.replaceChild(nextA, nextSpan);
+              }
+            }
+          }
+
+          // Chapter pills strip
+          var chapPills = '';
+          if (chapters.length > 1) {
+            chapPills =
+              '<div class="offline-chaps-strip">' +
+                '<div class="offline-strip-label">' + (isEnglish ? 'Chapters of' : 'Capitulos de') + ' ' + book.name + '</div>' +
+                '<div class="offline-strip-pills">' +
+                  chapters.map(function(c) {
+                    return '<a class="offline-strip-pill' + (c.chapter === currentChapNum ? ' is-active' : '') + '" href="' + prefix + '/' + bookId + '/' + c.chapter + '/" title="' + book.name + ' ' + c.chapter + '">' + c.chapter + '</a>';
+                  }).join('') +
+                '</div>' +
+              '</div>';
+          }
+
+          // Render reading content
+          contentEl.innerHTML =
+            '<header class="offline-header">' +
+              '<div class="offline-chap-badge">Capitulo ' + currentChapNum + ' de ' + chapters.length + '</div>' +
+              '<h1 class="offline-title">' + book.name + ' <span style="font-weight:400;font-style:italic;color:var(--muted);font-size:.55em;">' + currentChapNum + '</span></h1>' +
+            '</header>' +
+            '<div class="offline-verses" id="chapter-verses">' +
+              currentChapter.verses.map(function(v) {
+                return '<div class="offline-verse-line" id="verse-' + v.verse + '" data-num="' + v.verse + '">' +
+                  '<span class="offline-verse-num">' + v.verse + '</span>' +
+                  '<span class="verse-text">' + v.text + '</span>' +
+                '</div>';
+              }).join('') +
+            '</div>' +
+            '<div class="offline-nav-row">' +
+              (prevCh ? '<a class="offline-nav-btn" href="' + prefix + '/' + bookId + '/' + prevCh + '/">\u2190 ' + book.name + ' ' + prevCh + '</a>' : '<span class="offline-nav-btn disabled">\u2190 ' + (isEnglish ? 'Start' : 'Inicio') + '</span>') +
+              '<a class="offline-nav-btn" href="' + prefix + '/" style="flex-shrink:0;">' + (isEnglish ? 'All Books' : 'Todos os Livros') + '</a>' +
+              (nextCh ? '<a class="offline-nav-btn" href="' + prefix + '/' + bookId + '/' + nextCh + '/">' + book.name + ' ' + nextCh + ' \u2192</a>' : '<span class="offline-nav-btn disabled">' + (isEnglish ? 'End' : 'Fim') + ' \u2192</span>') +
+            '</div>' +
+            chapPills;
+
+          // Book & chapter selector navigation
+          if (bookSelect) {
+            bookSelect.addEventListener('change', function(e) {
+              var slug = e.target.value;
+              if (slug) window.location.href = prefix + '/' + slug + '/1/';
+            });
+          }
+          if (chapSelect) {
+            chapSelect.addEventListener('change', function(e) {
+              var ch = e.target.value;
+              if (ch) window.location.href = prefix + '/' + bookId + '/' + ch + '/';
+            });
+          }
+
+          // Multi-selection 1 to 10 verses
+          var selected = new Set();
+          var actionBar = document.getElementById('verse-action-bar');
+          var labelEl = document.getElementById('selected-verse-label');
+          var countEl = document.getElementById('selected-verse-count');
+          var copyBtn = document.getElementById('btn-copy-verse');
+          var clearBtn = document.getElementById('btn-clear-verse');
+          var toast = document.getElementById('verse-toast');
 
           function showToast(msg) {
             if (!toast) return;
             toast.textContent = msg;
             toast.hidden = false;
-            setTimeout(() => { toast.hidden = true; }, 2500);
+            setTimeout(function() { toast.hidden = true; }, 2500);
+          }
+
+          function formatRanges(nums) {
+            var sorted = Array.from(nums).sort(function(a,b) { return a-b; });
+            var ranges = [];
+            var s = sorted[0], e = s;
+            for (var ri = 1; ri < sorted.length; ri++) {
+              if (sorted[ri] === e + 1) { e = sorted[ri]; }
+              else { ranges.push(s === e ? '' + s : s + '-' + e); s = sorted[ri]; e = s; }
+            }
+            ranges.push(s === e ? '' + s : s + '-' + e);
+            return ranges.join(', ');
           }
 
           function updateUI() {
-            const sorted = Array.from(selected).sort((a,b) => a - b);
-            document.querySelectorAll('.offline-verse-line').forEach(l => {
-              const num = parseInt(l.getAttribute('data-num'), 10);
+            var sorted = Array.from(selected).sort(function(a,b) { return a-b; });
+            document.querySelectorAll('.offline-verse-line').forEach(function(l) {
+              var num = parseInt(l.getAttribute('data-num'), 10);
               l.classList.toggle('is-highlighted', selected.has(num));
             });
             if (sorted.length > 0) {
               actionBar.hidden = false;
-              labelEl.textContent = `${book.name} ${currentChapter.chapter}:${sorted[0]}${sorted.length > 1 ? '–' + sorted[sorted.length - 1] : ''}`;
-              countEl.textContent = `${sorted.length}/10`;
+              labelEl.textContent = book.name + ' ' + currentChapNum + ':' + formatRanges(selected);
+              countEl.textContent = sorted.length + '/10';
             } else {
               actionBar.hidden = true;
             }
           }
 
-          document.getElementById('chapter-verses')?.addEventListener('click', (e) => {
-            const line = e.target.closest('.offline-verse-line');
-            if (!line) return;
-            const num = parseInt(line.getAttribute('data-num'), 10);
-            if (selected.has(num)) {
-              selected.delete(num);
-            } else {
-              if (selected.size >= 10) {
-                showToast('Máximo de 10 versículos selecionados.');
-                return;
+          var versesEl = document.getElementById('chapter-verses');
+          if (versesEl) {
+            versesEl.addEventListener('click', function(e) {
+              var line = e.target.closest('.offline-verse-line');
+              if (!line) return;
+              var num = parseInt(line.getAttribute('data-num'), 10);
+              if (selected.has(num)) { selected.delete(num); }
+              else {
+                if (selected.size >= 10) { showToast('Maximo de 10 versiculos selecionados.'); return; }
+                selected.add(num);
               }
-              selected.add(num);
-            }
-            updateUI();
+              updateUI();
+            });
+          }
+
+          if (clearBtn) clearBtn.addEventListener('click', function() { selected.clear(); updateUI(); });
+
+          if (copyBtn) copyBtn.addEventListener('click', async function() {
+            var sorted = Array.from(selected).sort(function(a,b) { return a-b; });
+            if (!sorted.length) return;
+            var lines = sorted.map(function(v) {
+              var text = (document.getElementById('verse-' + v) || {}).querySelector ? document.getElementById('verse-' + v).querySelector('.verse-text').textContent.trim() : '';
+              return v + '. ' + text;
+            }).join('\n');
+            var quote = '"' + lines + '"\n-- ' + book.name + ' ' + currentChapNum + ' (Online Biblia)\n' + window.location.href;
+            try { await navigator.clipboard.writeText(quote); showToast('Copiado com sucesso!'); } catch (_) {}
           });
 
-          copyBtn?.addEventListener('click', async () => {
-            const sorted = Array.from(selected).sort((a,b) => a - b);
+          var shareBtn = document.getElementById('btn-share-verse');
+          if (shareBtn) shareBtn.addEventListener('click', async function() {
+            var sorted = Array.from(selected).sort(function(a,b) { return a-b; });
             if (!sorted.length) return;
-            const lines = sorted.map(v => {
-              const text = document.getElementById(`verse-${v}`)?.querySelector('.verse-text')?.textContent?.trim() || '';
-              return `${v}. ${text}`;
+            var lines = sorted.map(function(v) {
+              var el = document.getElementById('verse-' + v);
+              var text = el ? el.querySelector('.verse-text').textContent.trim() : '';
+              return v + '. ' + text;
             }).join('\n');
-            const quote = `"${lines}"\n— ${book.name} ${currentChapter.chapter} (Offline)\n${window.location.href}`;
-            try {
-              await navigator.clipboard.writeText(quote);
-              showToast('Copiado com sucesso!');
-            } catch (_) {}
-          });
-
-          const shareBtn = document.getElementById('btn-share-verse');
-
-          shareBtn?.addEventListener('click', async () => {
-            const sorted = Array.from(selected).sort((a,b) => a - b);
-            if (!sorted.length) return;
-            const lines = sorted.map(v => {
-              const text = document.getElementById(`verse-${v}`)?.querySelector('.verse-text')?.textContent?.trim() || '';
-              return `${v}. ${text}`;
-            }).join('\n');
-            const refTitle = `${book.name} ${currentChapter.chapter}:${sorted[0]}${sorted.length > 1 ? '–' + sorted[sorted.length - 1] : ''}`;
-            const quote = `"${lines}"\n— ${refTitle} (Online Bíblia Offline)\n${window.location.href}`;
-
+            var refTitle = book.name + ' ' + currentChapNum + ':' + formatRanges(selected) + ' (Online Biblia)';
+            var quote = '"' + lines + '"\n-- ' + refTitle + '\n' + window.location.href;
             if (navigator.share) {
-              try {
-                await navigator.share({
-                  title: refTitle,
-                  text: quote,
-                  url: window.location.href,
-                });
-                return;
-              } catch (err) {
-                if (err.name === 'AbortError') return;
-              }
+              try { await navigator.share({ title: refTitle, text: quote, url: window.location.href }); return; }
+              catch (err) { if (err.name === 'AbortError') return; }
             }
-            // WhatsApp fallback
-            const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(quote)}`;
-            window.open(waUrl, '_blank', 'noopener,noreferrer');
+            window.open('https://api.whatsapp.com/send?text=' + encodeURIComponent(quote), '_blank', 'noopener,noreferrer');
           });
 
         } catch (err) {
-          contentEl.innerHTML = `
-            <div style="text-align: center; padding: 40px 20px;">
-              <h2>Leitura Offline</h2>
-              <p>Os arquivos locais da Bíblia ainda não foram baixados.</p>
-              <p>Conecte-se à internet uma vez para que o aplicativo salve a Bíblia completa no seu celular.</p>
-              <a class="offline-nav-btn" href="/">Tentar Reconectar</a>
-            </div>
-          `;
+          document.getElementById('offline-content').innerHTML =
+            '<div style="text-align: center; padding: 40px 20px;">' +
+              '<h2>Leitura Offline</h2>' +
+              '<p>Os arquivos locais da Biblia ainda nao foram baixados.</p>' +
+              '<p>Conecte-se a internet uma vez para que o aplicativo salve a Biblia completa no seu celular.</p>' +
+              '<a class="offline-nav-btn" href="/">Tentar Reconectar</a>' +
+            '</div>';
         }
       })();
     </script>

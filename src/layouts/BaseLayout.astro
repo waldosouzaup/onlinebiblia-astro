@@ -142,9 +142,70 @@ if (equivalentUrl) {
   <body data-page={page} class:list={[{ 'is-reading-mode': isReadingPage }]}>
     <slot />
     <SiteFooter />
+
+    <!-- Back to Top floating button -->
+    <button
+      id="back-to-top"
+      type="button"
+      class="back-to-top-btn"
+      aria-label="Voltar ao topo da página"
+      title="Voltar ao topo"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 19V5M5 12l7-7 7 7"/>
+      </svg>
+    </button>
+
     <script>
       import '../scripts/theme.js';
       import '../scripts/pwa.js';
+    </script>
+
+    <script>
+      // Back-to-top button logic (compatible with Astro ClientRouter page transitions)
+      function initBackToTop() {
+        const btn = document.getElementById('back-to-top');
+        if (!btn || btn.dataset.btBound === 'true') return;
+        btn.dataset.btBound = 'true';
+
+        let ticking = false;
+        const SHOW_THRESHOLD = 320;
+
+        function updateVisibility() {
+          const scrollY = window.scrollY || document.documentElement.scrollTop;
+          if (scrollY > SHOW_THRESHOLD) {
+            btn.classList.add('is-visible');
+          } else {
+            btn.classList.remove('is-visible');
+          }
+          ticking = false;
+        }
+
+        window.addEventListener('scroll', () => {
+          if (!ticking) {
+            requestAnimationFrame(updateVisibility);
+            ticking = true;
+          }
+        }, { passive: true });
+
+        btn.addEventListener('click', () => {
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Run once on init
+        updateVisibility();
+      }
+
+      document.addEventListener('astro:page-load', () => {
+        // Reset bound state on page transitions so it re-binds
+        const btn = document.getElementById('back-to-top');
+        if (btn) btn.dataset.btBound = '';
+        initBackToTop();
+      });
+
+      if (document.readyState === 'complete' || document.readyState === 'interactive') {
+        initBackToTop();
+      }
     </script>
   </body>
 </html>

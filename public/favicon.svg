@@ -1,7 +1,38 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <rect width="48" height="48" rx="12" fill="#1b1c20"/>
-  <path d="M12 14.5C15 13 19 13.5 24 16V35C19 32.5 15 32 12 33.5V14.5Z" fill="#e6c387"/>
-  <path d="M36 14.5C33 13 29 13.5 24 16V35C29 32.5 33 32 36 33.5V14.5Z" fill="#f8f4ec"/>
-  <path d="M24 16V35" stroke="#1b1c20" stroke-width="1.5" stroke-linecap="round"/>
-  <path d="M20 22H15M20 26H15M33 22H28M33 26H28" stroke="#1b1c20" stroke-opacity="0.3" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Dark background -->
+  <rect width="48" height="48" rx="12" fill="#0d0f0e"/>
+  <!-- Subtle inner glow ring -->
+  <rect width="48" height="48" rx="12" fill="url(#grad-bg)" opacity="0.45"/>
+  <!-- Left page of Bible (gold) -->
+  <path d="M12 14.5C15 13 19 13.5 24 16V35C19 32.5 15 32 12 33.5V14.5Z" fill="url(#grad-gold)"/>
+  <!-- Right page of Bible (lighter cream-gold) -->
+  <path d="M36 14.5C33 13 29 13.5 24 16V35C29 32.5 33 32 36 33.5V14.5Z" fill="url(#grad-cream)"/>
+  <!-- Spine line -->
+  <path d="M24 16V35" stroke="#0d0f0e" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Left page lines -->
+  <path d="M20 22H15M20 26H15M19 30H15" stroke="#0d0f0e" stroke-opacity="0.25" stroke-width="1.1" stroke-linecap="round"/>
+  <!-- Right page lines -->
+  <path d="M28 22H33M28 26H33M29 30H33" stroke="#0d0f0e" stroke-opacity="0.18" stroke-width="1.1" stroke-linecap="round"/>
+  <!-- Gold shimmer accent on left page top edge -->
+  <path d="M12 14.5C15 13 19 13.5 24 16" stroke="url(#grad-shimmer)" stroke-width="1.2" stroke-linecap="round" opacity="0.7"/>
+  <defs>
+    <linearGradient id="grad-bg" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#c8a84b" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#0d0f0e" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="grad-gold" x1="12" y1="13" x2="24" y2="35" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#e8c870"/>
+      <stop offset="60%" stop-color="#c8a84b"/>
+      <stop offset="100%" stop-color="#a88530"/>
+    </linearGradient>
+    <linearGradient id="grad-cream" x1="24" y1="13" x2="36" y2="35" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f5e9c8"/>
+      <stop offset="50%" stop-color="#ead5a0"/>
+      <stop offset="100%" stop-color="#c8a84b"/>
+    </linearGradient>
+    <linearGradient id="grad-shimmer" x1="12" y1="14" x2="24" y2="16" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f0d980"/>
+      <stop offset="100%" stop-color="#c8a84b"/>
+    </linearGradient>
+  </defs>
 </svg>

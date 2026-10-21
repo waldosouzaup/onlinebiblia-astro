@@ -1,11 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
-import { getAllBooks } from '../lib/bible.js';
+import { getAllBooks, getBook } from '../lib/bible.js';
+import devotionalData from '../../public/data/devotional.json';
 
 const books = getAllBooks();
 const oldTestament = books.filter((b) => b.testament === 'old');
 const newTestament = books.filter((b) => b.testament === 'new');
+
+const devBook = getBook(devotionalData.bookId);
+const devBookSlug = devBook ? devBook.slug : devotionalData.bookId;
+const devUrl = `/biblia/${devBookSlug}/${devotionalData.chapter}/#verse-${devotionalData.verse}`;
 
 const siteUrl = 'https://onlinebiblia.com';
 
@@ -17,14 +22,6 @@ const websiteSchema = {
   url: `${siteUrl}/`,
   description: 'Leia a Bíblia Sagrada completa online com foco total na leitura, sem distrações. 66 livros e 1.189 capítulos em português e inglês.',
   inLanguage: ['pt-BR', 'en'],
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: {
-      '@type': 'EntryPoint',
-      urlTemplate: `${siteUrl}/#busca`,
-    },
-    'query-input': 'required name=search_term_string',
-  },
 };
 
 const organizationSchema = {
@@ -32,11 +29,7 @@ const organizationSchema = {
   '@type': 'Organization',
   name: 'Online Bíblia',
   url: `${siteUrl}/`,
-  logo: `${siteUrl}/favicon.svg`,
-  founder: {
-    '@type': 'Person',
-    name: 'Waldo Eller',
-  },
+  logo: `${siteUrl}/icon-512.png`,
 };
 
 const collectionSchema = {
@@ -60,16 +53,40 @@ const collectionSchema = {
 ---
 
 <BaseLayout
-  title="Online Bíblia — Todos os 66 Livros da Bíblia Sagrada Online"
-  description="Leia a Bíblia Sagrada completa online. Navegue pelos 66 livros e 1.189 capítulos do Antigo e Novo Testamento com busca rápida e leitura sem distrações."
+  title="Online Bíblia — Leitura Limpa da Palavra de Deus | Devocional e Bíblia Online"
+  description="Leia a Bíblia Sagrada online sem distrações. Devocional diário, busca rápida por livros e capítulos do Antigo e Novo Testamento com leitura confortável."
   page="biblia"
-  equivalentUrl="/en/bible/"
+  canonical="https://onlinebiblia.com/"
+  equivalentUrl="/en/"
   schema={[websiteSchema, organizationSchema, collectionSchema]}
 >
   <SiteHeader active="biblia" />
 
   <main class="shell bible-index-page">
     <h1 class="sr-only">Bíblia Sagrada Completa — Todos os 66 Livros do Antigo e Novo Testamento</h1>
+
+    <!-- Devocional Diário / Palavra para Hoje -->
+    <section class="home-devotional-card panel" aria-labelledby="devotional-heading">
+      <div class="devotional-header-row">
+        <span class="devotional-eyebrow">✦ {devotionalData.eyebrow}</span>
+        <span class="devotional-badge">Palavra do Dia</span>
+      </div>
+      <h2 id="devotional-heading" class="devotional-title">{devotionalData.title}</h2>
+      <blockquote class="devotional-body">
+        <p>"{devotionalData.body}"</p>
+      </blockquote>
+      <div class="devotional-action-row">
+        <a href={devUrl} class="devotional-passage-link" title={`Ler ${devotionalData.reference} completo na Bíblia`}>
+          <span>📖 Ler passagem: <strong>{devotionalData.reference}</strong> (NVI)</span>
+          <span class="devotional-arrow" aria-hidden="true">→</span>
+        </a>
+      </div>
+      {devotionalData.reflection && (
+        <div class="devotional-footer-note">
+          <p><strong>Reflexão:</strong> {devotionalData.reflection}</p>
+        </div>
+      )}
+    </section>
 
     <!-- Destaque para o campo de busca (Spotlight Search) -->
     <header class="home-search-spotlight" id="busca">
@@ -131,6 +148,9 @@ const collectionSchema = {
         {oldTestament.map((book) => (
           <article
             class="book-card"
+            role="link"
+            tabindex="0"
+            aria-label={`Ler livro ${book.name}`}
             data-testament="old"
             data-name={book.name.toLowerCase()}
             data-group={book.group.toLowerCase()}
@@ -174,6 +194,9 @@ const collectionSchema = {
         {newTestament.map((book) => (
           <article
             class="book-card"
+            role="link"
+            tabindex="0"
+            aria-label={`Ler livro ${book.name}`}
             data-testament="new"
             data-name={book.name.toLowerCase()}
             data-group={book.group.toLowerCase()}
@@ -411,6 +434,25 @@ const collectionSchema = {
       if (window.location.hash === '#busca') {
         searchInput.focus();
       }
+
+      // Clickable book cards (mouse/touch/keyboard)
+      bookCards.forEach((card) => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.book-chapters-link')) return;
+          const mainLink = card.querySelector('.book-card-title a, .book-read-btn');
+          if (mainLink && mainLink.href && !e.target.closest('a')) {
+            window.location.href = mainLink.href;
+          }
+        });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            const mainLink = card.querySelector('.book-card-title a, .book-read-btn');
+            if (mainLink && mainLink.href) {
+              window.location.href = mainLink.href;
+            }
+          }
+        });
+      });
 
       // Initial run
       applyFilters();

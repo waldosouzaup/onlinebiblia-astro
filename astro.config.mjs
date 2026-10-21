@@ -30,10 +30,7 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      changefreq: 'monthly',
-      priority: 0.8,
-      lastmod: new Date(),
-      filter: (page) => !page.includes('/404'),
+      filter: (page) => !page.includes('/404') && !page.includes('/offline'),
     }),
   ],
 });

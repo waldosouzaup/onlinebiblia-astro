@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import SiteHeader from '../../../components/SiteHeader.astro';
+import BookChapterPickerModal from '../../../components/BookChapterPickerModal.astro';
 import { getAllBooks, getChapter, getAllChapterPaths } from '../../../lib/bible.js';
 
 export async function getStaticPaths() {
@@ -254,7 +255,29 @@ const chapterSchema = {
           <span class="meta-tag">{book.group}</span>
           <span class="meta-tag">{verses.length} versículos</span>
         </div>
-        <h1 class="chapter-main-title">{book.name} <span class="chapter-main-num">{chapter}</span></h1>
+        <h1 class="chapter-main-title">
+          <button
+            type="button"
+            class="chapter-title-btn"
+            id="chapter-title-trigger"
+            title="Alterar livro e capítulo"
+            aria-label={`Alterar livro e capítulo: ${book.name}`}
+            aria-haspopup="dialog"
+          >
+            <span class="chapter-title-text">{book.name}</span>
+            <svg class="chapter-title-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <button
+            type="button"
+            class="chapter-main-num-btn"
+            id="chapter-num-trigger"
+            title="Alterar capítulo"
+            aria-label={`Alterar capítulo: ${chapter}`}
+            aria-haspopup="dialog"
+          >
+            <span class="chapter-main-num">{chapter}</span>
+          </button>
+        </h1>
       </header>
 
       <!-- Sub Navigation bar -->
@@ -422,6 +445,9 @@ const chapterSchema = {
         </span>
       )}
     </aside>
+
+    <!-- Book & Chapter Picker Modal (Online & Mobile) -->
+    <BookChapterPickerModal allBooks={allBooks} currentBook={book} currentChapter={chapter} lang="pt" />
   </main>
 
   <!-- Lightweight, zero-dependency client script for smooth interaction -->

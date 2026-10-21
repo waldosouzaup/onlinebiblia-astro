@@ -5,6 +5,7 @@ User-agent: *
 Allow: /
 Disallow: /404
 Disallow: /404.html
+Disallow: /offline.html
 
 # Sitemap oficial gerado dinamicamente com todos os 2.500+ capítulos e livros
 Sitemap: https://onlinebiblia.com/sitemap-index.xml

@@ -191,6 +191,65 @@
         color: var(--ink-strong);
         margin: 0 0 6px;
         letter-spacing: -0.03em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .offline-title-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        background: transparent;
+        border: none;
+        padding: 4px 12px;
+        border-radius: 14px;
+        color: inherit;
+        font: inherit;
+        cursor: pointer;
+        transition: all .18s ease;
+        text-decoration: none;
+      }
+      .offline-title-btn:hover {
+        background: var(--surface-soft);
+        color: var(--accent-strong);
+      }
+      .offline-title-btn .title-chevron {
+        width: 22px;
+        height: 22px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        opacity: 0.5;
+        transition: transform .2s ease, opacity .2s ease;
+      }
+      .offline-title-btn:hover .title-chevron {
+        opacity: 1;
+        transform: translateY(2px);
+        color: var(--accent);
+      }
+      .offline-num-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        background: transparent;
+        border: none;
+        padding: 2px 8px;
+        border-radius: 8px;
+        font-weight: 400;
+        font-style: italic;
+        color: var(--muted);
+        font-size: .55em;
+        cursor: pointer;
+        transition: all .16s ease;
+      }
+      .offline-num-btn:hover {
+        color: var(--accent-strong);
+        background: var(--surface-soft);
       }
       .offline-chap-badge {
         display: inline-flex;
@@ -352,7 +411,7 @@
       /* Floating Action Bar */
       .verse-action-bar {
         position: fixed;
-        bottom: 24px;
+        bottom: 78px;
         left: 50%;
         transform: translateX(-50%);
         z-index: 50;
@@ -395,7 +454,7 @@
 
       /* Toast */
       .verse-toast {
-        position: fixed; bottom: 84px; left: 50%; transform: translateX(-50%);
+        position: fixed; bottom: 136px; left: 50%; transform: translateX(-50%);
         z-index: 60; padding: 8px 18px; border-radius: 999px;
         background: rgba(18, 21, 19, 0.94); color: #fff;
         border: 1px solid rgba(255,255,255,.15); font-size: 12px; font-weight: 600;
@@ -405,7 +464,7 @@
 
       /* Back to Top */
       .back-to-top-btn {
-        position: fixed; bottom: 88px; right: 16px; z-index: 200;
+        position: fixed; bottom: 84px; right: 16px; z-index: 40;
         display: grid; place-items: center; width: 40px; height: 40px;
         border-radius: 50%; padding: 0;
         background: color-mix(in srgb, var(--page) 88%, transparent);
@@ -421,8 +480,449 @@
       .back-to-top-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; display: block; }
 
       @media (min-width: 641px) {
-        .back-to-top-btn { bottom: 28px; right: 24px; width: 44px; height: 44px; }
+        .back-to-top-btn { bottom: 24px; right: 24px; width: 44px; height: 44px; }
         .back-to-top-btn svg { width: 18px; height: 18px; }
+      }
+
+      /* Floating Reader Dock (Menu Flutuante para Trocar Livro e Capítulo) */
+      .offline-floating-dock {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 45;
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        padding: 5px 8px;
+        background: rgba(18, 21, 19, 0.92);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.12);
+        border-radius: 999px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.48);
+        transition: opacity .22s ease, transform .22s ease, background .2s ease;
+        max-width: calc(100vw - 24px);
+        box-sizing: border-box;
+      }
+      .offline-floating-dock[hidden] {
+        display: none !important;
+      }
+      :root[data-theme='light'] .offline-floating-dock {
+        background: rgba(255, 255, 255, 0.94);
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        box-shadow: 0 14px 36px rgba(28, 38, 32, 0.14);
+      }
+      .offline-dock-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        min-width: 36px;
+        height: 36px;
+        padding: 0 8px;
+        border: none;
+        background: transparent;
+        color: var(--ink);
+        opacity: 0.85;
+        border-radius: 999px;
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: all .16s ease;
+        cursor: pointer;
+        user-select: none;
+        white-space: nowrap;
+        box-sizing: border-box;
+      }
+      .offline-dock-btn:hover:not(.disabled) {
+        opacity: 1;
+        color: var(--accent-strong);
+        background: var(--surface-soft);
+      }
+      .offline-dock-btn.disabled {
+        opacity: 0.22;
+        pointer-events: none;
+        cursor: default;
+      }
+      .offline-dock-btn svg {
+        width: 17px;
+        height: 17px;
+        fill: none;
+        stroke: currentColor;
+        stroke-width: 2.2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        display: block;
+      }
+
+      /* Floating Picker Trigger Button (Livro e Capítulo) */
+      .offline-dock-picker-btn {
+        gap: 8px;
+        padding: 0 14px;
+        background: var(--surface-soft);
+        border: 1px solid var(--line);
+        color: var(--ink-strong);
+        font-weight: 700;
+        font-size: 13px;
+        letter-spacing: -0.01em;
+      }
+      .offline-dock-picker-btn:hover {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent-strong);
+      }
+      .offline-dock-picker-btn .dock-book-icon {
+        width: 15px;
+        height: 15px;
+        color: var(--accent);
+      }
+      .offline-dock-picker-btn .dock-chevron-icon {
+        width: 12px;
+        height: 12px;
+        opacity: 0.65;
+        transition: transform .2s ease;
+      }
+      .offline-dock-divider {
+        width: 1px;
+        height: 20px;
+        background: var(--line);
+        margin: 0 2px;
+        flex-shrink: 0;
+      }
+      .offline-dock-btn.dock-scale {
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--muted);
+        min-width: 30px;
+        padding: 0 4px;
+      }
+      .offline-dock-btn.dock-scale:hover {
+        color: var(--ink-strong);
+      }
+      .dock-symbol {
+        font-size: 18px;
+        line-height: 1;
+      }
+
+      /* Picker Modal / Bottom Sheet */
+      .offline-picker-modal {
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        margin: 0;
+        padding: 0;
+        border: none;
+        background: transparent;
+        display: none;
+        align-items: flex-end;
+        justify-content: center;
+        z-index: 100;
+        box-sizing: border-box;
+      }
+      .offline-picker-modal[open] {
+        display: flex;
+      }
+      @media (min-width: 641px) {
+        .offline-picker-modal {
+          align-items: center;
+          padding: 24px;
+        }
+      }
+      .offline-picker-modal::backdrop {
+        background: rgba(0, 0, 0, 0.72);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        animation: pickerBackdropFade .2s ease-out;
+      }
+      .offline-picker-card {
+        width: 100%;
+        max-width: 640px;
+        max-height: 86vh;
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 22px 22px 0 0;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.65);
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        animation: pickerSheetSlideUp .26s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      @media (min-width: 641px) {
+        .offline-picker-card {
+          border-radius: 20px;
+          max-height: 80vh;
+        }
+      }
+      @keyframes pickerBackdropFade {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      @keyframes pickerSheetSlideUp {
+        from { transform: translateY(40px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+
+      /* Modal Header */
+      .offline-picker-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 20px 14px;
+        border-bottom: 1px solid var(--line);
+        background: var(--surface);
+      }
+      .offline-picker-title-group {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .offline-picker-title-group h3 {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--ink-strong);
+        letter-spacing: -0.01em;
+      }
+      .picker-header-icon {
+        width: 19px;
+        height: 19px;
+        color: var(--accent);
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .picker-close-btn {
+        display: grid;
+        place-items: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        border: 1px solid var(--line);
+        background: var(--surface-soft);
+        color: var(--muted);
+        font-size: 14px;
+        cursor: pointer;
+        transition: all .16s ease;
+      }
+      .picker-close-btn:hover {
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        border-color: var(--accent);
+      }
+
+      /* Modal Search Bar */
+      .picker-search-bar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 18px;
+        background: var(--page);
+        border-bottom: 1px solid var(--line);
+      }
+      .picker-search-bar .search-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--muted);
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        flex-shrink: 0;
+      }
+      .picker-search-input {
+        flex: 1;
+        background: transparent;
+        border: none;
+        color: var(--ink-strong);
+        font-size: 14px;
+        font-family: inherit;
+        outline: none;
+      }
+      .picker-search-input::placeholder {
+        color: var(--muted);
+      }
+      .picker-search-clear {
+        border: none;
+        background: transparent;
+        color: var(--muted);
+        cursor: pointer;
+        padding: 4px;
+        font-size: 13px;
+        line-height: 1;
+      }
+      .picker-search-clear:hover {
+        color: var(--ink-strong);
+      }
+
+      /* Filter Tabs */
+      .picker-tabs {
+        display: flex;
+        gap: 6px;
+        padding: 10px 18px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--line);
+        overflow-x: auto;
+      }
+      .picker-tab {
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: var(--surface-soft);
+        border: 1px solid var(--line);
+        color: var(--muted);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all .15s ease;
+        white-space: nowrap;
+      }
+      .picker-tab:hover {
+        color: var(--ink-strong);
+        border-color: var(--accent);
+      }
+      .picker-tab.is-active {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent-strong);
+        font-weight: 700;
+      }
+
+      /* Stages */
+      .picker-stage {
+        flex: 1;
+        overflow-y: auto;
+        padding: 16px 18px 28px;
+        -webkit-overflow-scrolling: touch;
+      }
+      .picker-stage[hidden] {
+        display: none !important;
+      }
+
+      /* Books Grid */
+      .picker-books-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+        gap: 8px;
+      }
+      .picker-book-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 10px 12px;
+        background: var(--surface-soft);
+        border: 1px solid var(--line);
+        border-radius: 11px;
+        color: var(--ink-strong);
+        font-size: 13px;
+        font-weight: 600;
+        text-align: left;
+        cursor: pointer;
+        transition: all .16s ease;
+      }
+      .picker-book-btn:hover {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        transform: translateY(-1px);
+      }
+      .picker-book-btn.is-current {
+        border-color: var(--accent);
+        background: var(--accent-soft);
+        color: var(--accent-strong);
+        box-shadow: inset 3.5px 0 0 var(--accent);
+      }
+      .picker-book-meta {
+        font-size: 10.5px;
+        color: var(--muted);
+        font-weight: 500;
+        margin-top: 3px;
+      }
+      .picker-empty-state {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 30px 10px;
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      /* Chapters Stage */
+      .picker-chap-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 16px;
+        padding-bottom: 12px;
+        border-bottom: 1px solid var(--line);
+      }
+      .picker-back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 8px;
+        background: var(--surface-soft);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all .15s ease;
+      }
+      .picker-back-btn:hover {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent-strong);
+      }
+      .picker-back-btn svg {
+        width: 14px;
+        height: 14px;
+        stroke: currentColor;
+        fill: none;
+        stroke-width: 2;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+      }
+      .picker-chap-bookname {
+        font-size: 14.5px;
+        font-weight: 700;
+        color: var(--ink-strong);
+      }
+      .picker-chapters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(46px, 1fr));
+        gap: 8px;
+      }
+      .picker-chapter-btn {
+        display: grid;
+        place-items: center;
+        height: 44px;
+        border-radius: 10px;
+        background: var(--surface-soft);
+        border: 1px solid var(--line);
+        color: var(--ink);
+        font-size: 13.5px;
+        font-weight: 600;
+        text-decoration: none;
+        cursor: pointer;
+        transition: all .14s ease;
+      }
+      .picker-chapter-btn:hover {
+        background: var(--accent-soft);
+        border-color: var(--accent);
+        color: var(--accent-strong);
+        transform: scale(1.05);
+      }
+      .picker-chapter-btn.is-active {
+        background: var(--accent);
+        border-color: var(--accent);
+        color: #0a0c0b;
+        font-weight: 800;
+        box-shadow: 0 4px 14px rgba(146, 191, 160, 0.4);
       }
     </style>
   </head>
@@ -485,6 +985,82 @@
 
       <div id="verse-toast" class="verse-toast" hidden role="status" aria-live="polite"></div>
     </main>
+
+    <!-- Floating Minimalist Reader Dock (< 📖 Gênesis 1 ▾ > — 1x +) -->
+    <aside class="offline-floating-dock" id="offline-floating-dock" aria-label="Menu Flutuante de Leitura" hidden>
+      <a class="offline-dock-btn disabled" id="dock-prev-btn" title="Capítulo anterior" aria-label="Capítulo anterior">
+        <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+      </a>
+
+      <!-- Floating Selector Trigger Button -->
+      <button type="button" class="offline-dock-btn offline-dock-picker-btn" id="dock-picker-trigger" title="Trocar livro e capítulo" aria-label="Trocar livro e capítulo" aria-haspopup="dialog">
+        <svg class="dock-book-icon" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+        <span class="dock-picker-label" id="dock-picker-label">Livro 1</span>
+        <svg class="dock-chevron-icon" viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg>
+      </button>
+
+      <a class="offline-dock-btn disabled" id="dock-next-btn" title="Próximo capítulo" aria-label="Próximo capítulo">
+        <svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg>
+      </a>
+
+      <span class="offline-dock-divider" aria-hidden="true"></span>
+
+      <button type="button" class="offline-dock-btn" id="dock-font-decrease" title="Diminuir tamanho da fonte" aria-label="Diminuir fonte">
+        <span class="dock-symbol">−</span>
+      </button>
+
+      <button type="button" class="offline-dock-btn dock-scale" id="dock-font-reset" title="Tamanho padrão da fonte (1x)" aria-label="Tamanho da fonte">
+        <span id="dock-scale-text">1x</span>
+      </button>
+
+      <button type="button" class="offline-dock-btn" id="dock-font-increase" title="Aumentar tamanho da fonte" aria-label="Aumentar fonte">
+        <span class="dock-symbol">+</span>
+      </button>
+    </aside>
+
+    <!-- Modal Seletor Flutuante de Livro e Capítulo -->
+    <dialog id="offline-picker-modal" class="offline-picker-modal" aria-label="Escolher Livro e Capítulo">
+      <div class="offline-picker-card">
+        <div class="offline-picker-header">
+          <div class="offline-picker-title-group">
+            <svg viewBox="0 0 24 24" class="picker-header-icon"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+            <h3 id="picker-modal-title">Escolher Livro e Capítulo</h3>
+          </div>
+          <button type="button" id="picker-modal-close" class="picker-close-btn" aria-label="Fechar">✕</button>
+        </div>
+
+        <!-- Search Bar -->
+        <div class="picker-search-bar" id="picker-search-bar">
+          <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <input type="text" id="picker-search-input" class="picker-search-input" placeholder="Buscar livro... (ex: Romanos, Mt, Salmos)" autocomplete="off" />
+          <button type="button" id="picker-search-clear" class="picker-search-clear" aria-label="Limpar busca" hidden>✕</button>
+        </div>
+
+        <!-- Tabs: Todos, Antigo, Novo -->
+        <div class="picker-tabs" id="picker-tabs" role="tablist">
+          <button type="button" class="picker-tab is-active" data-tab="all" role="tab">Todos (66)</button>
+          <button type="button" class="picker-tab" data-tab="old" role="tab">Antigo (39)</button>
+          <button type="button" class="picker-tab" data-tab="new" role="tab">Novo (27)</button>
+        </div>
+
+        <!-- Stage 1: Grade de Livros -->
+        <div id="picker-books-stage" class="picker-stage">
+          <div class="picker-books-grid" id="picker-books-grid"></div>
+        </div>
+
+        <!-- Stage 2: Grade de Capítulos do Livro Selecionado -->
+        <div id="picker-chapters-stage" class="picker-stage" hidden>
+          <div class="picker-chap-header">
+            <button type="button" id="picker-back-to-books" class="picker-back-btn">
+              <svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg>
+              <span id="picker-back-label">Voltar aos livros</span>
+            </button>
+            <span class="picker-chap-bookname" id="picker-current-book-name">Gênesis</span>
+          </div>
+          <div class="picker-chapters-grid" id="picker-chapters-grid"></div>
+        </div>
+      </div>
+    </dialog>
 
     <!-- Back to Top -->
     <button id="back-to-top" type="button" class="back-to-top-btn" aria-label="Voltar ao topo" title="Voltar ao topo">
@@ -593,6 +1169,8 @@
 
             if (toolbarPrevEl) toolbarPrevEl.classList.add('disabled');
             if (toolbarNextEl) toolbarNextEl.classList.add('disabled');
+            var initialDock = document.getElementById('offline-floating-dock');
+            if (initialDock) initialDock.hidden = true;
             return;
           }
 
@@ -677,7 +1255,15 @@
           contentEl.innerHTML =
             '<header class="offline-header">' +
               '<div class="offline-chap-badge">Capitulo ' + currentChapNum + ' de ' + chapters.length + '</div>' +
-              '<h1 class="offline-title">' + book.name + ' <span style="font-weight:400;font-style:italic;color:var(--muted);font-size:.55em;">' + currentChapNum + '</span></h1>' +
+              '<h1 class="offline-title">' +
+                '<button type="button" class="offline-title-btn" id="offline-title-trigger" title="' + (isEnglish ? 'Change book & chapter' : 'Alterar livro e capitulo') + '" aria-label="' + (isEnglish ? 'Change book & chapter: ' : 'Alterar livro e capitulo: ') + book.name + '">' +
+                  '<span class="offline-title-name">' + book.name + '</span>' +
+                  '<svg class="title-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>' +
+                '</button>' +
+                ' <button type="button" class="offline-num-btn" id="offline-num-trigger" title="' + (isEnglish ? 'Change chapter' : 'Alterar capitulo') + '" aria-label="' + (isEnglish ? 'Change chapter: ' : 'Alterar capitulo: ') + currentChapNum + '">' +
+                  '<span class="offline-title-num">' + currentChapNum + '</span>' +
+                '</button>' +
+              '</h1>' +
             '</header>' +
             '<div class="offline-verses" id="chapter-verses">' +
               currentChapter.verses.map(function(v) {
@@ -707,6 +1293,281 @@
               if (ch) window.location.href = prefix + '/' + bookId + '/' + ch + '/';
             });
           }
+
+          // Floating Reader Dock Setup (< 📖 Livro Cap ▾ > — 1x +)
+          var dockEl = document.getElementById('offline-floating-dock');
+          var dockPrevBtn = document.getElementById('dock-prev-btn');
+          var dockNextBtn = document.getElementById('dock-next-btn');
+          var dockPickerTrigger = document.getElementById('dock-picker-trigger');
+          var dockPickerLabel = document.getElementById('dock-picker-label');
+          var dockFontDec = document.getElementById('dock-font-decrease');
+          var dockFontReset = document.getElementById('dock-font-reset');
+          var dockFontInc = document.getElementById('dock-font-increase');
+          var dockScaleText = document.getElementById('dock-scale-text');
+
+          if (dockEl) {
+            dockEl.hidden = false;
+          }
+          if (dockPickerLabel) {
+            dockPickerLabel.textContent = book.name + ' ' + currentChapNum;
+          }
+
+          if (dockPrevBtn) {
+            if (prevCh) {
+              dockPrevBtn.href = prefix + '/' + bookId + '/' + prevCh + '/';
+              dockPrevBtn.classList.remove('disabled');
+              dockPrevBtn.setAttribute('title', (isEnglish ? 'Previous chapter: ' : 'Capítulo anterior: ') + book.name + ' ' + prevCh);
+            } else {
+              dockPrevBtn.removeAttribute('href');
+              dockPrevBtn.classList.add('disabled');
+            }
+          }
+
+          if (dockNextBtn) {
+            if (nextCh) {
+              dockNextBtn.href = prefix + '/' + bookId + '/' + nextCh + '/';
+              dockNextBtn.classList.remove('disabled');
+              dockNextBtn.setAttribute('title', (isEnglish ? 'Next chapter: ' : 'Próximo capítulo: ') + book.name + ' ' + nextCh);
+            } else {
+              dockNextBtn.removeAttribute('href');
+              dockNextBtn.classList.add('disabled');
+            }
+          }
+
+          // Font scale manager
+          var currentFontSize = 20;
+          try {
+            var savedScale = localStorage.getItem('onlinebiblia_reading_scale');
+            if (savedScale) currentFontSize = parseInt(savedScale, 10) || 20;
+          } catch (_) {}
+
+          function updateFontSize(size) {
+            if (size < 14) size = 14;
+            if (size > 32) size = 32;
+            currentFontSize = size;
+            var lineHeight = Math.round(size * 2.1);
+            document.documentElement.style.setProperty('--reading-size', size + 'px');
+            document.documentElement.style.setProperty('--reading-line-height', lineHeight + 'px');
+            if (dockScaleText) {
+              dockScaleText.textContent = size === 20 ? '1x' : (size / 20).toFixed(1) + 'x';
+            }
+            try {
+              localStorage.setItem('onlinebiblia_reading_scale', '' + size);
+            } catch (_) {}
+          }
+          updateFontSize(currentFontSize);
+
+          if (dockFontDec) {
+            dockFontDec.addEventListener('click', function() { updateFontSize(currentFontSize - 1); });
+          }
+          if (dockFontInc) {
+            dockFontInc.addEventListener('click', function() { updateFontSize(currentFontSize + 1); });
+          }
+          if (dockFontReset) {
+            dockFontReset.addEventListener('click', function() { updateFontSize(20); });
+          }
+
+          // Floating Book & Chapter Picker Modal Controller
+          var pickerModal = document.getElementById('offline-picker-modal');
+          var pickerCloseBtn = document.getElementById('picker-modal-close');
+          var pickerSearchInput = document.getElementById('picker-search-input');
+          var pickerSearchClear = document.getElementById('picker-search-clear');
+          var pickerTabs = document.querySelectorAll('.picker-tab');
+          var pickerBooksStage = document.getElementById('picker-books-stage');
+          var pickerChaptersStage = document.getElementById('picker-chapters-stage');
+          var pickerBooksGrid = document.getElementById('picker-books-grid');
+          var pickerChaptersGrid = document.getElementById('picker-chapters-grid');
+          var pickerBackBtn = document.getElementById('picker-back-to-books');
+          var pickerCurrentBookName = document.getElementById('picker-current-book-name');
+          var pickerModalTitle = document.getElementById('picker-modal-title');
+
+          if (pickerModalTitle) {
+            pickerModalTitle.textContent = isEnglish ? 'Choose Book & Chapter' : 'Escolher Livro e Capítulo';
+          }
+          if (pickerSearchInput) {
+            pickerSearchInput.placeholder = isEnglish ? 'Search book... (e.g. John, Psalms, Mt)' : 'Buscar livro... (ex: Romanos, Mt, Salmos)';
+          }
+
+          var currentTab = 'all';
+
+          function renderBooksGrid() {
+            if (!pickerBooksGrid) return;
+            var query = (pickerSearchInput ? pickerSearchInput.value : '').trim().toLowerCase();
+
+            var filtered = books.filter(function(b) {
+              var isOld = (b.testament === 'old') || (typeof b.order === 'number' && b.order <= 39);
+              if (currentTab === 'old' && !isOld) return false;
+              if (currentTab === 'new' && isOld) return false;
+
+              if (query) {
+                var bName = (b.name || '').toLowerCase();
+                var bSlug = ((b.id || b.slug || '')).toLowerCase();
+                if (bName.indexOf(query) === -1 && bSlug.indexOf(query) === -1) {
+                  return false;
+                }
+              }
+              return true;
+            });
+
+            if (!filtered.length) {
+              pickerBooksGrid.innerHTML = '<div class="picker-empty-state">' + (isEnglish ? 'No books found' : 'Nenhum livro encontrado') + '</div>';
+              return;
+            }
+
+            pickerBooksGrid.innerHTML = filtered.map(function(b) {
+              var bSlug = ((b.id || b.slug || b.name || '')).toLowerCase().replace(/\s+/g, '-');
+              var isCurrent = book && (bSlug === bookSlug || (b.id && b.id.toLowerCase() === bookSlug));
+              var totalChaps = (b.chapters && b.chapters.length) ? b.chapters.length : (b.totalChapters || b.chaptersCount || 1);
+              var metaLabel = totalChaps + ' ' + (isEnglish ? (totalChaps === 1 ? 'chap.' : 'chaps.') : (totalChaps === 1 ? 'cap.' : 'caps.'));
+
+              return '<button type="button" class="picker-book-btn' + (isCurrent ? ' is-current' : '') + '" data-slug="' + bSlug + '">' +
+                '<span>' + b.name + '</span>' +
+                '<span class="picker-book-meta">' + metaLabel + '</span>' +
+              '</button>';
+            }).join('');
+
+            pickerBooksGrid.querySelectorAll('.picker-book-btn').forEach(function(btn) {
+              btn.addEventListener('click', function() {
+                var slug = btn.getAttribute('data-slug');
+                var targetBook = null;
+                for (var bi = 0; bi < books.length; bi++) {
+                  var itemSlug = ((books[bi].id || books[bi].slug || books[bi].name || '')).toLowerCase().replace(/\s+/g, '-');
+                  if (itemSlug === slug || (books[bi].id && books[bi].id.toLowerCase() === slug)) {
+                    targetBook = books[bi];
+                    break;
+                  }
+                }
+                if (targetBook) {
+                  openChaptersStage(targetBook);
+                }
+              });
+            });
+          }
+
+          function openChaptersStage(targetBook) {
+            if (pickerBooksStage) pickerBooksStage.hidden = true;
+            if (pickerChaptersStage) pickerChaptersStage.hidden = false;
+            if (pickerCurrentBookName) pickerCurrentBookName.textContent = targetBook.name;
+
+            if (pickerChaptersGrid) {
+              var targetChapters = targetBook.chapters || [];
+              var total = targetChapters.length || targetBook.totalChapters || targetBook.chaptersCount || 1;
+              var bSlug = ((targetBook.id || targetBook.slug || targetBook.name || '')).toLowerCase().replace(/\s+/g, '-');
+              var isCurrentBook = book && ((targetBook.id || targetBook.slug || targetBook.name || '')).toLowerCase() === (book.id || bookSlug).toLowerCase();
+
+              var chapButtons = [];
+              for (var ci = 1; ci <= total; ci++) {
+                var isActive = isCurrentBook && ci === currentChapNum;
+                chapButtons.push(
+                  '<button type="button" class="picker-chapter-btn' + (isActive ? ' is-active' : '') + '" data-chapter="' + ci + '" data-slug="' + bSlug + '">' +
+                    ci +
+                  '</button>'
+                );
+              }
+              pickerChaptersGrid.innerHTML = chapButtons.join('');
+
+              pickerChaptersGrid.querySelectorAll('.picker-chapter-btn').forEach(function(cBtn) {
+                cBtn.addEventListener('click', function() {
+                  var ch = cBtn.getAttribute('data-chapter');
+                  var slug = cBtn.getAttribute('data-slug');
+                  closePickerModal();
+                  window.location.href = prefix + '/' + slug + '/' + ch + '/';
+                });
+              });
+            }
+          }
+
+          function backToBooksStage() {
+            if (pickerChaptersStage) pickerChaptersStage.hidden = true;
+            if (pickerBooksStage) pickerBooksStage.hidden = false;
+          }
+
+          if (pickerBackBtn) {
+            pickerBackBtn.addEventListener('click', backToBooksStage);
+          }
+
+          function openPickerModal() {
+            if (!pickerModal) return;
+            backToBooksStage();
+            if (pickerSearchInput) {
+              pickerSearchInput.value = '';
+              if (pickerSearchClear) pickerSearchClear.hidden = true;
+            }
+            renderBooksGrid();
+
+            if (typeof pickerModal.showModal === 'function') {
+              pickerModal.showModal();
+            } else {
+              pickerModal.setAttribute('open', '');
+            }
+            if (dockPickerTrigger) dockPickerTrigger.setAttribute('aria-expanded', 'true');
+          }
+
+          function closePickerModal() {
+            if (!pickerModal) return;
+            if (typeof pickerModal.close === 'function') {
+              pickerModal.close();
+            } else {
+              pickerModal.removeAttribute('open');
+            }
+            if (dockPickerTrigger) dockPickerTrigger.setAttribute('aria-expanded', 'false');
+          }
+
+          if (dockPickerTrigger) {
+            dockPickerTrigger.addEventListener('click', openPickerModal);
+          }
+          var titleTrigger = document.getElementById('offline-title-trigger');
+          if (titleTrigger) {
+            titleTrigger.addEventListener('click', openPickerModal);
+          }
+          var numTrigger = document.getElementById('offline-num-trigger');
+          if (numTrigger) {
+            numTrigger.addEventListener('click', function() {
+              openPickerModal();
+              openChaptersStage(book);
+            });
+          }
+          if (pickerCloseBtn) {
+            pickerCloseBtn.addEventListener('click', closePickerModal);
+          }
+          if (pickerModal) {
+            pickerModal.addEventListener('click', function(e) {
+              if (e.target === pickerModal) {
+                closePickerModal();
+              }
+            });
+            pickerModal.addEventListener('cancel', function() {
+              if (dockPickerTrigger) dockPickerTrigger.setAttribute('aria-expanded', 'false');
+            });
+          }
+
+          if (pickerSearchInput) {
+            pickerSearchInput.addEventListener('input', function() {
+              if (pickerSearchClear) {
+                pickerSearchClear.hidden = !pickerSearchInput.value;
+              }
+              backToBooksStage();
+              renderBooksGrid();
+            });
+          }
+          if (pickerSearchClear) {
+            pickerSearchClear.addEventListener('click', function() {
+              pickerSearchInput.value = '';
+              pickerSearchClear.hidden = true;
+              pickerSearchInput.focus();
+              renderBooksGrid();
+            });
+          }
+
+          pickerTabs.forEach(function(tab) {
+            tab.addEventListener('click', function() {
+              pickerTabs.forEach(function(t) { t.classList.remove('is-active'); });
+              tab.classList.add('is-active');
+              currentTab = tab.getAttribute('data-tab') || 'all';
+              backToBooksStage();
+              renderBooksGrid();
+            });
+          });
 
           // Multi-selection 1 to 10 verses
           var selected = new Set();

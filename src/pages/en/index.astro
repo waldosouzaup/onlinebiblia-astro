@@ -1,0 +1,456 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SiteHeader from '../../components/SiteHeader.astro';
+import { getAllBooks } from '../../lib/bible.js';
+
+const books = getAllBooks();
+const oldTestament = books.filter((b) => b.testament === 'old');
+const newTestament = books.filter((b) => b.testament === 'new');
+
+const siteUrl = 'https://onlinebiblia.com';
+
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'Online Bible',
+  alternateName: ['OnlineBible', 'Holy Bible Online'],
+  url: `${siteUrl}/en/`,
+  description: 'Read the complete Holy Bible online in the New International Version (NIV). Clean, lightweight chapter reader for all 66 books and 1,189 chapters.',
+  inLanguage: ['en', 'pt-BR'],
+};
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: 'Holy Bible Online (NIV) — All 66 Books',
+  description: 'Read the complete Holy Bible in English (NIV). Old and New Testament with clean, lightweight chapters, fast search and distraction-free reading.',
+  url: `${siteUrl}/en/`,
+  inLanguage: 'en',
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: books.length,
+    itemListElement: books.map((b, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: b.nameEn,
+      url: `${siteUrl}/en/bible/${b.slugEn}/`,
+    })),
+  },
+};
+---
+
+<BaseLayout
+  title="Online Bible — Read the Holy Bible Clean & Ad-Free (NIV)"
+  description="Read the complete Holy Bible online in the New International Version (NIV). Distraction-free reading of all 66 books and 1,189 chapters of the Old and New Testament."
+  page="bible-en"
+  canonical="https://onlinebiblia.com/en/"
+  equivalentUrl="/"
+  schema={[websiteSchema, collectionSchema]}
+>
+  <SiteHeader active="bible-en" />
+
+  <main class="shell bible-index-page">
+    <h1 class="sr-only">Holy Bible (NIV) — Complete 66 Books of the Old and New Testament</h1>
+
+    <!-- Hero message for English Portal -->
+    <section class="en-portal-hero" aria-labelledby="en-hero-title">
+      <div class="portal-hero-inner">
+        <span class="portal-hero-kicker">HOLY BIBLE · NEW INTERNATIONAL VERSION</span>
+        <h2 id="en-hero-title" class="portal-hero-title">A quiet place to be with the Word.</h2>
+        <p class="portal-hero-subtitle">
+          Read, study and meditate on all 66 books and 1,189 chapters. Clean layout, smooth navigation, instant search, and zero distractions.
+        </p>
+        <div class="portal-hero-actions">
+          <a href="/en/bible/genesis/1/" class="portal-cta-btn primary">
+            <span>Start from Genesis 1 →</span>
+          </a>
+          <a href="/en/bible/matthew/1/" class="portal-cta-btn secondary">
+            <span>Read the Gospels (Matthew 1)</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Prominent Spotlight Search -->
+    <header class="home-search-spotlight" id="busca">
+      <div class="spotlight-search-bar">
+        <span class="spotlight-search-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg>
+        </span>
+        <input
+          type="search"
+          id="book-search-input"
+          class="spotlight-search-input"
+          placeholder="Search Bible book by name, abbreviation or group (e.g. Psalms, Genesis, Matthew, Ps)..."
+          aria-label="Search Bible books"
+          autocomplete="off"
+          spellcheck="false"
+        />
+        <button
+          type="button"
+          id="clear-search-btn"
+          class="spotlight-clear-btn"
+          aria-label="Clear search"
+          title="Clear search"
+          hidden
+        >
+          ✕
+        </button>
+        <span class="spotlight-counter" id="search-counter-badge">{books.length} books</span>
+      </div>
+
+      <!-- Quick Jump suggestion card -->
+      <div id="quick-jump-card" class="quick-jump-card" hidden></div>
+
+      <div class="filter-chips home-filter-chips" role="toolbar" aria-label="Filter books by testament">
+        <button type="button" class="bible-tab-btn is-active" data-filter="all">All ({books.length})</button>
+        <button type="button" class="bible-tab-btn" data-filter="old">Old Testament ({oldTestament.length})</button>
+        <button type="button" class="bible-tab-btn" data-filter="new">New Testament ({newTestament.length})</button>
+      </div>
+    </header>
+
+    <!-- Empty Search State -->
+    <div id="search-no-results" class="search-no-results" hidden>
+      <p>No books found for "<strong id="search-query-text"></strong>".</p>
+      <button type="button" id="reset-search-btn" class="search-reset-btn">
+        <span>✕ Reset search</span>
+      </button>
+    </div>
+
+    <!-- Old Testament Section -->
+    <section class="testament-section" id="section-old" aria-labelledby="heading-old">
+      <div class="section-heading">
+        <div>
+          <span class="testament-kicker">{oldTestament.length} BOOKS</span>
+          <h2 id="heading-old">Old Testament</h2>
+        </div>
+        <p class="section-desc">From the account of Creation to the prophetic books proclaiming the promise.</p>
+      </div>
+
+      <div class="books-grid">
+        {oldTestament.map((book) => (
+          <article
+            class="book-card"
+            role="link"
+            tabindex="0"
+            aria-label={`Read Book of ${book.nameEn}`}
+            data-testament="old"
+            data-name={book.nameEn.toLowerCase()}
+            data-name-pt={book.name.toLowerCase()}
+            data-group={book.groupEn.toLowerCase()}
+            data-abbrev={book.abbrev.toLowerCase()}
+            data-slug={book.slugEn}
+          >
+            <div class="book-card-top">
+              <span class="book-order">{String(book.order).padStart(2, '0')}</span>
+              <span class="book-group-tag">{book.groupEn}</span>
+            </div>
+            <h3 class="book-card-title">
+              <a href={`/en/bible/${book.slugEn}/1/`}>{book.nameEn}</a>
+            </h3>
+            <span class="book-card-count">{book.chaptersCount} {book.chaptersCount === 1 ? 'chapter' : 'chapters'}</span>
+            <div class="book-card-actions">
+              <a href={`/en/bible/${book.slugEn}/1/`} class="book-read-btn">
+                <span>Read Ch. 1</span>
+                <span class="read-arrow" aria-hidden="true">→</span>
+              </a>
+              <a href={`/en/bible/${book.slugEn}/`} class="book-chapters-link" title={`View all ${book.chaptersCount} chapters`}>
+                View chapters
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <!-- New Testament Section -->
+    <section class="testament-section" id="section-new" aria-labelledby="heading-new">
+      <div class="section-heading">
+        <div>
+          <span class="testament-kicker">{newTestament.length} BOOKS</span>
+          <h2 id="heading-new">New Testament</h2>
+        </div>
+        <p class="section-desc">The Gospels, the early Church, the apostolic letters and Revelation.</p>
+      </div>
+
+      <div class="books-grid">
+        {newTestament.map((book) => (
+          <article
+            class="book-card"
+            role="link"
+            tabindex="0"
+            aria-label={`Read Book of ${book.nameEn}`}
+            data-testament="new"
+            data-name={book.nameEn.toLowerCase()}
+            data-name-pt={book.name.toLowerCase()}
+            data-group={book.groupEn.toLowerCase()}
+            data-abbrev={book.abbrev.toLowerCase()}
+            data-slug={book.slugEn}
+          >
+            <div class="book-card-top">
+              <span class="book-order">{String(book.order).padStart(2, '0')}</span>
+              <span class="book-group-tag">{book.groupEn}</span>
+            </div>
+            <h3 class="book-card-title">
+              <a href={`/en/bible/${book.slugEn}/1/`}>{book.nameEn}</a>
+            </h3>
+            <span class="book-card-count">{book.chaptersCount} {book.chaptersCount === 1 ? 'chapter' : 'chapters'}</span>
+            <div class="book-card-actions">
+              <a href={`/en/bible/${book.slugEn}/1/`} class="book-read-btn">
+                <span>Read Ch. 1</span>
+                <span class="read-arrow" aria-hidden="true">→</span>
+              </a>
+              <a href={`/en/bible/${book.slugEn}/`} class="book-chapters-link" title={`View all ${book.chaptersCount} chapters`}>
+                View chapters
+              </a>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  </main>
+
+  <style>
+    .en-portal-hero {
+      margin-bottom: 28px;
+      padding: 38px 30px;
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      text-align: center;
+    }
+    .portal-hero-kicker {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: var(--accent-strong);
+      margin-bottom: 12px;
+    }
+    .portal-hero-title {
+      font-family: 'Literata', Georgia, serif;
+      font-size: clamp(26px, 4.5vw, 38px);
+      font-weight: 400;
+      color: var(--ink-strong);
+      margin: 0 0 12px;
+      line-height: 1.25;
+    }
+    .portal-hero-subtitle {
+      max-width: 680px;
+      margin: 0 auto 24px;
+      color: var(--muted);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+    .portal-hero-actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .portal-cta-btn {
+      display: inline-flex;
+      align-items: center;
+      padding: 10px 20px;
+      border-radius: 999px;
+      font-size: 13.5px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all .2s ease;
+    }
+    .portal-cta-btn.primary {
+      background: var(--accent);
+      color: #0d0f0e;
+      border: 1px solid var(--accent);
+    }
+    .portal-cta-btn.primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+    .portal-cta-btn.secondary {
+      background: var(--surface-soft);
+      color: var(--ink-strong);
+      border: 1px solid var(--line);
+    }
+    .portal-cta-btn.secondary:hover {
+      border-color: var(--accent);
+      color: var(--accent-strong);
+    }
+  </style>
+
+  <script>
+    function setupEnHomeSearch() {
+      const searchInput = document.getElementById('book-search-input') as HTMLInputElement | null;
+      const clearBtn = document.getElementById('clear-search-btn');
+      const counterBadge = document.getElementById('search-counter-badge');
+      const quickJumpCard = document.getElementById('quick-jump-card');
+      const noResultsBox = document.getElementById('search-no-results');
+      const resetSearchBtn = document.getElementById('reset-search-btn');
+      const queryTextSpan = document.getElementById('search-query-text');
+      const filterTabs = document.querySelectorAll('.bible-tab-btn');
+      const bookCards = document.querySelectorAll('.book-card');
+      const oldSection = document.getElementById('section-old');
+      const newSection = document.getElementById('section-new');
+
+      let currentTestamentFilter = 'all';
+
+      // Click card delegation
+      bookCards.forEach((card) => {
+        card.addEventListener('click', (e) => {
+          const target = e.target as HTMLElement;
+          if (target && target.closest('.book-chapters-link')) return;
+          const directLink = card.querySelector('.book-card-title a') as HTMLAnchorElement | null;
+          if (directLink && directLink.href) {
+            window.location.href = directLink.href;
+          }
+        });
+        card.addEventListener('keydown', (e) => {
+          const keyEv = e as KeyboardEvent;
+          if (keyEv.key === 'Enter') {
+            const directLink = card.querySelector('.book-card-title a') as HTMLAnchorElement | null;
+            if (directLink && directLink.href) {
+              window.location.href = directLink.href;
+            }
+          }
+        });
+      });
+
+      function normalize(str: string) {
+        return str.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim();
+      }
+
+      function detectPassageInput(raw: string) {
+        const cleaned = raw.trim();
+        const match = cleaned.match(/^([0-9]?[a-zA-ZÀ-ÿ\s]+?)\s*([0-9]{1,3})(?::([0-9]{1,3}))?$/);
+        if (!match) return null;
+
+        const bookTerm = normalize(match[1]);
+        const chapterNum = parseInt(match[2], 10);
+        const verseNum = match[3] ? parseInt(match[3], 10) : null;
+
+        const booksData = Array.from(bookCards).map((card) => ({
+          name: card.getAttribute('data-name') || '',
+          namePt: card.getAttribute('data-name-pt') || '',
+          abbrev: card.getAttribute('data-abbrev') || '',
+          slug: card.getAttribute('data-slug') || '',
+        }));
+
+        const matchedBook = booksData.find((b) =>
+          normalize(b.name).startsWith(bookTerm) ||
+          normalize(b.namePt).startsWith(bookTerm) ||
+          b.abbrev === bookTerm
+        );
+
+        if (!matchedBook) return null;
+        return {
+          bookName: matchedBook.name,
+          bookSlug: matchedBook.slug,
+          chapterNum,
+          verseNum,
+        };
+      }
+
+      function applyFilters() {
+        const query = searchInput ? normalize(searchInput.value) : '';
+
+        if (clearBtn) {
+          clearBtn.hidden = !query;
+        }
+
+        const passage = detectPassageInput(searchInput?.value || '');
+        if (passage && quickJumpCard) {
+          const targetUrl = `/en/bible/${passage.bookSlug}/${passage.chapterNum}/${passage.verseNum ? `#verse-${passage.verseNum}` : ''}`;
+          quickJumpCard.innerHTML = `
+            <div class="quick-jump-content">
+              <span class="quick-jump-badge">Direct Jump</span>
+              <p class="quick-jump-title">
+                Read <strong>${passage.bookName} ${passage.chapterNum}${passage.verseNum ? `:${passage.verseNum}` : ''}</strong>
+              </p>
+              <a href="${targetUrl}" class="quick-jump-btn">
+                <span>Go directly →</span>
+              </a>
+            </div>
+          `;
+          quickJumpCard.hidden = false;
+        } else if (quickJumpCard) {
+          quickJumpCard.hidden = true;
+          quickJumpCard.innerHTML = '';
+        }
+
+        let visibleCount = 0;
+        let visibleOld = 0;
+        let visibleNew = 0;
+
+        bookCards.forEach((card) => {
+          const testament = card.getAttribute('data-testament');
+          const name = card.getAttribute('data-name') || '';
+          const namePt = card.getAttribute('data-name-pt') || '';
+          const group = card.getAttribute('data-group') || '';
+          const abbrev = card.getAttribute('data-abbrev') || '';
+
+          const matchesTestament = currentTestamentFilter === 'all' || testament === currentTestamentFilter;
+          const matchesQuery = !query ||
+            normalize(name).includes(query) ||
+            normalize(namePt).includes(query) ||
+            normalize(group).includes(query) ||
+            abbrev.includes(query);
+
+          if (matchesTestament && matchesQuery) {
+            (card as HTMLElement).style.display = '';
+            visibleCount++;
+            if (testament === 'old') visibleOld++;
+            if (testament === 'new') visibleNew++;
+          } else {
+            (card as HTMLElement).style.display = 'none';
+          }
+        });
+
+        if (oldSection) oldSection.style.display = visibleOld > 0 ? '' : 'none';
+        if (newSection) newSection.style.display = visibleNew > 0 ? '' : 'none';
+
+        if (counterBadge) {
+          counterBadge.textContent = `${visibleCount} ${visibleCount === 1 ? 'book' : 'books'}`;
+        }
+
+        if (noResultsBox) {
+          if (visibleCount === 0 && query) {
+            noResultsBox.hidden = false;
+            if (queryTextSpan) queryTextSpan.textContent = searchInput?.value || '';
+          } else {
+            noResultsBox.hidden = true;
+          }
+        }
+      }
+
+      searchInput?.addEventListener('input', applyFilters);
+      clearBtn?.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        applyFilters();
+        searchInput?.focus();
+      });
+
+      resetSearchBtn?.addEventListener('click', () => {
+        if (searchInput) searchInput.value = '';
+        currentTestamentFilter = 'all';
+        filterTabs.forEach((t) => t.classList.toggle('is-active', t.getAttribute('data-filter') === 'all'));
+        applyFilters();
+      });
+
+      filterTabs.forEach((tab) => {
+        tab.addEventListener('click', () => {
+          filterTabs.forEach((t) => t.classList.remove('is-active'));
+          tab.classList.add('is-active');
+          currentTestamentFilter = tab.getAttribute('data-filter') || 'all';
+          applyFilters();
+        });
+      });
+
+      applyFilters();
+    }
+
+    setupEnHomeSearch();
+    document.addEventListener('astro:page-load', setupEnHomeSearch);
+  </script>
+</BaseLayout>

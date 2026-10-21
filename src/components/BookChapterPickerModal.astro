@@ -1,0 +1,315 @@
+---
+interface BookItem {
+  id?: string;
+  slug: string;
+  slugEn?: string;
+  name: string;
+  nameEn?: string;
+  testament: 'old' | 'new';
+  chaptersCount: number;
+}
+
+interface Props {
+  allBooks: BookItem[];
+  currentBook: BookItem;
+  currentChapter: number;
+  lang?: 'pt' | 'en';
+}
+
+const { allBooks, currentBook, currentChapter, lang = 'pt' } = Astro.props;
+const isEn = lang === 'en';
+const prefix = isEn ? '/en/bible' : '/biblia';
+---
+
+<dialog id="book-chapter-picker-modal" class="book-picker-modal" aria-label={isEn ? "Choose Book & Chapter" : "Escolher Livro e Capítulo"}>
+  <div class="book-picker-card">
+    <!-- Header -->
+    <div class="picker-header">
+      <div class="picker-title-group">
+        <svg viewBox="0 0 24 24" class="picker-header-icon" aria-hidden="true">
+          <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+          <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+        </svg>
+        <h3 id="online-picker-title">{isEn ? 'Choose Book & Chapter' : 'Escolher Livro e Capítulo'}</h3>
+      </div>
+      <button type="button" id="online-picker-close" class="picker-close-btn" aria-label={isEn ? "Close" : "Fechar"}>✕</button>
+    </div>
+
+    <!-- Search input -->
+    <div class="picker-search-bar">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="8"/>
+        <path d="m21 21-4.3-4.3"/>
+      </svg>
+      <input
+        type="text"
+        id="online-picker-search"
+        class="picker-search-input"
+        placeholder={isEn ? "Search book... (e.g. John, Romans, Ps)" : "Buscar livro... (ex: Romanos, Mt, Salmos)"}
+        autocomplete="off"
+      />
+      <button type="button" id="online-picker-clear" class="picker-search-clear" aria-label={isEn ? "Clear search" : "Limpar busca"} hidden>✕</button>
+    </div>
+
+    <!-- Filter tabs -->
+    <div class="picker-tabs" role="tablist">
+      <button type="button" class="picker-tab is-active" data-tab="all" role="tab">
+        {isEn ? 'All (66)' : 'Todos (66)'}
+      </button>
+      <button type="button" class="picker-tab" data-tab="old" role="tab">
+        {isEn ? 'Old Testament (39)' : 'Antigo (39)'}
+      </button>
+      <button type="button" class="picker-tab" data-tab="new" role="tab">
+        {isEn ? 'New Testament (27)' : 'Novo (27)'}
+      </button>
+    </div>
+
+    <!-- Stage 1: Books Grid -->
+    <div id="online-picker-books-stage" class="picker-stage">
+      <div class="picker-books-grid" id="online-picker-books-grid">
+        {allBooks.map((b) => {
+          const bName = isEn ? (b.nameEn || b.name) : b.name;
+          const bSlug = isEn ? (b.slugEn || b.slug) : b.slug;
+          const isCurrent = b.slug === currentBook.slug || (b.slugEn && b.slugEn === currentBook.slug);
+          return (
+            <button
+              type="button"
+              class={`picker-book-btn ${isCurrent ? 'is-current' : ''}`}
+              data-slug={bSlug}
+              data-name={bName}
+              data-chapters={b.chaptersCount}
+              data-testament={b.testament}
+            >
+              <span class="picker-book-name">{bName}</span>
+              <span class="picker-book-meta">{b.chaptersCount} {isEn ? (b.chaptersCount === 1 ? 'chap.' : 'chaps.') : (b.chaptersCount === 1 ? 'cap.' : 'caps.')}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
+
+    <!-- Stage 2: Chapters Grid -->
+    <div id="online-picker-chapters-stage" class="picker-stage" hidden>
+      <div class="picker-chap-header">
+        <button type="button" id="online-picker-back" class="picker-back-btn">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg>
+          <span>{isEn ? 'Back to books' : 'Voltar aos livros'}</span>
+        </button>
+        <span class="picker-chap-bookname" id="online-picker-bookname">
+          {isEn ? (currentBook.nameEn || currentBook.name) : currentBook.name}
+        </span>
+      </div>
+      <div class="picker-chapters-grid" id="online-picker-chapters-grid">
+        <!-- Rendered dynamically on click -->
+      </div>
+    </div>
+  </div>
+</dialog>
+
+<script is:inline define:vars={{ prefix, currentBookSlug: currentBook.slug, currentChapNum: currentChapter, isEn }}>
+  (function() {
+    function setupPicker() {
+      var modal = document.getElementById('book-chapter-picker-modal');
+      if (!modal) return;
+
+      var closeBtn = document.getElementById('online-picker-close');
+      var searchInput = document.getElementById('online-picker-search');
+      var clearBtn = document.getElementById('online-picker-clear');
+      var tabs = modal.querySelectorAll('.picker-tab');
+      var booksStage = document.getElementById('online-picker-books-stage');
+      var chaptersStage = document.getElementById('online-picker-chapters-stage');
+      var booksGrid = document.getElementById('online-picker-books-grid');
+      var chaptersGrid = document.getElementById('online-picker-chapters-grid');
+      var backBtn = document.getElementById('online-picker-back');
+      var bookNameEl = document.getElementById('online-picker-bookname');
+
+      var titleTrigger = document.getElementById('chapter-title-trigger');
+      var numTrigger = document.getElementById('chapter-num-trigger');
+      var dockTrigger = document.getElementById('dock-picker-trigger');
+
+      var currentTab = 'all';
+
+      function filterBooks() {
+        if (!booksGrid) return;
+        var query = (searchInput ? searchInput.value : '').trim().toLowerCase();
+        var buttons = booksGrid.querySelectorAll('.picker-book-btn');
+        var visibleCount = 0;
+
+        buttons.forEach(function(btn) {
+          var testament = btn.getAttribute('data-testament');
+          var name = (btn.getAttribute('data-name') || '').toLowerCase();
+          var slug = (btn.getAttribute('data-slug') || '').toLowerCase();
+
+          var matchesTab = currentTab === 'all' || testament === currentTab;
+          var matchesQuery = !query || name.indexOf(query) !== -1 || slug.indexOf(query) !== -1;
+
+          var visible = matchesTab && matchesQuery;
+          btn.style.display = visible ? '' : 'none';
+          if (visible) visibleCount++;
+        });
+
+        var emptyEl = booksGrid.querySelector('.picker-empty-state');
+        if (visibleCount === 0) {
+          if (!emptyEl) {
+            emptyEl = document.createElement('div');
+            emptyEl.className = 'picker-empty-state';
+            emptyEl.textContent = isEn ? 'No books found' : 'Nenhum livro encontrado';
+            booksGrid.appendChild(emptyEl);
+          }
+          emptyEl.style.display = '';
+        } else if (emptyEl) {
+          emptyEl.style.display = 'none';
+        }
+      }
+
+      function openChapters(bSlug, bName, totalChaps) {
+        if (booksStage) booksStage.hidden = true;
+        if (chaptersStage) chaptersStage.hidden = false;
+        if (bookNameEl) bookNameEl.textContent = bName;
+
+        if (chaptersGrid) {
+          var chaps = [];
+          var isCurrent = bSlug === currentBookSlug;
+          for (var i = 1; i <= totalChaps; i++) {
+            var activeClass = (isCurrent && i === currentChapNum) ? ' is-active' : '';
+            chaps.push(
+              '<button type="button" class="picker-chapter-btn' + activeClass + '" data-slug="' + bSlug + '" data-chap="' + i + '">' +
+                i +
+              '</button>'
+            );
+          }
+          chaptersGrid.innerHTML = chaps.join('');
+
+          chaptersGrid.querySelectorAll('.picker-chapter-btn').forEach(function(cBtn) {
+            cBtn.addEventListener('click', function() {
+              var slug = cBtn.getAttribute('data-slug');
+              var ch = cBtn.getAttribute('data-chap');
+              closeModal();
+              window.location.href = prefix + '/' + slug + '/' + ch + '/';
+            });
+          });
+        }
+      }
+
+      function backToBooks() {
+        if (chaptersStage) chaptersStage.hidden = true;
+        if (booksStage) booksStage.hidden = false;
+      }
+
+      function openModal(initialStage) {
+        if (initialStage === 'chapters') {
+          var currentBtn = booksGrid ? booksGrid.querySelector('.picker-book-btn.is-current') : null;
+          if (currentBtn) {
+            var slug = currentBtn.getAttribute('data-slug');
+            var name = currentBtn.getAttribute('data-name');
+            var chaps = parseInt(currentBtn.getAttribute('data-chapters'), 10) || 1;
+            openChapters(slug, name, chaps);
+          } else {
+            backToBooks();
+          }
+        } else {
+          backToBooks();
+        }
+
+        if (searchInput) {
+          searchInput.value = '';
+          if (clearBtn) clearBtn.hidden = true;
+        }
+        filterBooks();
+
+        if (typeof modal.showModal === 'function') {
+          modal.showModal();
+        } else {
+          modal.setAttribute('open', '');
+        }
+      }
+
+      function closeModal() {
+        if (typeof modal.close === 'function') {
+          modal.close();
+        } else {
+          modal.removeAttribute('open');
+        }
+      }
+
+      // Trigger listeners
+      if (titleTrigger) {
+        titleTrigger.onclick = function(e) {
+          e.preventDefault();
+          openModal('books');
+        };
+      }
+      if (numTrigger) {
+        numTrigger.onclick = function(e) {
+          e.preventDefault();
+          openModal('chapters');
+        };
+      }
+      if (dockTrigger) {
+        dockTrigger.onclick = function(e) {
+          e.preventDefault();
+          openModal('books');
+        };
+      }
+
+      if (closeBtn) {
+        closeBtn.onclick = closeModal;
+      }
+
+      modal.onclick = function(e) {
+        if (e.target === modal) closeModal();
+      };
+
+      if (backBtn) {
+        backBtn.onclick = backToBooks;
+      }
+
+      // Books click listener
+      if (booksGrid) {
+        booksGrid.querySelectorAll('.picker-book-btn').forEach(function(btn) {
+          btn.onclick = function() {
+            var slug = btn.getAttribute('data-slug');
+            var name = btn.getAttribute('data-name');
+            var chaps = parseInt(btn.getAttribute('data-chapters'), 10) || 1;
+            openChapters(slug, name, chaps);
+          };
+        });
+      }
+
+      // Search listeners
+      if (searchInput) {
+        searchInput.oninput = function() {
+          if (clearBtn) clearBtn.hidden = !searchInput.value;
+          backToBooks();
+          filterBooks();
+        };
+      }
+      if (clearBtn) {
+        clearBtn.onclick = function() {
+          searchInput.value = '';
+          clearBtn.hidden = true;
+          searchInput.focus();
+          filterBooks();
+        };
+      }
+
+      // Tabs listeners
+      tabs.forEach(function(tab) {
+        tab.onclick = function() {
+          tabs.forEach(function(t) { t.classList.remove('is-active'); });
+          tab.classList.add('is-active');
+          currentTab = tab.getAttribute('data-tab') || 'all';
+          backToBooks();
+          filterBooks();
+        };
+      });
+    }
+
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', setupPicker);
+    } else {
+      setupPicker();
+    }
+    document.addEventListener('astro:page-load', setupPicker);
+  })();
+</script>

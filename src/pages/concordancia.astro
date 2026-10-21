@@ -1,8 +1,41 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SiteHeader from '../components/SiteHeader.astro';
+import { getBook } from '../lib/bible.js';
+import concordanceData from '../../public/data/concordance.json';
 
 const siteUrl = 'https://onlinebiblia.com';
+const topics = concordanceData.topics || [];
+const categories = ['Todos', ...new Set(topics.map((t) => t.category).filter(Boolean))];
+
+const symbols: Record<string, string> = {
+  'Relacionamentos': '♡',
+  'Vida espiritual': '✦',
+  'Emoções e cuidado': '☼',
+  'Vida prática': '⌁',
+  'Temas bíblicos': '❋',
+};
+
+// Map each reference to resolved book name and clean canonical URL
+const enrichedTopics = topics.map((topic) => ({
+  ...topic,
+  symbol: symbols[topic.category] || '✧',
+  references: (topic.references || []).map((ref) => {
+    const book = getBook(ref.bookId);
+    const bookName = book ? book.name : ref.bookId;
+    const bookSlug = book ? book.slug : ref.bookId;
+    const ch = Number(ref.chapter) || 1;
+    const v = Number(ref.verse) || 1;
+    return {
+      bookName,
+      bookSlug,
+      chapter: ch,
+      verse: v,
+      label: `${bookName} ${ch}:${v}`,
+      url: `/biblia/${bookSlug}/${ch}/#verse-${v}`,
+    };
+  }),
+}));
 
 const breadcrumbSchema = {
   '@context': 'https://schema.org',
@@ -26,39 +59,116 @@ const breadcrumbSchema = {
 const webpageSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebPage',
-  name: 'Concordância Bíblica — Temas e Referências das Escrituras',
+  name: 'Concordância Bíblica — Temas, Versículos e Referências',
   description: 'Explore assuntos, temas e referências da Bíblia Sagrada organizados por categoria para estudo bíblico e meditação.',
   url: `${siteUrl}/concordancia/`,
   inLanguage: 'pt-BR',
+  mainEntity: {
+    '@type': 'ItemList',
+    numberOfItems: enrichedTopics.length,
+    itemListElement: enrichedTopics.map((t, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: t.title,
+      description: t.description,
+    })),
+  },
 };
 ---
+
 <BaseLayout
-  title="Concordância Bíblica — Temas e Referências | Online Bíblia"
-  description="Explore assuntos e encontre referências bíblicas organizadas por tema para estudo, pesquisa e reflexão nas Escrituras."
+  title="Concordância Bíblica — Temas, Versículos e Referências | Online Bíblia"
+  description="Explore temas bíblicos e encontre referências diretas nos capítulos da Bíblia Sagrada organizadas por assunto para estudo, reflexão e pesquisa nas Escrituras."
   page="concordancia"
   schema={[breadcrumbSchema, webpageSchema]}
 >
   <SiteHeader active="concordancia" />
+
   <main class="concordance-page shell">
     <section class="concordance-hero">
-      <p class="eyebrow"><span class="eyebrow-dot"></span> Encontre por assunto</p>
-      <h1>Uma palavra pode<br /><em>abrir um caminho.</em></h1>
-      <p>Explore temas da Bíblia e encontre referências relacionadas ao que você procura, estuda ou deseja compreender melhor.</p>
-      <a class="back-reader-link" href="/">← Voltar para a leitura</a>
+      <p class="eyebrow"><span class="eyebrow-dot"></span> Guia Temático das Escrituras</p>
+      <h1>Concordância Bíblica por Temas</h1>
+      <p>Explore temas da Bíblia Sagrada e encontre referências diretas nos capítulos para estudo, pesquisa e meditação na Palavra de Deus.</p>
+      <a class="back-reader-link" href="/biblia/">← Ver todos os 66 livros da Bíblia</a>
     </section>
 
     <section class="concordance-explorer" aria-labelledby="topics-heading">
       <div class="explorer-heading">
-        <div><p class="reading-kicker">GUIA TEMÁTICO</p><h2 id="topics-heading">Explore os assuntos</h2><p>Escolha um tema ou digite uma palavra para filtrar.</p></div>
-        <div class="topic-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg><input type="search" id="topic-search" placeholder="Buscar tema…" aria-label="Buscar tema" /></div>
+        <div>
+          <p class="reading-kicker">ASSUNTOS E VERSÍCULOS</p>
+          <h2 id="topics-heading">Explore os temas bíblicos</h2>
+          <p>Escolha uma categoria ou pesquise por palavra-chave para encontrar versículos.</p>
+        </div>
+        <div class="topic-search">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m15.5 15.5 4.1 4.1"/></svg>
+          <input
+            type="search"
+            id="topic-search"
+            placeholder="Buscar tema ou palavra..."
+            aria-label="Buscar tema ou palavra na concordância"
+          />
+        </div>
       </div>
-      <div id="category-filters" class="category-filters" aria-label="Filtrar temas por categoria"></div>
-      <div id="topics-grid" class="topics-grid" aria-live="polite"><div class="loading-card">Carregando temas…</div></div>
-      <p id="topics-status" class="topics-status" role="status"></p>
+
+      <div id="category-filters" class="category-filters" aria-label="Filtrar temas por categoria">
+        {categories.map((cat, idx) => (
+          <button
+            type="button"
+            class:list={['category-chip', { 'is-selected': idx === 0 }]}
+            data-category={cat}
+            aria-pressed={idx === 0 ? 'true' : 'false'}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      <div id="topics-grid" class="topics-grid" aria-live="polite">
+        {enrichedTopics.map((topic) => (
+          <article
+            class="topic-card"
+            data-category={topic.category}
+            data-searchable={`${topic.title} ${topic.category} ${topic.description} ${topic.references.map((r: any) => r.label).join(' ')}`.toLowerCase()}
+          >
+            <div class="topic-card-top">
+              <span class="topic-symbol" aria-hidden="true">{topic.symbol}</span>
+              <div>
+                <div class="topic-category">{topic.category || 'Tema bíblico'}</div>
+                <h3>{topic.title}</h3>
+              </div>
+            </div>
+            <p>{topic.description}</p>
+            <div class="topic-references">
+              {topic.references.map((ref: any) => (
+                <a
+                  href={ref.url}
+                  class="reference-chip"
+                  aria-label={`Ler ${ref.label} na Bíblia`}
+                >
+                  {ref.label}
+                </a>
+              ))}
+            </div>
+          </article>
+        ))}
+      </div>
+
+      <p id="topics-status" class="topics-status" role="status">
+        {enrichedTopics.length} temas disponíveis
+      </p>
     </section>
-    <section class="concordance-bottom-note"><span aria-hidden="true">✦</span><div><strong>Como usar a concordância</strong><p>Os temas são pontos de partida para estudo. Leia o contexto do capítulo e compare as referências antes de tirar conclusões.</p></div></section>
+
+    <section class="concordance-bottom-note">
+      <span aria-hidden="true">✦</span>
+      <div>
+        <strong>Como usar a concordância</strong>
+        <p>Os temas são pontos de partida para estudo. Leia o contexto do capítulo e compare as referências antes de tirar conclusões.</p>
+      </div>
+    </section>
   </main>
+
   <script>
     import '../scripts/concordance.js';
   </script>
 </BaseLayout>
+

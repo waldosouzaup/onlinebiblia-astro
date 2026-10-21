@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../../layouts/BaseLayout.astro';
 import SiteHeader from '../../../../components/SiteHeader.astro';
+import BookChapterPickerModal from '../../../../components/BookChapterPickerModal.astro';
 import { getAllBooks, getEnglishChapter, getAllEnglishChapterPaths } from '../../../../lib/bible.js';
 
 export async function getStaticPaths() {
@@ -84,7 +85,7 @@ const chapterSchema = {
   equivalentUrl={equivalentUrl}
   schema={[breadcrumbSchema, chapterSchema]}
 >
-  <SiteHeader active="biblia" />
+  <SiteHeader active="bible-en" />
 
   <main class="reading-page shell">
     <!-- Floating Focus Mode Exit Pill -->
@@ -246,7 +247,29 @@ const chapterSchema = {
           <span class="meta-tag">{book.groupEn}</span>
           <span class="meta-tag">{verses.length} verses</span>
         </div>
-        <h1 class="chapter-main-title">{book.nameEn} <span class="chapter-main-num">{chapter}</span></h1>
+        <h1 class="chapter-main-title">
+          <button
+            type="button"
+            class="chapter-title-btn"
+            id="chapter-title-trigger"
+            title="Change book & chapter"
+            aria-label={`Change book & chapter: ${book.nameEn}`}
+            aria-haspopup="dialog"
+          >
+            <span class="chapter-title-text">{book.nameEn}</span>
+            <svg class="chapter-title-chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>
+          </button>
+          <button
+            type="button"
+            class="chapter-main-num-btn"
+            id="chapter-num-trigger"
+            title="Change chapter"
+            aria-label={`Change chapter: ${chapter}`}
+            aria-haspopup="dialog"
+          >
+            <span class="chapter-main-num">{chapter}</span>
+          </button>
+        </h1>
       </header>
 
       <!-- Sub Navigation bar -->
@@ -414,6 +437,9 @@ const chapterSchema = {
         </span>
       )}
     </aside>
+
+    <!-- Book & Chapter Picker Modal (Online & Mobile) -->
+    <BookChapterPickerModal allBooks={allBooks} currentBook={book} currentChapter={chapter} lang="en" />
   </main>
 
   <script>

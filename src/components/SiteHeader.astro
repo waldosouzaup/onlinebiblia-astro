@@ -1,10 +1,11 @@
 ---
 const { active = "biblia" } = Astro.props;
+const isEn = active === "bible-en";
 ---
 
 <header class="site-header">
   <div class="header-inner shell">
-    <a class="brand" href="/" aria-label="Online Bíblia — página inicial">
+    <a class="brand" href={isEn ? "/en/" : "/"} aria-label={isEn ? "Online Bible — Home" : "Online Bíblia — página inicial"}>
       <span class="brand-mark" aria-hidden="true">
         <svg viewBox="0 0 32 32" fill="none"
           ><path
@@ -21,14 +22,16 @@ const { active = "biblia" } = Astro.props;
             stroke-width="1.7"></path></svg
         >
       </span>
-      <span class="brand-copy"
-        ><strong>online<span>bíblia</span></strong><small
-          >Leia com calma. Viva a Palavra.</small
-        ></span
-      >
+      <span class="brand-copy">
+        {isEn ? (
+          <strong>online<span>bible</span></strong><small>Read quietly. Live the Word.</small>
+        ) : (
+          <strong>online<span>bíblia</span></strong><small>Leia com calma. Viva a Palavra.</small>
+        )}
+      </span>
     </a>
 
-    <nav class="primary-nav" aria-label="Navegação principal">
+    <nav class="primary-nav" aria-label={isEn ? "Main navigation" : "Navegação principal"}>
       <a class:list={[{ "is-active": active === "biblia" }]} href="/biblia/"
         >Bíblia (PT)</a
       >
@@ -39,28 +42,15 @@ const { active = "biblia" } = Astro.props;
         class:list={[{ "is-active": active === "concordancia" }]}
         href="/concordancia/">Concordância</a
       >
-      <button
-        class="nav-pwa-install-btn"
-        type="button"
-        data-pwa-install
-        hidden
-      >
-        <svg viewBox="0 0 24 24" aria-hidden="true">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-        <span>Instalar App Offline</span>
-      </button>
     </nav>
 
     <div class="header-actions">
       <button
-        class="icon-button pwa-header-install"
+        class="pwa-header-install"
         type="button"
         data-pwa-install
-        aria-label="Instalar Aplicativo da Bíblia"
-        title="Instalar Bíblia no Celular / Computador"
+        aria-label={isEn ? "Install Bible App" : "Instalar Aplicativo da Bíblia"}
+        title={isEn ? "Install Bible on Mobile / Desktop" : "Instalar Bíblia no Celular / Computador"}
         hidden
       >
         <svg viewBox="0 0 24 24" aria-hidden="true">
@@ -68,12 +58,13 @@ const { active = "biblia" } = Astro.props;
           <polyline points="7 10 12 15 17 10"></polyline>
           <line x1="12" y1="15" x2="12" y2="3"></line>
         </svg>
+        <span class="pwa-header-install-text">{isEn ? "Install App" : "Instalar App Offline"}</span>
       </button>
       <a
         class="header-search"
-        href="/#busca"
-        aria-label="Ir para a busca bíblica"
-        title="Buscar versículos"
+        href={isEn ? "/en/bible/#busca" : "/#busca"}
+        aria-label={isEn ? "Search Bible books" : "Ir para a busca bíblica"}
+        title={isEn ? "Search Bible books" : "Buscar livros"}
       >
         <svg viewBox="0 0 24 24" aria-hidden="true"
           ><circle cx="10.8" cy="10.8" r="6.3"></circle><path
@@ -84,8 +75,8 @@ const { active = "biblia" } = Astro.props;
         class="icon-button theme-toggle"
         type="button"
         data-theme-toggle
-        aria-label="Ativar tema claro"
-        title="Alternar tema"
+        aria-label={isEn ? "Toggle color theme" : "Alternar tema de cores"}
+        title={isEn ? "Toggle theme" : "Alternar tema"}
       >
         <svg class="sun-icon" viewBox="0 0 24 24" aria-hidden="true"
           ><circle cx="12" cy="12" r="3.8"></circle><path
@@ -100,7 +91,7 @@ const { active = "biblia" } = Astro.props;
       <button
         class="mobile-menu-toggle icon-button"
         type="button"
-        aria-label="Abrir menu"
+        aria-label={isEn ? "Open navigation menu" : "Abrir menu"}
         aria-expanded="false"
         data-mobile-menu
       >
@@ -111,3 +102,4 @@ const { active = "biblia" } = Astro.props;
     </div>
   </div>
 </header>
+

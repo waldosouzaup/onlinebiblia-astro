@@ -46,6 +46,7 @@ const collectionSchema = {
   title="Holy Bible (NIV) — All 66 Books | Online Bible"
   description="Read and explore all 66 books of the Holy Bible in the New International Version (NIV). Complete Old and New Testament with clean, lightweight chapters."
   page="bible-en"
+  canonical="https://onlinebiblia.com/en/bible/"
   equivalentUrl="/biblia/"
   schema={[breadcrumbSchema, collectionSchema]}
 >
@@ -114,6 +115,9 @@ const collectionSchema = {
         {oldTestament.map((book) => (
           <article
             class="book-card"
+            role="link"
+            tabindex="0"
+            aria-label={`Read book ${book.nameEn}`}
             data-testament="old"
             data-name={book.nameEn.toLowerCase()}
             data-name-pt={book.name.toLowerCase()}
@@ -158,6 +162,9 @@ const collectionSchema = {
         {newTestament.map((book) => (
           <article
             class="book-card"
+            role="link"
+            tabindex="0"
+            aria-label={`Read book ${book.nameEn}`}
             data-testament="new"
             data-name={book.nameEn.toLowerCase()}
             data-name-pt={book.name.toLowerCase()}
@@ -400,6 +407,25 @@ const collectionSchema = {
       if (window.location.hash === '#busca') {
         searchInput.focus();
       }
+
+      // Clickable book cards (mouse/touch/keyboard)
+      bookCards.forEach((card) => {
+        card.addEventListener('click', (e) => {
+          if (e.target.closest('.book-chapters-link')) return;
+          const mainLink = card.querySelector('.book-card-title a, .book-read-btn');
+          if (mainLink && mainLink.href && !e.target.closest('a')) {
+            window.location.href = mainLink.href;
+          }
+        });
+        card.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            const mainLink = card.querySelector('.book-card-title a, .book-read-btn');
+            if (mainLink && mainLink.href) {
+              window.location.href = mainLink.href;
+            }
+          }
+        });
+      });
 
       // Initial run
       applyFilters();
